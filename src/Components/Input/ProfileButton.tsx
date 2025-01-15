@@ -53,25 +53,19 @@ function ProfileButton() {
             ref={dropdownRef}
             className="fixed h-full top-0 right-0 w-64 p-4 bg-white z-10 gap-4 flex flex-col "
           >
-            <div className="flex items-center border-b-2 pb-4">
-              <div className="flex mr-auto items-center gap-4">
-                <img
-                  src={profilePlaceholer}
-                  alt="profileImage"
-                  className="w-16 h-16 shrink-0 rounded-full"
-                />
-                <div className=" flex flex-col flex-1 truncate">
-                  <div className="relative leading-tight text-gray-900">
-                    <span className="flex">
-                      <span className="truncate relative pr-8 font-medium ">
-                        Name
-                      </span>
-                    </span>
-                  </div>
-                  <p className="font-normal text-base leading-tight truncate text-gray-700">
-                    example@mail.com
-                  </p>
-                </div>
+            <div className="flex mr-auto items-center gap-4 border-b-2 pb-4">
+              <img
+                src={profilePlaceholer}
+                alt="profileImage"
+                className="w-16 h-16 shrink-0 rounded-full"
+              />
+              <div className=" flex flex-col flex-1 truncate">
+                <span className="truncate relative pr-8 font-medium text-gray-900">
+                  Name
+                </span>
+                <p className="font-normal text-base leading-tight truncate text-gray-700">
+                  example@mail.com
+                </p>
               </div>
             </div>
             <button className="text-gray-800 text-base px-2 py-1 hover:bg-gray-200 rounded-md flex items-center gap-3">

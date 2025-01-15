@@ -13,7 +13,7 @@ function PrivateRoute({ userData }) {
   return isAuthenticated ? (
     <div className="scroll-smooth">
       <NavBar userData={userData} />
-      <div className="">
+      <div className="flex  w-full spacebetween">
         <LeftBar />
         <RightBar />
       </div>

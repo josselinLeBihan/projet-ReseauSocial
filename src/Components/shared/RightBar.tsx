@@ -4,7 +4,7 @@ import placeholder from "../../Assets/placeholder.png"
 
 function RightBar() {
   return (
-    <div className="flex flex-col h-full w-72 gap-4 p-4 pt-0">
+    <div className="flex flex-col h-full w-72 gap-4 p-4 pt-0 bg-gray-50">
       <div className="flex flex-col ">
         <h3 className="text-lg font-semibold">Travel</h3>
         <div className="flex flex-row gap-2 items-center">

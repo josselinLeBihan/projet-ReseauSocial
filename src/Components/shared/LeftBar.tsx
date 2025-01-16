@@ -1,5 +1,5 @@
 import React from "react"
-import profilePlaceholer from "../../Assets/profile-placeholder.png"
+import profilePlaceholder from "../../Assets/profile-placeholder.png"
 import HomeIcon from "@mui/icons-material/Home"
 import AccountCircleIcon from "@mui/icons-material/AccountCircle"
 import BookmarkIcon from "@mui/icons-material/Bookmark"
@@ -7,11 +7,11 @@ import { Link } from "react-router-dom"
 
 function LeftBar() {
   return (
-    <div className="flex flex-col h-full w-72 gap-4 p-4 pt-0">
+    <div className="flex flex-col w-72 gap-4 p-4 pt-0 bg-gray-50">
       <div className="flex flex-col px-4 py-2 bg-zinc-100 rounded-lg  justify-start items-start gap-4 ">
         <div className="flex items-center gap-4">
           <img
-            src={profilePlaceholer}
+            src={profilePlaceholder}
             alt="profileImage"
             className="w-11 h-11 shrink-0 rounded-full"
           />

@@ -12,11 +12,11 @@ function PrivateRoute({ userData }) {
   console.log("PrivateRoute")
 
   return isAuthenticated ? (
-    <div className="scroll-smooth">
+    <div className="scroll-smooth bg-gray-50">
       <NavBar userData={userData} />
       <div className="flex  w-full justify-between">
         <LeftBar />
-        <div className="flex-1 bg-zinc-100 rounded-2xl">
+        <div className="flex-1 bg-zinc-100 rounded-2xl p-8">
           <Outlet />
         </div>
         <RightBar />

@@ -7,7 +7,7 @@ import { Link } from "react-router-dom"
 
 function LeftBar() {
   return (
-    <div className="flex flex-col h-full w-72 gap-4 p-4">
+    <div className="flex flex-col h-full w-72 gap-4 p-4 pt-0">
       <div className="flex flex-col px-4 py-2 bg-zinc-100 rounded-lg  justify-start items-start gap-4 ">
         <div className="flex items-center gap-4">
           <img

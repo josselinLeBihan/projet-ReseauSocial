@@ -3,6 +3,7 @@ import profilePlaceholder from "../../Assets/profile-placeholder.png"
 import Like from "./Like"
 import CommentIcon from "@mui/icons-material/Comment"
 import { Comment } from "@mui/icons-material"
+import { tempComment } from "../../Data/Data"
 
 // Mémorise les commentaires pour éviter des re-render non nécessaires
 const MemoizedComment = memo(Comments)
@@ -18,28 +19,6 @@ interface Comment {
   createdAt: string
   childComments?: CommentProps[]
 }
-
-const tempComment: Comment[] = [
-  {
-    _id: "parent_1",
-    content: "This is temporate parent comment",
-    user: "josselin",
-    createdAt: new Date().toISOString(),
-    childComments: [{ id: "child1" }, { id: "child2" }],
-  },
-  {
-    _id: "child1",
-    content: "This is child comment 1",
-    user: "user1",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    _id: "child2",
-    content: "This is child comment 2",
-    user: "user2",
-    createdAt: new Date().toISOString(),
-  },
-]
 
 function Comments({ id }: CommentProps) {
   const [showCommentSection, setShowCommentSection] = useState(false)

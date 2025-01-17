@@ -76,7 +76,7 @@ function Post({ post }: PostProps) {
       {showCommentSection && (
         <>
           <WriteComments idPoste={id} userData={userdata} />
-          <Comments id="parent-1" />
+          <Comments id="parent_1" />
         </>
       )}
     </div>

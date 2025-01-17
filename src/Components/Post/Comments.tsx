@@ -2,6 +2,7 @@ import React, { memo, useMemo, useState } from "react"
 import profilePlaceholder from "../../Assets/profile-placeholder.png"
 import Like from "./Like"
 import CommentIcon from "@mui/icons-material/Comment"
+import { Comment } from "@mui/icons-material"
 
 // Mémorise les commentaires pour éviter des re-render non nécessaires
 const MemoizedComment = memo(Comments)
@@ -15,46 +16,61 @@ interface Comment {
   content: string
   user: string
   createdAt: string
-  comments?: Comment[]
+  childComments?: CommentProps[]
 }
 
-function Comments({ id }: CommentProps) {
-  // TODO : récupérer les données du commentaire à partir de l'ID (via API ou props)
-  const comment: Comment = {
-    _id: id,
-    content: "Contenu fictif du commentaire", // Valeur fictive
-    user: "Utilisateur fictif",
+const tempComment: Comment[] = [
+  {
+    _id: "parent_1",
+    content: "This is temporate parent comment",
+    user: "josselin",
     createdAt: new Date().toISOString(),
-    comments: [
-      {
-        _id: "child-1",
-        content: "Sous-commentaire 1",
-        user: "Utilisateur 1",
-        createdAt: new Date().toISOString(),
-      },
-      {
-        _id: "child-2",
-        content: "Sous-commentaire 2",
-        user: "Utilisateur 2",
-        createdAt: new Date().toISOString(),
-      },
-    ], // Valeurs fictives
-  }
+    childComments: [{ id: "child1" }, { id: "child2" }],
+  },
+  {
+    _id: "child1",
+    content: "This is child comment 1",
+    user: "user1",
+    createdAt: new Date().toISOString(),
+  },
+  {
+    _id: "child2",
+    content: "This is child comment 2",
+    user: "user2",
+    createdAt: new Date().toISOString(),
+  },
+]
 
-  const { content, user, createdAt, comments = [] } = comment
-
+function Comments({ id }: CommentProps) {
   const [showCommentSection, setShowCommentSection] = useState(false)
+  // TODO : récupérer les données du commentaire à partir de l'ID (via API ou props)
+  const commentData = tempComment.find((comment) => comment._id === id)
+  const content = commentData?.content || ""
+  const user = commentData?.user || "Unknown"
+  const createdAt = commentData?.createdAt || ""
+  const childCommentsID = commentData?.childComments || []
 
-  const LIMIT = 5 // Nombre maximum de sous-commentaires à afficher
+  // Récupération des sous-commentaires à partir des IDs
+  const childComments: Comment[] = useMemo(() => {
+    return (
+      childCommentsID
+        ?.map((child) =>
+          tempComment.find((comment) => comment._id === child.id),
+        )
+        .filter((comment): comment is Comment => comment !== undefined) || []
+    )
+  }, [childCommentsID])
 
   // Mémorisation des sous-commentaires
+  const LIMIT = 5 // Nombre maximum de sous-commentaires à afficher
+
   const memoizedComments = useMemo(() => {
-    return comments
+    return childComments
       .slice(0, LIMIT)
       .map((childComment) => (
         <MemoizedComment key={childComment._id} id={childComment._id} />
       ))
-  }, [comments])
+  }, [childComments])
 
   const handleCommentOnClick = () => {
     setShowCommentSection(!showCommentSection)
@@ -87,7 +103,7 @@ function Comments({ id }: CommentProps) {
           >
             <CommentIcon />
           </button>
-          <span>{comments.length}</span>
+          <span>{childComments.length}</span>
         </div>
       </div>
       <div className="pl-8">{showCommentSection && memoizedComments}</div>

@@ -1,15 +1,10 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
+const userRoutes = require("./routes/user.route");
+const communityRoutes = require("./routes/communities.routes");
 
-const admin = "josselinAdmin";
-const password = "rda1462gr";
-const uri =
-  "mongodb+srv://" +
-  admin +
-  ":" +
-  password +
-  "@gofullstackfrontend.vlrsp.mongodb.net/?retryWrites=true&w=majority&appName=GoFullStackFrontEnd";
+const uri ="mongodb+srv://josselinAdmin:rda1462gr@projet-blog.vlrsp.mongodb.net/?retryWrites=true&w=majority&appName=Projet-blog";
 
 mongoose
   .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -30,5 +25,8 @@ app.use((req, res, next) => {
   );
   next();
 });
+
+app.use("/api/auth", userRoutes);
+app.use("/api/communities", communityRoutes);
 
 module.exports = app;

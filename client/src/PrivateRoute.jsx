@@ -1,15 +1,19 @@
 import React from "react"
 import { useMemo, useEffect, useState } from "react"
-import { Outlet } from "react-router-dom"
+import { Navigate, Outlet } from "react-router-dom"
 import NavBar from "./Components/shared/NavBar"
 import LeftBar from "./Components/shared/LeftBar"
 import RightBar from "./Components/shared/RightBar"
 
 function PrivateRoute({ userData }) {
   //TODO vérifier si l'utilisateur est authentifié
-  const isAuthenticated = true
+  const isAuthenticated = false
 
-  console.log("PrivateRoute")
+  useEffect(() => {
+    if (!isAuthenticated) {
+      //TODO
+    }
+  }, [])
 
   return isAuthenticated ? (
     <div className="scroll-smooth bg-gray-50">
@@ -23,7 +27,7 @@ function PrivateRoute({ userData }) {
       </div>
     </div>
   ) : (
-    <div>Vous n'êtes pas autorisé à accéder à cette page</div>
+    <Navigate to="/signin" />
   )
 }
 

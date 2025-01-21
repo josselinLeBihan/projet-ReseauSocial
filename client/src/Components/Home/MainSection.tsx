@@ -17,7 +17,7 @@ const tempPost = {
 function MainSection(userdata) {
   const [isLoading, setIsLoading] = useState(false) //TODO gestion du chargement
 
-  const posts = [tempPost] //TODO réccupérer la liste des Posts
+  const posts = [tempPost] //TODO réccupérer la liste des Posts via l'API
 
   const LIMIT = 10 //TODO limite du nombre de poste
 

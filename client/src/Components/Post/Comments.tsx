@@ -22,7 +22,7 @@ interface Comment {
 
 function Comments({ id }: CommentProps) {
   const [showCommentSection, setShowCommentSection] = useState(false)
-  // TODO : récupérer les données du commentaire à partir de l'ID (via API ou props)
+  // TODO : récupérer les données du commentaire à partir de l'ID (via API)
   const commentData = tempComment.find((comment) => comment._id === id)
   const content = commentData?.content || ""
   const user = commentData?.user || "Unknown"

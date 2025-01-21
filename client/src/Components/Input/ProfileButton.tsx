@@ -2,8 +2,10 @@ import React, { useEffect, useRef, useState } from "react"
 import profilePlaceholer from "../../Assets/profile-placeholder.png"
 import PersonIcon from "@mui/icons-material/Person"
 import SettingsIcon from "@mui/icons-material/Settings"
+import { useNavigate } from "react-router-dom"
 
 function ProfileButton() {
+  const navigate = useNavigate()
   const [loggingOut, setLoggingOut] = useState(false)
   const [showDropdown, setShowDropdown] = useState(false)
 
@@ -11,7 +13,7 @@ function ProfileButton() {
 
   const logout = async () => {
     setLoggingOut(true)
-    //TODO: Implement logout
+    //TODO: Appel API pour déconnecter l'utilisateur
     setLoggingOut(false)
   }
 
@@ -79,8 +81,9 @@ function ProfileButton() {
             <button
               type="submit"
               className="text-red-500 text-sm px-2 py-1 hover:bg-red-200 rounded-md w-fit"
+              onClick={logout}
             >
-              Log Out
+              {loggingOut ? "Logging Out..." : "Log Out"}
             </button>
           </div>
         </>

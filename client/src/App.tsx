@@ -1,6 +1,7 @@
 import React, { Suspense } from "react"
 import PrivateRoute from "./PrivateRoute"
 import FallbackLoading from "./Components/Loader/FallbackLoading"
+import { Provider } from "react"
 import {
   BrowserRouter as Router,
   Navigate,
@@ -9,6 +10,7 @@ import {
 } from "react-router-dom"
 import SignIn from "./Pages/SignIn"
 import { privateRoutes, publicRoutes } from "./routes"
+import store from "./redux/store"
 
 function App() {
   const userData = false

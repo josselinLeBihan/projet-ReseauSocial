@@ -2,7 +2,7 @@ import { API, handleApiError } from "./utils"
 
 export const signIn = async (formData) => {
   try {
-    const res = await API.post("/users/signin", formData, {
+    const res = await API.post("/api/auth/signin", formData, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -13,25 +13,26 @@ export const signIn = async (formData) => {
   }
 }
 
-export const signUp = async (formData) => {
+export const signUp = async (data) => {
   try {
-    const res = await API.post("/users/signup", formData, {
+    const res = await API.post("/api/auth/signup", data, {
       headers: {
-        "Content-Type": "multipart/form-data",
+        "Content-Type": "application/json",
       },
     })
-    return { error: null, data: res.data }
-  } catch (error) {
-    return {
-      error: error.response.data.errors,
-      data: null,
+    if (res && res.data) {
+      return { error: null, data: res.data }
+    } else {
+      return { error: "No data received from server", data: null }
     }
+  } catch (error) {
+    return handleApiError(error)
   }
 }
 
 export const logout = async () => {
   try {
-    const res = await API.post("/users/logout", {
+    const res = await API.post("/api/auth/logout", {
       headers: {
         "Content-Type": "application/json",
       },

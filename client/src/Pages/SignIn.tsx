@@ -1,6 +1,11 @@
 import React from "react"
+import { useNavigate } from "react-router-dom"
 
 function SignIn() {
+  const navigate = useNavigate()
+  const handleSignUp = () => {
+    navigate("/signup")
+  }
   return (
     <div className="py-16">
       <div className="flex bg-white rounded-lg shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
@@ -81,7 +86,11 @@ function SignIn() {
           </div>
           <div className="mt-4 flex items-center justify-between">
             <span className="border-b w-1/5 md:w-1/4"></span>
-            <a href="#" className="text-xs text-gray-500 uppercase">
+            <a
+              href="#"
+              className="text-xs text-gray-500 uppercase"
+              onClick={handleSignUp}
+            >
               or sign up
             </a>
             <span className="border-b w-1/5 md:w-1/4"></span>

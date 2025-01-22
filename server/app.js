@@ -30,4 +30,5 @@ app.use((req, res, next) => {
 app.use("/api/auth", userRoutes);
 app.use("/api/communities", communityRoutes);
 
+
 module.exports = app;

@@ -42,6 +42,7 @@ const authReducer = (state = initialState, action) => {
       }
 
     case types.SIGNUP_FAIL:
+      console.log("signup fail")
       return {
         ...state,
         successMessage: null,

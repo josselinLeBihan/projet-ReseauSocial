@@ -1,6 +1,55 @@
-import React from "react"
+import React, { useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { signUpAction, clearMessage } from "../redux/actions/autActions"
+import { useNavigate } from "react-router-dom"
+import { set } from "mongoose"
 
 function SignUp() {
+  const [loading, setLoading] = useState(false)
+  const [loadingText, setLoadingText] = useState("")
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  const handleNameChange = (e) => {
+    setName(e.target.value)
+  }
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value)
+  }
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value)
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    setLoading(true)
+    setLoadingText("Création de compte en cours...")
+
+    const data = {
+      name,
+      email,
+      password,
+    }
+
+    const timeOut = setTimeout(() => {
+      setLoadingText("Cela prend plus de temps que prévu...")
+    }, 5000)
+
+    dispatch(signUpAction(data, navigate, email))
+    setLoading(false)
+    clearTimeout(timeOut)
+  }
+
+  const handleClearError = () => {
+    //dispatch(clearMessage())
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -45,6 +94,7 @@ function SignUp() {
                   type="text"
                   required
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                  onChange={handleNameChange}
                 />
               </div>
             </div>
@@ -88,6 +138,7 @@ function SignUp() {
                   type="email"
                   required
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                  onChange={handleEmailChange}
                 />
               </div>
             </div>
@@ -107,6 +158,7 @@ function SignUp() {
                   type="password"
                   required
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                  onChange={handlePasswordChange}
                 />
               </div>
             </div>
@@ -136,6 +188,7 @@ function SignUp() {
                 <button
                   type="submit"
                   className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
+                  onClick={handleSubmit}
                 >
                   Create account
                 </button>

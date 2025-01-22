@@ -1,8 +1,7 @@
 import React, { useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { signUpAction, clearMessage } from "../redux/actions/autActions"
+import { signUpAction, clearMessage } from "../redux/actions/authActions"
 import { useNavigate } from "react-router-dom"
-import { set } from "mongoose"
 
 function SignUp() {
   const [loading, setLoading] = useState(false)
@@ -47,7 +46,7 @@ function SignUp() {
   }
 
   const handleClearError = () => {
-    //dispatch(clearMessage())
+    dispatch(clearMessage())
   }
 
   return (

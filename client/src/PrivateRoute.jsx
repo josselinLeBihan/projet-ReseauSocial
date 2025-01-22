@@ -1,19 +1,30 @@
 import React from "react"
 import { useMemo, useEffect, useState } from "react"
-import { Navigate, Outlet } from "react-router-dom"
+import { Navigate, Outlet, useNavigate } from "react-router-dom"
+import { useDispatch } from "react-redux"
+import { setInitialAuthState } from "./redux/actions/authActions"
+
 import NavBar from "./Components/shared/NavBar"
 import LeftBar from "./Components/shared/LeftBar"
 import RightBar from "./Components/shared/RightBar"
 
 function PrivateRoute({ userData }) {
-  //TODO vérifier si l'utilisateur est authentifié
-  const isAuthenticated = false
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      //TODO
+  const isAuthenticated = useMemo(() => {
+    return (userData, accessToken) => {
+      return userData && accessToken
     }
   }, [])
+
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const token = localStorage.getItem("profile")
+  const accessToken = JSON.parse(token)?.accessToken
+
+  useEffect(() => {
+    if (!isAuthenticated(userData, accessToken)) {
+      dispatch(setInitialAuthState(navigate))
+    }
+  }, [dispatch, navigate, userData, accessToken, isAuthenticated])
 
   return isAuthenticated ? (
     <div className="scroll-smooth bg-gray-50">

@@ -31,7 +31,6 @@ function Post({ post }: PostProps) {
     comments,
     userdata,
   } = post
-  console.log(post)
 
   const handleCommentOnClick = () => {
     setShowCommentSection(!showCommentSection)

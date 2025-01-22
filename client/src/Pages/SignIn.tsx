@@ -1,11 +1,53 @@
-import React from "react"
+import React, { useState } from "react"
+import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
+import { signIn } from "../redux/api/authAPI"
+import { signInAction } from "../redux/actions/authActions"
 
 function SignIn() {
+  const [loading, setLoading] = useState(false)
+  const [loadingText, setLoadingText] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+
   const handleSignUp = () => {
     navigate("/signup")
   }
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value)
+  }
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value)
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    setLoading(true)
+    setLoadingText("Connexion au compte en cour ...")
+
+    const data = {
+      email,
+      password,
+    }
+
+    const timeOut = setTimeout(() => {
+      setLoadingText("Cela prend plus de temps que prévu...")
+    }, 5000)
+
+    dispatch(signInAction(data, navigate))
+    setLoading(false)
+    clearTimeout(timeOut)
+  }
+
+  const handleClearError = () => {
+    dispatch(clearMessage())
+  }
+
   return (
     <div className="py-16">
       <div className="flex bg-white rounded-lg shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
@@ -63,6 +105,7 @@ function SignIn() {
             <input
               className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
               type="email"
+              onChange={handleEmailChange}
             />
           </div>
           <div className="mt-4">
@@ -77,10 +120,14 @@ function SignIn() {
             <input
               className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
               type="password"
+              onChange={handlePasswordChange}
             />
           </div>
           <div className="mt-8">
-            <button className="bg-gray-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-gray-600">
+            <button
+              className="bg-gray-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-gray-600"
+              onClick={handleSubmit}
+            >
               Login
             </button>
           </div>

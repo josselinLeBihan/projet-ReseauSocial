@@ -51,6 +51,7 @@ const authReducer = (state = initialState, action) => {
       }
 
     case types.SIGNIN_SUCCESS:
+      console.log("SIGNIN_SUCCESS payload :", payload)
       return {
         ...state,
         userData: payload ? payload.user : null,

@@ -31,32 +31,62 @@ exports.signup = async (req, res) => {
   }
 };
 
-
-exports.login = async (req, res) => {
+exports.signin = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    // Recherche de l'utilisateur par email
+    const user = await User.findOne({ email: req.body.email });
 
-    if (!email || !password) {
-      return res.status(400).json({ error: "Tous les champs sont requis." });
-    }
-
-    const user = await User.findOne({ email: email });
     if (!user) {
+      console.log("Utilisateur non trouvé avec l'email :", req.body.email); // Log si l'utilisateur n'existe pas
       return res.status(401).json({ error: "Paire identifiant/mot de passe incorrecte !" });
     }
-    const valid = await bcrypt.compare(password, user.password);
+
+    console.log("Utilisateur trouvé :", user); // Log les informations de l'utilisateur trouvé (sans mot de passe)
+
+    // Comparaison des mots de passe
+    const valid = await bcrypt.compare(req.body.password, user.password);
+
     if (!valid) {
+      console.log("Échec de la comparaison des mots de passe pour l'utilisateur :", user.email); // Log si le mot de passe est incorrect
       return res.status(401).json({ error: "Paire identifiant/mot de passe incorrecte !" });
     }
-    const token = jwt.sign({ userId: user._id }, "RANDOM_TOKEN_SECRET", {
-      expiresIn: "24h",
+
+    console.log("Mot de passe valide pour l'utilisateur :", user.email); // Log si le mot de passe est valide
+
+    const payload = {
+      id: user._id,
+      email: user.email,
+    };
+
+    // Génération du token JWT
+    const accessToken = jwt.sign(payload, process.env.SECRET, {
+      expiresIn: "6h",
     });
+
+    const refreshToken = jwt.sign(payload, process.env.REFRESH_SECRET, {
+      expiresIn: "7d",
+    });
+
+
+    console.log("Token JWT généré pour l'utilisateur :", user.email); // Log du token généré (évitez de le loguer en production)
+
+    // Réponse avec les informations de connexion
     res.status(200).json({
-      userId: user._id,
-      token: token,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+      accessTokenUpdatedAt: new Date().toLocaleString(),
+      user: {
+        _id: user._id,
+        name : user.name,
+        email : user.email
+      },
+
+
     });
+    console.log("Utilisateur connecté avec succès :", user.email); // Log final pour confirmer la connexion
   } catch (error) {
-    console.error("Erreur lors de la connexion de l'utilisateur :", error);
-    res.status(500).json({ error });
+    console.error("Erreur lors du processus de connexion :", error); // Log des erreurs inattendues
+    res.status(500).json({ error: "Une erreur interne est survenue." });
   }
 };
+

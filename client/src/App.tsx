@@ -11,9 +11,12 @@ import {
 import SignIn from "./Pages/SignIn"
 import { privateRoutes, publicRoutes } from "./routes"
 import store from "./redux/store"
+import { useSelector } from "react-redux"
 
 function App() {
-  const userData = false
+  const userData = useSelector((state) => state.auth?.userData)
+
+  //console.log(userData)
 
   return (
     <Router>

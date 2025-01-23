@@ -93,7 +93,6 @@ export const signInAction = (formData, navigate) => async (dispatch) => {
         refreshToken,
         accessTokenUpdatedAt,
       }
-      console.log(profile) //TODO
       localStorage.setItem("profile", JSON.stringify(profile))
       dispatch({
         type: types.SIGNIN_SUCCESS,

@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Token = require("../models/token.model");
 
 const User = require("../models/user.model");
 
@@ -90,3 +91,19 @@ exports.signin = async (req, res) => {
   }
 };
 
+exports.logout = async (req, res) => {
+  try {
+    const accessToken = req.headers.authorization?.split(" ")[1] ?? null;
+    if (accessToken) {
+      await Token.deleteOne({ accessToken });
+    }
+    res.status(200).json({
+      message: "Déconnexion réussi.",
+    });
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({
+      message: "Une erreur interne est survenue.",
+    });
+  }
+}

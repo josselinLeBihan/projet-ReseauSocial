@@ -2,18 +2,21 @@ import React, { useEffect, useRef, useState } from "react"
 import profilePlaceholer from "../../Assets/profile-placeholder.png"
 import PersonIcon from "@mui/icons-material/Person"
 import SettingsIcon from "@mui/icons-material/Settings"
-import { useNavigate } from "react-router-dom"
+import { useDispatch } from "react-redux"
+import { logoutAction } from "../../redux/actions/authActions"
 
 function ProfileButton() {
-  const navigate = useNavigate()
   const [loggingOut, setLoggingOut] = useState(false)
   const [showDropdown, setShowDropdown] = useState(false)
 
+  const dispatch = useDispatch()
+
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const logout = async () => {
+  const handleLogout = async (e) => {
+    e.preventDefault()
     setLoggingOut(true)
-    //TODO: Appel API pour déconnecter l'utilisateur
+    dispatch(logoutAction())
     setLoggingOut(false)
   }
 
@@ -36,7 +39,6 @@ function ProfileButton() {
 
   const handleProfileClick = () => {
     setShowDropdown(!showDropdown)
-    console.log(showDropdown)
   }
   return (
     <div onClick={handleProfileClick} className="cursor-pointer">
@@ -81,7 +83,7 @@ function ProfileButton() {
             <button
               type="submit"
               className="text-red-500 text-sm px-2 py-1 hover:bg-red-200 rounded-md w-fit"
-              onClick={logout}
+              onClick={handleLogout}
             >
               {loggingOut ? "Logging Out..." : "Log Out"}
             </button>

@@ -1,5 +1,5 @@
 const Community = require("../models/community.model");
-
+const LOG = console.log;
 /**
  * Réccupère jusqu'à 10 communautés auxquelles l'utilisateur n'appartient pas
  * Inclu leur noms, leur bannière, le nombre de membres
@@ -29,14 +29,30 @@ exports.getCommunityMembers = (req, res, next) => {};
  * 
  * @route GET /communities/:name
  */
-exports.getCommunity = (req, res, next) => {};
+exports.getCommunity = (req, res, next) => {
+    Community.findOne({ name: req.params.name })
+        .then(
+            (community) => res.status(200).json(community))
+        .catch((error) => {
+            console.error("Database error:", error);
+            res.status(400).json({ error });
+        });
+};
 
 /**
  * Réccupère TOUTES les communautés
  * 
  * @route GET /communities
  */
-exports.getCommunities = (req, res, next) => {};
+exports.getCommunities = (req, res, next) => {
+    Community.find()
+        .then(
+            (communities) => res.status(200).json(communities))
+        .catch((error) => {
+            console.error("Database error:", error);
+            res.status(400).json({ error });
+        });
+};
 
 /**
  * Rejoindre une communauté

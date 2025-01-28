@@ -2,6 +2,7 @@ import { lazy } from "react"
 import Home from "./Pages/Home"
 import Profile from "./Pages/Profile"
 import SignUp from "./Pages/SignUp"
+import CommunityHome from "./Pages/CommunityHome"
 
 const NotFound = lazy(() => import("./pages/NotFound"))
 
@@ -17,6 +18,10 @@ export const privateRoutes = [
   {
     path: "/profile",
     element: <Profile />,
+  },
+  {
+    path: "/community/:communityName",
+    element: <CommunityHome />,
   },
 ]
 

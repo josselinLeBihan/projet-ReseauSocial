@@ -10,6 +10,13 @@ const userSchema = new Schema({
         trim : true,
     },
 
+    userName: {
+        type : String,
+        required : true,
+        unique : true,
+        trim : true,
+    },
+
     email:{
         type : String,
         required : true,
@@ -31,14 +38,14 @@ const userSchema = new Schema({
     followers:[
         {
             type: Schema.Types.ObjectId,
-        ref: 'User'
+            ref: 'User'
         }
     ],  
 
     following:[
         {
             type: Schema.Types.ObjectId,
-        ref: 'User'
+            ref: 'User'
         }
     ],
 

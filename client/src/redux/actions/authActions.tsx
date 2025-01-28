@@ -2,6 +2,8 @@ import * as api from "../api/authAPI"
 import * as types from "../constants/authConstants"
 import { isValidToken } from "../utils/authUtils"
 import { refreshTokenAction } from "./refreshTokenAction"
+import { SignUpData } from "../api/type"
+import { AuthData } from "../api/type"
 
 export const initializeAuth = () => async (dispatch) => {
   const accessToken = JSON.parse(localStorage.getItem("profile"))?.accessToken
@@ -49,43 +51,58 @@ export const logoutAction = () => async (dispatch) => {
   }
 }
 
-export const signUpAction = (formData, navigate) => async (dispatch) => {
-  try {
-    localStorage.removeItem("profile")
-    const response = await api.signUp(formData)
-    const { error } = response
-    if (error) {
+export const signUpAction =
+  (formData: SignUpData, navigate) => async (dispatch) => {
+    try {
+      localStorage.removeItem("profile")
+      const response = await api.signUp(formData)
+      const { error } = response
+      if (error) {
+        console.log("action: " + error)
+        dispatch({
+          type: types.SIGNUP_FAIL,
+          payload: error,
+        })
+        return {
+          success: false,
+          message: error.message || "Une erreur s'est produite.",
+        }
+      } else {
+        dispatch({
+          type: types.SIGNUP_SUCCESS,
+          payload: types.SIGNUP_SUCCESS_MESSAGE,
+        })
+        navigate("/signin")
+      }
+    } catch (error) {
+      console.log("action: " + error.message)
       dispatch({
         type: types.SIGNUP_FAIL,
-        payload: error,
+        payload: error.message || "Une erreur s'est produite.",
       })
-    } else {
-      dispatch({
-        type: types.SIGNUP_SUCCESS,
-        payload: types.SIGNUP_SUCCESS_MESSAGE,
-      })
-      navigate("/signin")
+      return {
+        success: false,
+        message: error.message || "Une erreur s'est produite.",
+      }
     }
-  } catch (error) {
-    console.log(error)
-    dispatch({
-      type: types.SIGNUP_FAIL,
-      payload: types.ERROR_MESSAGE,
-    })
   }
-}
 
-export const signInAction = (formData, navigate) => async (dispatch) => {
-  try {
-    const response = await api.signIn(formData)
-    const { error, data } = response
+export const signInAction =
+  (formData: AuthData, navigate) => async (dispatch) => {
+    try {
+      const response = await api.signIn(formData)
+      const { error, data } = response
 
-    if (error) {
-      dispatch({
-        type: types.SIGNIN_FAIL,
-        payload: error,
-      })
-    } else {
+      // En cas d'erreur retournée par l'API
+      if (error) {
+        dispatch({
+          type: types.SIGNIN_FAIL,
+          payload: error, // Contient le message d'erreur retourné par l'API
+        })
+        return { success: false, message: error } // Assurez-vous de retourner `success: false`
+      }
+
+      // En cas de succès
       const { user, accessToken, refreshToken, accessTokenUpdatedAt } = data
       const profile = {
         user,
@@ -93,18 +110,29 @@ export const signInAction = (formData, navigate) => async (dispatch) => {
         refreshToken,
         accessTokenUpdatedAt,
       }
+
+      // Stocker les données utilisateur dans le localStorage
       localStorage.setItem("profile", JSON.stringify(profile))
+
+      // Dispatch du succès
       dispatch({
         type: types.SIGNIN_SUCCESS,
         payload: profile,
       })
+
+      // Navigation
       navigate("/")
+      return { success: true } // Succès
+    } catch (error) {
+      // En cas d'erreur inattendue
+      console.error("Erreur dans signInAction :", error)
+      dispatch({
+        type: types.SIGNIN_FAIL,
+        payload: error.message || "Une erreur s'est produite.",
+      })
+      return {
+        success: false,
+        message: error.message || "Une erreur s'est produite.",
+      }
     }
-  } catch (error) {
-    await dispatch({
-      type: types.SIGNIN_FAIL,
-      payload: types.ERROR_MESSAGE,
-    })
-    navigate("/signin")
   }
-}

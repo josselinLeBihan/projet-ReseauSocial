@@ -3,12 +3,17 @@ import { useMemo, useEffect, useState } from "react"
 import { Navigate, Outlet, useNavigate } from "react-router-dom"
 import { useDispatch } from "react-redux"
 import { setInitialAuthState } from "./redux/actions/authActions"
+import { UserData } from "./App"
 
 import NavBar from "./Components/shared/NavBar"
 import LeftBar from "./Components/shared/LeftBar"
 import RightBar from "./Components/shared/RightBar"
 
-function PrivateRoute({ userData }) {
+interface PrivateRouteProps {
+  userData: UserData
+}
+
+const PrivateRoute: React.FC<PrivateRouteProps> = ({ userData }) => {
   const isAuthenticated = useMemo(() => {
     return (userData, accessToken) => {
       return userData && accessToken
@@ -30,11 +35,11 @@ function PrivateRoute({ userData }) {
     <div className="scroll-smooth bg-gray-50">
       <NavBar userData={userData} />
       <div className="flex  w-full justify-between">
-        <LeftBar />
+        <LeftBar userData={userData} />
         <div className="flex-1 bg-zinc-100 rounded-2xl p-8">
           <Outlet />
         </div>
-        <RightBar />
+        <RightBar userData={userData} />
       </div>
     </div>
   ) : (

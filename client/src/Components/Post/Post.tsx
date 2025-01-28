@@ -5,21 +5,9 @@ import CommentIcon from "@mui/icons-material/Comment"
 import Like from "./Like"
 import WriteComments from "./WriteComments"
 import Comments from "./Comments"
+import { PostData } from "../../redux/api/type"
 
-interface PostProps {
-  post: {
-    id: string
-    userdata: any
-    content: string
-    fileUrl?: string
-    fileType?: string
-    user: string
-    createdAt: string
-    comments?: string[]
-  }
-}
-
-function Post({ post }: PostProps) {
+function Post({ post }) {
   const [showCommentSection, setShowCommentSection] = useState(false)
   const {
     id,

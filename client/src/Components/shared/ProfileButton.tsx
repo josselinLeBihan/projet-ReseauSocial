@@ -4,19 +4,26 @@ import PersonIcon from "@mui/icons-material/Person"
 import SettingsIcon from "@mui/icons-material/Settings"
 import { useDispatch } from "react-redux"
 import { logoutAction } from "../../redux/actions/authActions"
+import { UserData } from "../../App"
 
-function ProfileButton() {
+interface ProfileButtonProps {
+  userData: UserData
+}
+
+const ProfileButton: React.FC<ProfileButtonProps> = ({ userData }) => {
   const [loggingOut, setLoggingOut] = useState(false)
   const [showDropdown, setShowDropdown] = useState(false)
 
-  const dispatch = useDispatch()
+  const name = userData?.name
+  const email = userData?.email
 
+  const dispatch = useDispatch()
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   const handleLogout = async (e) => {
     e.preventDefault()
     setLoggingOut(true)
-    dispatch(logoutAction())
+    dispatch<any>(logoutAction())
     setLoggingOut(false)
   }
 
@@ -65,10 +72,10 @@ function ProfileButton() {
               />
               <div className=" flex flex-col flex-1 truncate">
                 <span className="truncate relative pr-8 font-medium text-gray-900">
-                  Name
+                  {name}
                 </span>
                 <p className="font-normal text-base leading-tight truncate text-gray-700">
-                  example@mail.com
+                  {email}
                 </p>
               </div>
             </div>

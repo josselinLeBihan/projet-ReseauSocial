@@ -2,7 +2,7 @@ import React from "react"
 import profilePlaceholder from "../../Assets/profile-placeholder.png"
 import SendIcon from "@mui/icons-material/Send"
 
-function WriteComments({ idPoste, userData }) {
+function WriteComments({ idPoste }) {
   return (
     <div className="flex gap-4 items-center">
       <img

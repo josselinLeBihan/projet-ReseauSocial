@@ -95,23 +95,6 @@ const authReducer = (state = initialState, action) => {
         signUpError: [],
         signInError: null,
         successMessage: null,
-        isModeratorOfThisCommunity: false,
-      }
-
-    case GET_COMMUNITY_SUCCESS:
-      const moderators = payload ? payload.moderators : []
-      const isModeratorOfThisCommunity = moderators.some(
-        (moderator) => moderator === state.userData?._id,
-      )
-      return {
-        ...state,
-        isModeratorOfThisCommunity,
-      }
-
-    case GET_COMMUNITY_FAIL:
-      return {
-        ...state,
-        isModeratorOfThisCommunity: false,
       }
 
     case types.GET_CONTEXT_AUTH_DATA_SUCCESS:
@@ -139,34 +122,6 @@ const authReducer = (state = initialState, action) => {
       return {
         ...state,
         trustedAuthContextData: [],
-        contextAuthError: payload ? payload : null,
-      }
-
-    case types.GET_USER_PREFERENCES_SUCCESS:
-      return {
-        ...state,
-        userPreferences: payload ? payload : null,
-        contextAuthError: null,
-      }
-
-    case types.GET_USER_PREFERENCES_FAIL:
-      return {
-        ...state,
-        userPreferences: null,
-        contextAuthError: payload ? payload : null,
-      }
-
-    case types.GET_BLOCKED_AUTH_CONTEXT_DATA_SUCCESS:
-      return {
-        ...state,
-        blockedAuthContextData: payload ? payload : [],
-        contextAuthError: null,
-      }
-
-    case types.GET_BLOCKED_AUTH_CONTEXT_DATA_FAIL:
-      return {
-        ...state,
-        blockedAuthContextData: [],
         contextAuthError: payload ? payload : null,
       }
 

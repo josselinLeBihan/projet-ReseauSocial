@@ -13,10 +13,15 @@ import { privateRoutes, publicRoutes } from "./routes"
 import store from "./redux/store"
 import { useSelector } from "react-redux"
 
-function App() {
-  const userData = useSelector((state) => state.auth?.userData)
+export interface UserData {
+  _id: string
+  email: string
+  name: string
+  userName: string
+}
 
-  //console.log(userData)
+function App() {
+  const userData: UserData = useSelector((state) => state.auth?.userData)
 
   return (
     <Router>

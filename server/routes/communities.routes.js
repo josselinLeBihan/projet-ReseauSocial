@@ -14,8 +14,8 @@ const {
 router.get("/notmember", getNotMemberCommunities);
 router.get("/member", getMemberCommunities);
 router.get("/:name/members", getCommunityMembers);
+router.get("/communities", getCommunities);
 router.get("/:name", getCommunity);
-router.get("/", getCommunities);
 
 router.post("/:name/join", joinCommunity);
 router.post("/:name/leave", leaveCommunity);

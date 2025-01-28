@@ -1,8 +1,10 @@
 import { API, handleApiError } from "./utils"
+import { SignUpData } from "./type"
+import { AuthData } from "./type"
 
-export const signIn = async (data) => {
+export const signIn = async (data: AuthData) => {
   try {
-    const res = await API.post("/api/auth/signin", data, {
+    const res = await API.post("/auth/signin", data, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -17,9 +19,9 @@ export const signIn = async (data) => {
   }
 }
 
-export const signUp = async (data) => {
+export const signUp = async (data: SignUpData) => {
   try {
-    const res = await API.post("/api/auth/signup", data, {
+    const res = await API.post("/auth/signup", data, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -36,7 +38,7 @@ export const signUp = async (data) => {
 
 export const logout = async () => {
   try {
-    const res = await API.post("/api/auth/logout", {
+    const res = await API.post("/auth/logout", {
       headers: {
         "Content-Type": "application/json",
       },

@@ -1,9 +1,12 @@
-import React, { memo, useMemo, useState } from "react"
+import React, { memo, useEffect, useMemo, useState } from "react"
 import profilePlaceholder from "../../Assets/profile-placeholder.png"
 import Like from "./Like"
 import CommentIcon from "@mui/icons-material/Comment"
 import { Comment } from "@mui/icons-material"
 import { tempComment } from "../../Data/Data"
+import { useDispatch } from "react-redux"
+import { CommentData, UserData } from "../../redux/api/type"
+import { getCommentAction } from "../../redux/actions/commentAction"
 
 // Mémorise les commentaires pour éviter des re-render non nécessaires
 const MemoizedComment = memo(Comments)
@@ -12,44 +15,31 @@ interface CommentProps {
   id: string
 }
 
-interface Comment {
-  _id: string
-  content: string
-  user: string
-  createdAt: string
-  childComments?: CommentProps[]
-}
-
 function Comments({ id }: CommentProps) {
   const [showCommentSection, setShowCommentSection] = useState(false)
+  const [comment, setComment] = useState<CommentData | null>(null)
   // TODO : récupérer les données du commentaire à partir de l'ID (via API)
-  const commentData = tempComment.find((comment) => comment._id === id)
-  const content = commentData?.content || ""
-  const user = commentData?.user || "Unknown"
-  const createdAt = commentData?.createdAt || ""
-  const childCommentsID = commentData?.childComments || []
 
-  // Récupération des sous-commentaires à partir des IDs
-  const childComments: Comment[] = useMemo(() => {
-    return (
-      childCommentsID
-        ?.map((child) =>
-          tempComment.find((comment) => comment._id === child.id),
-        )
-        .filter((comment): comment is Comment => comment !== undefined) || []
-    )
-  }, [childCommentsID])
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const result = await dispatch<any>(getCommentAction(id))
+      setComment(result.data)
+    }
+    fetchUser()
+  }, [dispatch, id])
 
   // Mémorisation des sous-commentaires
   const LIMIT = 5 // Nombre maximum de sous-commentaires à afficher
 
   const memoizedComments = useMemo(() => {
-    return childComments
+    return (comment?.childComments ?? [])
       .slice(0, LIMIT)
       .map((childComment) => (
-        <MemoizedComment key={childComment._id} id={childComment._id} />
+        <MemoizedComment key={childComment} id={childComment} />
       ))
-  }, [childComments])
+  }, [comment])
 
   const handleCommentOnClick = () => {
     setShowCommentSection(!showCommentSection)
@@ -65,14 +55,14 @@ function Comments({ id }: CommentProps) {
         />
         <div className="flex flex-col flex-1 truncate">
           <span className="truncate relative pr-8 font-medium text-gray-900">
-            {user}
+            {comment?.user?.name}
           </span>
           <p className="font-normal text-sm leading-tight truncate text-zinc-500">
-            {new Date(createdAt).toLocaleString()}
+            {comment?.createdAt}
           </p>
         </div>
       </div>
-      <span>{content}</span>
+      <span>{comment?.content}</span>
       <div className="flex gap-4">
         <Like />
         <div className="flex gap-2">
@@ -82,7 +72,7 @@ function Comments({ id }: CommentProps) {
           >
             <CommentIcon />
           </button>
-          <span>{childComments.length}</span>
+          <span>{comment?.childComments?.length}</span>
         </div>
       </div>
       <div className="pl-8">{showCommentSection && memoizedComments}</div>

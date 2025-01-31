@@ -1,84 +1,90 @@
-import React, { useEffect, useState, ChangeEvent } from "react"
-import { useDispatch } from "react-redux"
+import React, { useState, ChangeEvent } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import { signUpAction } from "../redux/actions/authActions"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { SignUpData } from "../redux/api/type"
+import validateSignUpForm, {
+  FormulaireData,
+} from "../Components/SignUp/SignUpValidation"
 
 const SignUp: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false)
   const [loadingText, setLoadingText] = useState<string>("")
-  const [formValues, setFormValues] = useState<SignUpData>({
+  const [formValues, setFormValues] = useState({
     name: "",
     email: "",
-    userName: "",
-    password: "",
-  })
-  const [confirmPassword, setConfirmPassword] = useState<string>("")
-  const [errors, setErrors] = useState({
-    name: "",
-    email: "",
-    userName: "",
+    username: "",
     password: "",
     confirmPassword: "",
   })
-  const [globalError, setGlobalError] = useState<string>("")
-  const [isReady, setIsReady] = useState<boolean>(false)
-  const [showPassword, setShowPassword] = useState<boolean>(false)
+  const [sendable, setSendable] = useState<boolean>(false)
+  const globalError = useSelector((state) => state.auth.signUpError)
 
+  //TODO: Afficher les erreurs globales
+  //if (globalError !== ) {
+  //console.log(globalError)
+  //}
+
+  // Stockage des erreurs et statuts de validation
+  const [errors, setErrors] = useState<FormulaireData>({
+    name: { status: "", error: "" },
+    username: { status: "", error: "" },
+    email: { status: "", error: "" },
+    password: { status: "", error: "" },
+    confirmPassword: { status: "", error: "" },
+  })
+
+  const [showPassword, setShowPassword] = useState<boolean>(false)
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  // Valide chaque champ individuellement
-  const validateFields = () => {
-    const newErrors: typeof errors = {
-      name:
-        formValues.name.trim().length > 15
-          ? "Le nom doit faire moins de 15 caractères."
-          : "",
-      email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formValues.email)
-        ? ""
-        : "L'adresse e-mail est incorrecte.",
-      userName: formValues.userName.trim()
-        ? ""
-        : "Le nom d'utilisateur est requis.",
-      password:
-        formValues.password.length >= 6 && /\d/.test(formValues.password)
-          ? ""
-          : "Le mot de passe doit avoir au moins 6 caractères et contenir un chiffre.",
-      confirmPassword:
-        formValues.password === confirmPassword
-          ? ""
-          : "Les mots de passe ne correspondent pas.",
-    }
-
-    setErrors(newErrors)
-    return Object.values(newErrors).every((error) => !error)
+  // Fonction pour afficher la couleur de validation
+  const showStatus = (status: string) => {
+    if (status === "validate") return "border-green-500"
+    if (status === "error") return "border-red-500"
+    return ""
   }
-
-  // Met à jour `isReady` en fonction de la validation
-  useEffect(() => {
-    setIsReady(validateFields())
-  }, [formValues, confirmPassword])
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    if (name === "confirmPassword") {
-      setConfirmPassword(value)
+    setFormValues((prev) => ({ ...prev, [name]: value }))
+
+    // Validation en temps réel
+    const validationResults: FormulaireData = validateSignUpForm({
+      ...formValues,
+      [name]: value,
+    })
+    setErrors(validationResults)
+
+    if (
+      errors.name.status === "validate" &&
+      errors.username.status === "validate" &&
+      errors.email.status === "validate" &&
+      errors.password.status === "validate" &&
+      errors.confirmPassword.status === "validate"
+    ) {
+      setSendable(true)
     } else {
-      setFormValues((prev) => ({ ...prev, [name]: value }))
+      setSendable(false)
     }
   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (validateFields()) {
-      setLoading(true)
-      setLoadingText("Création de compte en cours...")
 
-      dispatch<any>(signUpAction(formValues, navigate)).finally(() =>
-        setLoading(false),
-      )
+    setLoading(true)
+    setLoadingText("Création de compte en cours...")
+
+    const signUpData: SignUpData = {
+      name: formValues.name,
+      email: formValues.email,
+      userName: formValues.username,
+      password: formValues.password,
     }
+
+    dispatch<any>(signUpAction(signUpData, navigate)).finally(() =>
+      setLoading(false),
+    )
   }
 
   return (
@@ -94,22 +100,26 @@ const SignUp: React.FC = () => {
         </h2>
         <p className="mt-2 text-center text-sm text-gray-500">
           Or{" "}
-          <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
+          <Link
+            to="/signin"
+            className="font-medium text-blue-600 hover:text-blue-500"
+          >
             login to your account
-          </a>
+          </Link>
         </p>
       </div>
+
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <p className="text-center text-sm text-red-500">{globalError}</p>
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          {}
           <form onSubmit={handleSubmit}>
-            {["name", "userName", "email"].map((field) => (
+            {["name", "username", "email"].map((field) => (
               <div key={field} className="mt-4">
                 <label
                   htmlFor={field}
                   className="block text-sm font-medium text-gray-700"
                 >
-                  {field === "userName"
+                  {field === "username"
                     ? "Nom d'utilisateur*"
                     : field === "email"
                       ? "Adresse e-mail*"
@@ -119,14 +129,14 @@ const SignUp: React.FC = () => {
                   id={field}
                   name={field}
                   type="text"
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${showStatus(errors[field as keyof FormData].status)}`}
                   value={formValues[field as keyof SignUpData]}
                   onChange={handleChange}
                   required
                 />
-                {errors[field as keyof typeof errors] && (
+                {errors[field as keyof FormData].error && (
                   <p className="text-red-500 text-sm">
-                    {errors[field as keyof typeof errors]}
+                    {errors[field as keyof FormData].error}
                   </p>
                 )}
               </div>
@@ -145,7 +155,7 @@ const SignUp: React.FC = () => {
                   id="password"
                   name="password"
                   type={showPassword ? "text" : "password"}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${showStatus(errors.password.status)}`}
                   value={formValues.password}
                   onChange={handleChange}
                   required
@@ -158,8 +168,8 @@ const SignUp: React.FC = () => {
                   {showPassword ? "Masquer" : "Afficher"}
                 </button>
               </div>
-              {errors.password && (
-                <p className="text-red-500 text-sm">{errors.password}</p>
+              {errors.password.error && (
+                <p className="text-red-500 text-sm">{errors.password.error}</p>
               )}
             </div>
 
@@ -175,13 +185,15 @@ const SignUp: React.FC = () => {
                 id="confirmPassword"
                 name="confirmPassword"
                 type={showPassword ? "text" : "password"}
-                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                value={confirmPassword}
+                className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${showStatus(errors.confirmPassword.status)}`}
+                value={formValues.confirmPassword}
                 onChange={handleChange}
                 required
               />
-              {errors.confirmPassword && (
-                <p className="text-red-500 text-sm">{errors.confirmPassword}</p>
+              {errors.confirmPassword.error && (
+                <p className="text-red-500 text-sm">
+                  {errors.confirmPassword.error}
+                </p>
               )}
             </div>
 
@@ -189,14 +201,14 @@ const SignUp: React.FC = () => {
             <div className="mt-6">
               <button
                 type="submit"
-                disabled={!isReady || loading}
+                disabled={!sendable}
                 className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
-                  isReady && !loading
-                    ? "bg-blue-600 hover:bg-blue-700"
-                    : "bg-gray-400 cursor-not-allowed"
+                  !sendable
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700"
                 }`}
               >
-                {loading ? loadingText : "Create Account"}
+                {loading ? loadingText : "Créer un compte"}
               </button>
             </div>
           </form>

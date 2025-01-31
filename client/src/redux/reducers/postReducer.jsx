@@ -30,6 +30,36 @@ const postReducer = (state = initialState, action) => {
         ...state,
         error: payload,
       }
+    case types.GET_POST_SUCCESS:
+      return {
+        ...state,
+        successMessage: payload ? payload : null,
+      }
+    case types.GET_POSTS_FAIL:
+      return {
+        ...state,
+        error: payload,
+      }
+    case types.DELETE_POST_SUCCESS:
+      return {
+        ...state,
+        successMessage: payload ? payload : null,
+      }
+    case types.DELETE_POST_FAIL:
+      return {
+        ...state,
+        error: payload,
+      }
+    case types.UPDATE_POST_SUCCESS:
+      return {
+        ...state,
+        successMessage: payload ? payload : null,
+      }
+    case types.UPDATE_POST_FAIL:
+      return {
+        ...state,
+        error: payload,
+      }
     default:
       return state
   }

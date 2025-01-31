@@ -1,24 +1,32 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import profilePlaceholder from "../../Assets/profile-placeholder.png"
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz"
 import CommentIcon from "@mui/icons-material/Comment"
 import Like from "./Like"
-import WriteComments from "./WriteComments"
+import CommentSubmit from "./CommentSubmit"
 import Comments from "./Comments"
-import { PostData } from "../../redux/api/type"
+import { PostData, UserData } from "../../redux/api/type"
+import { useDispatch } from "react-redux"
+import { getUserAction } from "../../redux/actions/userActions"
 
-function Post({ post }) {
+interface PostParams {
+  post: PostData
+}
+
+const Post: React.FC<PostParams> = ({ post }) => {
   const [showCommentSection, setShowCommentSection] = useState(false)
-  const {
-    id,
-    content,
-    fileUrl,
-    fileType,
-    user,
-    createdAt,
-    comments,
-    userdata,
-  } = post
+  const [user, setUser] = useState<UserData | null>(null)
+  const { _id, content, fileUrl, fileType, userId, createdAt, comments } = post
+
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const result = await dispatch<any>(getUserAction(post.userId))
+      setUser(result.data)
+    }
+    fetchUser()
+  }, [dispatch, post.userId])
 
   const handleCommentOnClick = () => {
     setShowCommentSection(!showCommentSection)
@@ -35,10 +43,10 @@ function Post({ post }) {
           />
           <div className=" flex flex-col flex-1 truncate">
             <span className="truncate relative pr-8 font-medium text-gray-900">
-              {user}
+              {user?.name}
             </span>
             <p className="font-normal text-sm leading-tight truncate text-zinc-500">
-              @Jisso
+              {user?.userName}
             </p>
           </div>
         </div>
@@ -62,7 +70,7 @@ function Post({ post }) {
       </div>
       {showCommentSection && (
         <>
-          <WriteComments idPoste={id} userData={userdata} />
+          <CommentSubmit idParent={_id} parentType="post" />
           <Comments id="parent_1" />
         </>
       )}

@@ -2,13 +2,13 @@ const express = require("express");
 const router = express.Router();
 
 const {
-    getNotMemberCommunities,
-    getMemberCommunities,
-    getCommunityMembers,
-    getCommunity,
-    getCommunities,
-    joinCommunity,
-    leaveCommunity,
+  getNotMemberCommunities,
+  getMemberCommunities,
+  getCommunityMembers,
+  getCommunity,
+  getCommunities,
+  joinCommunity,
+  leaveCommunity,
 } = require("../controllers/communities.controller");
 
 router.get("/notmember", getNotMemberCommunities);

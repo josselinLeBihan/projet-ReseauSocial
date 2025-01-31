@@ -22,9 +22,7 @@ function MainSection(userdata) {
   const LIMIT = 10 //TODO limite du nombre de poste
 
   const memoizedPosts = useMemo(() => {
-    return posts.map((post) => (
-      <MemoizedPost key={post._id} post={post} userData={userdata} />
-    ))
+    return posts.map((post) => <MemoizedPost key={post._id} post={post} />)
   }, [posts])
 
   return <div className="">{memoizedPosts}</div>

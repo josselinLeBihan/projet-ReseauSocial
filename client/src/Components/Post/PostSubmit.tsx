@@ -5,12 +5,16 @@ import { Button } from "@mui/material"
 import ImageIcon from "@mui/icons-material/Image"
 import VideocamIcon from "@mui/icons-material/Videocam"
 import SendIcon from "@mui/icons-material/Send"
+import { CommunityData, PostCreationData, UserData } from "../../redux/api/type"
+import { addPostAction } from "../../redux/actions/postAction"
 
 function PostSubmit() {
   const dispatch = useDispatch()
   const [body, setBody] = React.useState("")
-  const userData = useSelector((state) => state.auth?.userData)
-  const commmunity = useSelector((state) => state.community?.community)
+  const userData: UserData = useSelector((state) => state.auth?.userData)
+  const commmunity: CommunityData = useSelector(
+    (state) => state.community?.community,
+  )
   const [rows, setRows] = useState(1) // Nombre initial de lignes
   const maxRows = 5 // Nombre maximum de lignes
 
@@ -38,14 +42,15 @@ function PostSubmit() {
     setBody(e.target.value)
   }
 
-  const handleSubmit = () => {
-    // dispatch(
-    //   createPost({
-    //     body,
-    //     user: userData.id,
-    //     community: community.name,
-    //   }),
-    // )
+  const handleSubmit = () => async () => {
+    const postData: PostCreationData = {
+      content: body,
+      user: userData._id,
+      community: commmunity._id,
+    }
+
+    await dispatch<any>(addPostAction(postData))
+
     setBody("")
   }
 
@@ -74,7 +79,10 @@ function PostSubmit() {
               <p>Vidéo</p>
             </button>
           </div>
-          <button className="text-gray-200 bg-teal-600 text-base px-2 py-2 hover:bg-teal-500 rounded-md flex items-center gap-2 ">
+          <button
+            className="text-gray-200 bg-teal-600 text-base px-2 py-2 hover:bg-teal-500 rounded-md flex items-center gap-2 "
+            onClick={handleSubmit()}
+          >
             <SendIcon />
             <p>Envoyer</p>
           </button>

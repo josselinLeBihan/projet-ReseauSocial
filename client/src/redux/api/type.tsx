@@ -19,29 +19,42 @@ export interface UserData extends SignUpData {
   savedPosts?: PostData[]
 }
 
-export interface PostCreationData {
-  content: string
+export interface PostChangableData {
+  content?: string
   fileUrl?: string
   fileType?: string
-  userId: string
+}
+export interface PostCreationData extends PostChangableData {
+  user: string
   community: string
 }
 
 export interface PostData extends PostCreationData {
-  id: string
+  _id: string
   createdAt: string
   comments?: string[]
 }
 
 export interface CommunityData {
+  _id: string
   name: string
   description: string
   image: string
-  members?: UserData[]
+  members?: string[]
 }
 
-export interface CommentData {
-  body: string
-  user: UserData
-  child: CommentData[]
+export interface CommentCreationData extends CommentBaseData {
+  parentID: string
+  parentType: "post" | "comment"
+}
+
+export interface CommentBaseData {
+  content: string
+  user: string
+}
+
+export interface CommentData extends CommentBaseData {
+  _id: string
+  createdAt: string
+  childComments?: string[]
 }

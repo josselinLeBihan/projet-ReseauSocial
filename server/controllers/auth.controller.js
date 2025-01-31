@@ -4,7 +4,6 @@ const Token = require("../models/token.model");
 const User = require("../models/user.model");
 const LOG = console.log;
 
-
 exports.signup = async (req, res) => {
   try {
     const { name, email, password, userName } = req.body;
@@ -14,14 +13,18 @@ exports.signup = async (req, res) => {
       return res.status(400).json({ error: "Tous les champs sont requis." });
     }
 
-    if(await User.findOne({userName})){
+    if (await User.findOne({ userName })) {
       LOG("⚠️ Le user name existe déjà");
-      return res.status(400).json({ error: "Il existe déjà un compte avec ce nom d'utilisateur." });
+      return res
+        .status(400)
+        .json({ error: "Il existe déjà un compte avec ce nom d'utilisateur." });
     }
 
-    if(await User.findOne({email})){
+    if (await User.findOne({ email })) {
       LOG("⚠️ Le mail existe déjà");
-      return res.status(400).json({ error: "Il existe déjà un compte avec cette email." });
+      return res
+        .status(400)
+        .json({ error: "Il existe déjà un compte avec cette email." });
     }
 
     const hash = await bcrypt.hash(password, 10);
@@ -48,7 +51,9 @@ exports.signin = async (req, res) => {
 
     if (!user) {
       console.log("Utilisateur non trouvé avec l'email :", req.body.email); // Log si l'utilisateur n'existe pas
-      return res.status(401).json({ error: "Paire identifiant/mot de passe incorrecte !" });
+      return res
+        .status(401)
+        .json({ error: "Paire identifiant/mot de passe incorrecte !" });
     }
 
     console.log("Utilisateur trouvé :", user); // Log les informations de l'utilisateur trouvé (sans mot de passe)
@@ -57,8 +62,13 @@ exports.signin = async (req, res) => {
     const valid = await bcrypt.compare(req.body.password, user.password);
 
     if (!valid) {
-      console.log("Échec de la comparaison des mots de passe pour l'utilisateur :", user.email); // Log si le mot de passe est incorrect
-      return res.status(401).json({ error: "Paire identifiant/mot de passe incorrecte !" });
+      console.log(
+        "Échec de la comparaison des mots de passe pour l'utilisateur :",
+        user.email
+      ); // Log si le mot de passe est incorrect
+      return res
+        .status(401)
+        .json({ error: "Paire identifiant/mot de passe incorrecte !" });
     }
 
     console.log("Mot de passe valide pour l'utilisateur :", user.email); // Log si le mot de passe est valide
@@ -77,7 +87,6 @@ exports.signin = async (req, res) => {
       expiresIn: "7d",
     });
 
-
     console.log("Token JWT généré pour l'utilisateur :", user.email); // Log du token généré (évitez de le loguer en production)
 
     // Réponse avec les informations de connexion
@@ -87,12 +96,10 @@ exports.signin = async (req, res) => {
       accessTokenUpdatedAt: new Date().toLocaleString(),
       user: {
         _id: user._id,
-        name : user.name,
-        email : user.email,
-        userName : user.userName
+        name: user.name,
+        email: user.email,
+        userName: user.userName,
       },
-
-
     });
     console.log("Utilisateur connecté avec succès :", user.email); // Log final pour confirmer la connexion
   } catch (error) {
@@ -111,9 +118,9 @@ exports.logout = async (req, res) => {
       message: "Déconnexion réussi.",
     });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     res.status(500).json({
       message: "Une erreur interne est survenue.",
     });
   }
-}
+};

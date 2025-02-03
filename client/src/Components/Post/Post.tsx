@@ -15,18 +15,18 @@ interface PostParams {
 
 const Post: React.FC<PostParams> = ({ post }) => {
   const [showCommentSection, setShowCommentSection] = useState(false)
-  const [user, setUser] = useState<UserData | null>(null)
-  const { _id, content, fileUrl, fileType, userId, createdAt, comments } = post
+  const [userData, setUser] = useState<UserData | null>(null)
+  const { _id, content, fileUrl, fileType, user, createdAt, comments } = post
 
   const dispatch = useDispatch()
 
   useEffect(() => {
     const fetchUser = async () => {
-      const result = await dispatch<any>(getUserAction(post.userId))
+      const result = await dispatch<any>(getUserAction(post.user))
       setUser(result.data)
     }
     fetchUser()
-  }, [dispatch, post.userId])
+  }, [dispatch, post.user])
 
   const handleCommentOnClick = () => {
     setShowCommentSection(!showCommentSection)
@@ -43,10 +43,10 @@ const Post: React.FC<PostParams> = ({ post }) => {
           />
           <div className=" flex flex-col flex-1 truncate">
             <span className="truncate relative pr-8 font-medium text-gray-900">
-              {user?.name}
+              {userData?.name}
             </span>
             <p className="font-normal text-sm leading-tight truncate text-zinc-500">
-              {user?.userName}
+              {`@${userData?.userName}`}
             </p>
           </div>
         </div>
@@ -65,13 +65,13 @@ const Post: React.FC<PostParams> = ({ post }) => {
           >
             <CommentIcon />
           </button>
-          <span>2</span>
+          <span>{comments?.length}</span>
         </div>
       </div>
       {showCommentSection && (
         <>
           <CommentSubmit idParent={_id} parentType="post" />
-          <Comments id="parent_1" />
+          <Comments idParent={_id} />
         </>
       )}
     </div>

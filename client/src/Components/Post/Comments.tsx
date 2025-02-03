@@ -12,23 +12,22 @@ import { getCommentAction } from "../../redux/actions/commentAction"
 const MemoizedComment = memo(Comments)
 
 interface CommentProps {
-  id: string
+  idParent: string
 }
 
-function Comments({ id }: CommentProps) {
+function Comments({ idParent }: CommentProps) {
   const [showCommentSection, setShowCommentSection] = useState(false)
   const [comment, setComment] = useState<CommentData | null>(null)
-  // TODO : récupérer les données du commentaire à partir de l'ID (via API)
 
   const dispatch = useDispatch()
 
   useEffect(() => {
     const fetchUser = async () => {
-      const result = await dispatch<any>(getCommentAction(id))
+      const result = await dispatch<any>(getCommentAction(idParent))
       setComment(result.data)
     }
     fetchUser()
-  }, [dispatch, id])
+  }, [dispatch, idParent])
 
   // Mémorisation des sous-commentaires
   const LIMIT = 5 // Nombre maximum de sous-commentaires à afficher

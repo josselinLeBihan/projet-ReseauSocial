@@ -35,7 +35,7 @@ const Post: React.FC<PostParams> = ({ post }) => {
   }
 
   //Réccupération des sous commentaire
-  const LIMIT = 5 // Nombre maximum de sous-commentaires à afficher
+  const LIMIT = 5
 
   const memoizedComments = useMemo(() => {
     return (comments ?? [])

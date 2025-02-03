@@ -11,6 +11,7 @@ import CommentSubmit from "./CommentSubmit"
 
 // Mémorise les commentaires pour éviter des re-render non nécessaires
 const MemoizedComment = memo(Comment)
+const LIMIT = 5 // Nombre maximum de sous-commentaires à afficher
 
 interface CommentProps {
   id: string
@@ -23,24 +24,26 @@ function Comment({ id }: CommentProps) {
   const dispatch = useDispatch()
 
   useEffect(() => {
+    let isMounted = true
+
     const fetchComment = async () => {
-      const result = await dispatch<any>(getCommentAction(id))
-      setComment(result.data)
+      try {
+        const result = await dispatch<any>(getCommentAction(id))
+        if (isMounted) setComment(result.data)
+      } catch (error) {
+        console.error("Erreur lors de la récupération du commentaire :", error)
+      }
     }
+
     fetchComment()
-  }, [])
 
-  // Mémorisation des sous-commentaires
-  const LIMIT = 5 // Nombre maximum de sous-commentaires à afficher
+    return () => {
+      isMounted = false
+    }
+  }, [id, dispatch])
 
-  console.log(comment)
-
-  const memoizedComments = useMemo(() => {
-    return (comment?.comments ?? [])
-      .slice(0, LIMIT)
-      .map((childComment) => (
-        <MemoizedComment key={childComment} id={childComment} />
-      ))
+  const subComments = useMemo(() => {
+    return (comment?.comments ?? []).slice(0, LIMIT)
   }, [comment])
 
   const handleCommentOnClick = () => {
@@ -80,7 +83,9 @@ function Comment({ id }: CommentProps) {
       {showCommentSection && (
         <div className="pl-8 gap-2 flex-col">
           <CommentSubmit parentId={comment?._id} parentType="comment" />
-          {memoizedComments}
+          {subComments.map((childId) => (
+            <MemoizedComment key={childId} id={childId} />
+          ))}
         </div>
       )}
     </div>

@@ -1,17 +1,41 @@
 import React, { useState } from "react"
 import profilePlaceholder from "../../Assets/profile-placeholder.png"
 import SendIcon from "@mui/icons-material/Send"
+import { CommentCreationData, UserData } from "../../redux/api/type"
+import { useDispatch, useSelector } from "react-redux"
+import { addCommentAction } from "../../redux/actions/commentAction"
 
 interface CommentSubmitData {
   parentID: string
   parentType: "post" | "comment"
 }
 
-function CommentSubmit({ parentID, parentType }) {
+function CommentSubmit({ parentId, parentType }) {
   const [content, setContent] = useState<string>()
+  const userData: UserData = useSelector((state) => state.auth?.userData)
+
+  const dispatch = useDispatch()
 
   const handleOnChange = (e) => {
     setContent(e.target.value)
+  }
+
+  const handleSubmit = () => async () => {
+    console.log("envoie !")
+    if (!content) {
+      return
+    }
+
+    const commentData: CommentCreationData = {
+      parentId: parentId,
+      parentType: parentType,
+      content: content,
+      user: userData._id,
+    }
+
+    await dispatch<any>(addCommentAction(commentData))
+
+    setContent("")
   }
 
   return (
@@ -27,7 +51,9 @@ function CommentSubmit({ parentID, parentType }) {
         placeholder={"Write your comment"}
         onChange={handleOnChange}
       />
-      <SendIcon className="text-gray-500 hover:text-gray-900" />
+      <button onClick={handleSubmit()}>
+        <SendIcon className="text-gray-500 hover:text-gray-900" />
+      </button>
     </div>
   )
 }

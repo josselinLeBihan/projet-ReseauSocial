@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react"
+import React, { memo, useEffect, useMemo, useState } from "react"
 import profilePlaceholder from "../../Assets/profile-placeholder.png"
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz"
 import CommentIcon from "@mui/icons-material/Comment"
 import Like from "./Like"
 import CommentSubmit from "./CommentSubmit"
-import Comments from "./Comments"
+import Comment from "./Comment"
 import { PostData, UserData } from "../../redux/api/type"
 import { useDispatch } from "react-redux"
 import { getUserAction } from "../../redux/actions/userActions"
@@ -12,6 +12,8 @@ import { getUserAction } from "../../redux/actions/userActions"
 interface PostParams {
   post: PostData
 }
+
+const MemoizedComment = memo(Comment)
 
 const Post: React.FC<PostParams> = ({ post }) => {
   const [showCommentSection, setShowCommentSection] = useState(false)
@@ -31,6 +33,17 @@ const Post: React.FC<PostParams> = ({ post }) => {
   const handleCommentOnClick = () => {
     setShowCommentSection(!showCommentSection)
   }
+
+  //Réccupération des sous commentaire
+  const LIMIT = 5 // Nombre maximum de sous-commentaires à afficher
+
+  const memoizedComments = useMemo(() => {
+    return (comments ?? [])
+      .slice(0, LIMIT)
+      .map((childComment) => (
+        <MemoizedComment key={childComment} id={childComment} />
+      ))
+  }, [comments])
 
   return (
     <div className="flex p-6 bg-gray-50 rounded-lg flex-col gap-4">
@@ -69,10 +82,10 @@ const Post: React.FC<PostParams> = ({ post }) => {
         </div>
       </div>
       {showCommentSection && (
-        <>
-          <CommentSubmit idParent={_id} parentType="post" />
-          <Comments idParent={_id} />
-        </>
+        <div className="pl-8 flex gap-2 flex-col">
+          <CommentSubmit parentId={_id} parentType="post" />
+          {memoizedComments}
+        </div>
       )}
     </div>
   )

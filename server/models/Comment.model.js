@@ -7,6 +7,7 @@ const commentSchema = new Schema({
   _id: {
     type: String,
     require: true,
+    trim: true,
   },
   content: {
     type: String,
@@ -20,7 +21,7 @@ const commentSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User",
   },
-  child: [
+  comments: [
     {
       type: Schema.Types.ObjectId,
       ref: "Comment",

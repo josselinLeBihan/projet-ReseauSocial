@@ -1,6 +1,7 @@
 const Comment = require("../models/Comment.model");
-
-exports.addComment = (req, res, next) => {};
+const Post = require("../models/post.model");
+const mongoose = require("mongoose");
+const User = require("../models/user.model");
 
 /**
  * Réccupère les données d'un commentaire
@@ -10,7 +11,20 @@ exports.addComment = (req, res, next) => {};
 exports.getComment = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const comment = await Comment.findOne({ _id: id });
+    const commentData = await Comment.findOne({ _id: id });
+    const user = await User.findById(commentData.user)
+
+    const comment = {
+      _id: commentData._id,
+      createdAt: commentData.createdAt,
+      comments: commentData.comments,
+      content: commentData.content,
+      user: user
+    }
+
+    console.log(comment)
+
+
     res.status(200).json(comment);
   } catch (error) {
     console.error("Erreur lors de la récupération du commentaire :", error);
@@ -18,38 +32,47 @@ exports.getComment = async (req, res, next) => {
   }
 };
 
+
 /**
  * Créée un commentaire
  *
  * @Route POST /comment/
  */
 exports.addComment = async (req, res, next) => {
-  const _id = require("mongoose").Types.ObjectId();
-  const parentID = req.body.parentID;
-  const parentType = req.body.parentType;
+  try {
 
-  if (!parentID && !parentType && !userName && !content) {
-    return res.status(400).json({ error: "Tous les champs sont requis." });
-  }
+    const _id = new mongoose.Types.ObjectId();
+    
+    const { parentId, parentType, user, content } = req.body;
 
-  const comment = new Comment({
-    _id: _id,
-    user: req.body.user,
-    content: req.body.content,
-    createdAt: req.body.createdAt,
-  });
+    if (!parentId || !parentType || !user || !content) {
+      return res.status(400).json({ error: "Tous les champs sont requis." });
+    }
 
-  comment.save().catch((error) => res.status(400).json({ error }));
+    const comment = new Comment({
+      _id,
+      user,
+      content,
+      createdAt: new Date(),
+    });
 
-  switch (parentType) {
-    case "comment":
-      Comment.updateOne({ _id: parentID }, { $push: { comments: _id } })
-        .then(() => res.status(201).json({ message: "Comment added!" }))
-        .catch((error) => res.status(400).json({ error }));
-    case "post":
-      Post.updateOne({ _id: parentID }, { $push: { comments: _id } })
-        .then(() => res.status(201).json({ message: "Comment added!" }))
-        .catch((error) => res.status(400).json({ error }));
-    default:
+    await comment.save(); // Attendre que l'enregistrement soit terminé
+
+
+    if (parentType === "comment") {
+      await Comment.updateOne({ _id: parentId }, { $push: { comments: _id } });
+
+    } else if (parentType === "post") {
+      await Post.updateOne({ _id: parentId }, { $push: { comments: _id } });
+    } else {
+      return res.status(400).json({ error: "Champs parentType invalide." });
+    }
+
+    res.status(201).json({ message: "Comment added!" });
+
+  } catch (error) {
+    console.log(error.message)
+    res.status(500).json({ error: error.message });
   }
 };
+

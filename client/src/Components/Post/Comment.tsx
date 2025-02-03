@@ -2,38 +2,41 @@ import React, { memo, useEffect, useMemo, useState } from "react"
 import profilePlaceholder from "../../Assets/profile-placeholder.png"
 import Like from "./Like"
 import CommentIcon from "@mui/icons-material/Comment"
-import { Comment } from "@mui/icons-material"
 import { tempComment } from "../../Data/Data"
 import { useDispatch } from "react-redux"
 import { CommentData, UserData } from "../../redux/api/type"
 import { getCommentAction } from "../../redux/actions/commentAction"
+import { getUserAction } from "../../redux/actions/userActions"
+import CommentSubmit from "./CommentSubmit"
 
 // Mémorise les commentaires pour éviter des re-render non nécessaires
-const MemoizedComment = memo(Comments)
+const MemoizedComment = memo(Comment)
 
 interface CommentProps {
-  idParent: string
+  id: string
 }
 
-function Comments({ idParent }: CommentProps) {
+function Comment({ id }: CommentProps) {
   const [showCommentSection, setShowCommentSection] = useState(false)
   const [comment, setComment] = useState<CommentData | null>(null)
 
   const dispatch = useDispatch()
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const result = await dispatch<any>(getCommentAction(idParent))
+    const fetchComment = async () => {
+      const result = await dispatch<any>(getCommentAction(id))
       setComment(result.data)
     }
-    fetchUser()
-  }, [dispatch, idParent])
+    fetchComment()
+  }, [])
 
   // Mémorisation des sous-commentaires
   const LIMIT = 5 // Nombre maximum de sous-commentaires à afficher
 
+  console.log(comment)
+
   const memoizedComments = useMemo(() => {
-    return (comment?.childComments ?? [])
+    return (comment?.comments ?? [])
       .slice(0, LIMIT)
       .map((childComment) => (
         <MemoizedComment key={childComment} id={childComment} />
@@ -71,12 +74,17 @@ function Comments({ idParent }: CommentProps) {
           >
             <CommentIcon />
           </button>
-          <span>{comment?.childComments?.length}</span>
+          <span>{comment?.comments?.length}</span>
         </div>
       </div>
-      <div className="pl-8">{showCommentSection && memoizedComments}</div>
+      {showCommentSection && (
+        <div className="pl-8 gap-2 flex-col">
+          <CommentSubmit parentId={comment?._id} parentType="comment" />
+          {memoizedComments}
+        </div>
+      )}
     </div>
   )
 }
 
-export default Comments
+export default Comment

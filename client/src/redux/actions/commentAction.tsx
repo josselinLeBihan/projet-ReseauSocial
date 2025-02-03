@@ -2,9 +2,9 @@ import * as api from "../api/commentAPI"
 import * as types from "../constants/commentConstants"
 import { CommentData, CommentCreationData } from "../api/type"
 
-export const getCommentAction = (postId: string) => async (dispatch) => {
+export const getCommentAction = (id: string) => async (dispatch) => {
   try {
-    const response = await api.getComment(postId)
+    const response = await api.getComment(id)
     const { error, data } = response
 
     if (error) {

@@ -10,7 +10,6 @@ const User = require("../models/user.model");
  * @route GET /:id
  */
 exports.getUser = (req, res, next) => {
-  console.log(req.params.id);
   User.findById(req.params.id)
     .then((user) => res.status(200).json(user))
     .catch((error) => {

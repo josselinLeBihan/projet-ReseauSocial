@@ -10,9 +10,9 @@ export const addComment = async (comment: CommentCreationData) => {
   }
 }
 
-export const getComment = async (postId: string) => {
+export const getComment = async (id: string) => {
   try {
-    const response = await API.get(`/comment/post/${postId}`)
+    const response = await API.get(`/comment/${id}`)
     return response
   } catch (error) {
     handleApiError(error)

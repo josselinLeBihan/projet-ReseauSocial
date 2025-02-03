@@ -43,18 +43,17 @@ export interface CommunityData {
   members?: string[]
 }
 
-export interface CommentCreationData extends CommentBaseData {
-  parentID: string
+export interface CommentCreationData {
+  parentId: string
   parentType: "post" | "comment"
-}
-
-export interface CommentBaseData {
   content: string
   user: string
 }
 
-export interface CommentData extends CommentBaseData {
+export interface CommentData {
   _id: string
   createdAt: string
-  childComments?: string[]
+  comments?: string[]
+  content: string
+  user: UserData
 }

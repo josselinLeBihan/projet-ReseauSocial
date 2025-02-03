@@ -10,7 +10,6 @@ exports.createPost = async (req, res, next) => {
   try {
     const { content, user, fileUrl, fileType, community } = req.body;
 
-    console.log(req.body);
 
     if (!content || !user) {
       console.error("⚠️ Champs manquants !");

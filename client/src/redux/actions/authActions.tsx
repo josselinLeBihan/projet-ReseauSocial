@@ -2,21 +2,37 @@ import * as api from "../api/authAPI"
 import * as types from "../constants/authConstants"
 import { isValidToken } from "../utils/authUtils"
 import { refreshTokenAction } from "./refreshTokenAction"
-import { SignUpData } from "../api/type"
+import { SignUpData, UserProfile } from "../api/type"
 import { AuthData } from "../api/type"
+import { Dispatch, ThunkDispatch } from "@reduxjs/toolkit"
+import { RootState } from "../store"
 
-export const initializeAuth = () => async (dispatch) => {
-  const accessToken = JSON.parse(localStorage.getItem("profile"))?.accessToken
-  const refreshToken = JSON.parse(localStorage.getItem("profile"))?.refreshToken
+type AppDispatch = ThunkDispatch<RootState, unknown, any>
 
-  if (accessToken && refreshToken) {
-    if (isValidToken(accessToken)) {
-      dispatch(setAccessToken(accessToken))
-      dispatch(setRefreshToken(refreshToken))
-      dispatch(setUserData(JSON.parse(localStorage.getItem("profile")).user))
-    } else {
-      await dispatch(refreshTokenAction(refreshToken))
+export const initializeAuth = () => async (dispatch: AppDispatch) => {
+  try {
+    const profileData = localStorage.getItem("profile")
+
+    if (!profileData) return
+
+    const profile: UserProfile = JSON.parse(profileData)
+
+    const { accessToken, refreshToken, user } = profile
+
+    if (accessToken && refreshToken) {
+      if (isValidToken(accessToken)) {
+        dispatch(setAccessToken(accessToken))
+        dispatch(setRefreshToken(refreshToken))
+        dispatch(setUserData(user))
+      } else {
+        await dispatch(refreshTokenAction(refreshToken))
+      }
     }
+  } catch (error) {
+    console.error(
+      "Erreur lors de l'initialisation de l'authentification :",
+      error,
+    )
   }
 }
 
@@ -93,13 +109,12 @@ export const signInAction =
       const response = await api.signIn(formData)
       const { error, data } = response
 
-      // En cas d'erreur retournée par l'API
       if (error) {
         dispatch({
           type: types.SIGNIN_FAIL,
-          payload: error, // Contient le message d'erreur retourné par l'API
+          payload: error,
         })
-        return { success: false, message: error } // Assurez-vous de retourner `success: false`
+        return { success: false, message: error }
       }
 
       // En cas de succès
@@ -111,20 +126,16 @@ export const signInAction =
         accessTokenUpdatedAt,
       }
 
-      // Stocker les données utilisateur dans le localStorage
       localStorage.setItem("profile", JSON.stringify(profile))
 
-      // Dispatch du succès
       dispatch({
         type: types.SIGNIN_SUCCESS,
         payload: profile,
       })
 
-      // Navigation
       navigate("/")
-      return { success: true } // Succès
+      return { success: true }
     } catch (error) {
-      // En cas d'erreur inattendue
       console.error("Erreur dans signInAction :", error)
       dispatch({
         type: types.SIGNIN_FAIL,

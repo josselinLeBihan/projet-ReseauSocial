@@ -1,11 +1,11 @@
 import React, { useState, ChangeEvent } from "react"
-import { useDispatch, useSelector } from "react-redux"
 import { signUpAction } from "../redux/actions/authActions"
 import { Link, useNavigate } from "react-router-dom"
 import { SignUpData } from "../redux/api/type"
 import validateSignUpForm, {
   FormulaireData,
 } from "../Components/SignUp/SignUpValidation"
+import { useAppDispatch, useAppSelector } from "../redux/store"
 
 const SignUp: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false)
@@ -18,12 +18,7 @@ const SignUp: React.FC = () => {
     confirmPassword: "",
   })
   const [sendable, setSendable] = useState<boolean>(false)
-  const globalError = useSelector((state) => state.auth.signUpError)
-
-  //TODO: Afficher les erreurs globales
-  //if (globalError !== ) {
-  //console.log(globalError)
-  //}
+  const globalError = useAppSelector((state) => state.auth.signUpError)
 
   // Stockage des erreurs et statuts de validation
   const [errors, setErrors] = useState<FormulaireData>({
@@ -35,7 +30,7 @@ const SignUp: React.FC = () => {
   })
 
   const [showPassword, setShowPassword] = useState<boolean>(false)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
   // Fonction pour afficher la couleur de validation
@@ -82,7 +77,7 @@ const SignUp: React.FC = () => {
       password: formValues.password,
     }
 
-    dispatch<any>(signUpAction(signUpData, navigate)).finally(() =>
+    dispatch(signUpAction(signUpData, navigate)).finally(() =>
       setLoading(false),
     )
   }

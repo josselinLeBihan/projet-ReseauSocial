@@ -6,8 +6,8 @@ import Like from "./Like"
 import CommentSubmit from "./CommentSubmit"
 import Comment from "./Comment"
 import { PostData, UserData } from "../../redux/api/type"
-import { useDispatch } from "react-redux"
 import { getUserAction } from "../../redux/actions/userActions"
+import { useAppDispatch } from "../../redux/store"
 
 interface PostParams {
   post: PostData
@@ -20,12 +20,12 @@ const Post: React.FC<PostParams> = ({ post }) => {
   const [userData, setUser] = useState<UserData | null>(null)
   const { _id, content, fileUrl, fileType, user, createdAt, comments } = post
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     const fetchUser = async () => {
-      const result = await dispatch<any>(getUserAction(post.user))
-      setUser(result.data)
+      const result = await dispatch(getUserAction(post.user))
+      setUser(result?.data)
     }
     fetchUser()
   }, [dispatch, post.user])
@@ -46,7 +46,7 @@ const Post: React.FC<PostParams> = ({ post }) => {
   }, [comments])
 
   return (
-    <div className="flex p-6 bg-gray-50 rounded-lg flex-col gap-4">
+    <div className="flex p-6 bg-gray-50 rounded-lg flex-col gap-8">
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center gap-4">
           <img
@@ -69,6 +69,7 @@ const Post: React.FC<PostParams> = ({ post }) => {
       </div>
       <span>{content}</span>
       {fileUrl && <img src={fileUrl} />}
+      <hr className=" border-0 border-t-2 border-gray-300" />
       <div className="flex gap-4">
         <Like />
         <div className="flex gap-2">
@@ -82,7 +83,7 @@ const Post: React.FC<PostParams> = ({ post }) => {
         </div>
       </div>
       {showCommentSection && (
-        <div className="pl-8 flex gap-2 flex-col">
+        <div className=" flex gap-6 flex-col">
           <CommentSubmit parentId={_id} parentType="post" />
           {memoizedComments}
         </div>

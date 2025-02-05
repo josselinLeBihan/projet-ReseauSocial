@@ -5,6 +5,7 @@ import SettingsIcon from "@mui/icons-material/Settings"
 import { useDispatch } from "react-redux"
 import { logoutAction } from "../../redux/actions/authActions"
 import { UserData } from "../../App"
+import { useAppDispatch } from "../../redux/store"
 
 interface ProfileButtonProps {
   userData: UserData
@@ -17,13 +18,13 @@ const ProfileButton: React.FC<ProfileButtonProps> = ({ userData }) => {
   const name = userData?.name
   const email = userData?.email
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   const handleLogout = async (e) => {
     e.preventDefault()
     setLoggingOut(true)
-    dispatch<any>(logoutAction())
+    dispatch(logoutAction())
     setLoggingOut(false)
   }
 

@@ -10,8 +10,7 @@ import {
 } from "react-router-dom"
 import SignIn from "./Pages/SignIn"
 import { privateRoutes, publicRoutes } from "./routes"
-import store from "./redux/store"
-import { useSelector } from "react-redux"
+import store, { useAppSelector } from "./redux/store"
 
 export interface UserData {
   _id: string
@@ -21,7 +20,7 @@ export interface UserData {
 }
 
 function App() {
-  const userData: UserData = useSelector((state) => state.auth?.userData)
+  const userData: UserData = useAppSelector((state) => state.auth?.userData)
 
   return (
     <Router>

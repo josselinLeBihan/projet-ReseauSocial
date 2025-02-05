@@ -8,6 +8,12 @@ export interface AuthData {
   password: string
 }
 
+export interface UserProfile {
+  accessToken: string
+  refreshToken: string
+  user: UserData
+}
+
 export interface UserData extends SignUpData {
   _id: string
   avatar?: string

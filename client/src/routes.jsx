@@ -20,6 +20,10 @@ export const privateRoutes = [
     element: <Profile />,
   },
   {
+    path: "/community",
+    element: <CommunityHome />,
+  },
+  {
     path: "/community/:communityName",
     element: <CommunityHome />,
   },

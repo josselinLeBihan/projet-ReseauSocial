@@ -1,5 +1,4 @@
 import React, { useState } from "react"
-import { useDispatch, useSelector } from "react-redux"
 import profilePlaceholder from "../../Assets/profile-placeholder.png"
 import { Button } from "@mui/material"
 import ImageIcon from "@mui/icons-material/Image"
@@ -7,12 +6,13 @@ import VideocamIcon from "@mui/icons-material/Videocam"
 import SendIcon from "@mui/icons-material/Send"
 import { CommunityData, PostCreationData, UserData } from "../../redux/api/type"
 import { addPostAction } from "../../redux/actions/postAction"
+import { useAppDispatch, useAppSelector } from "../../redux/store"
 
 function PostSubmit() {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [body, setBody] = React.useState("")
-  const userData: UserData = useSelector((state) => state.auth?.userData)
-  const commmunity: CommunityData = useSelector(
+  const userData: UserData = useAppSelector((state) => state.auth?.userData)
+  const commmunity: CommunityData = useAppSelector(
     (state) => state.community?.community,
   )
   const [rows, setRows] = useState(1) // Nombre initial de lignes
@@ -49,21 +49,21 @@ function PostSubmit() {
       community: commmunity._id,
     }
 
-    await dispatch<any>(addPostAction(postData))
+    await dispatch(addPostAction(postData))
 
     setBody("")
   }
 
   return (
-    <div className="flex-1 gap-4 flex ">
+    <div className="flex-1 gap-4 flex p-6 bg-gray-50 rounded-2xl">
       <img
         src={profilePlaceholder}
         alt="profileImage"
         className="w-11 h-11 shrink-0 rounded-full"
       />
-      <div className="flex flex-col flex-1 gap-4">
+      <div className="flex flex-col flex-1 gap-4 ">
         <textarea
-          className="h-fit appearance-none border-2 border-gray-300 hover:border-gray-400 transition-colors rounded-md w-full py-4 pl-10 pr-10 text-gray-800 leading-tight focus:outline-none focus:ring-purple-600 focus:border-purple-600 focus:shadow-outline"
+          className="h-fit appearance-none border-2 bg-gray-100 border-gray-100 hover:border-gray-400 transition-colors rounded-md py-4 pl-10 pr-10 text-gray-800 leading-tight focus:outline-none focus:ring-teal-600 focus:border-teal-600 focus:shadow-outline"
           placeholder="Ecrivez votre poste ici..."
           rows={1}
           onChange={handleTextChange}

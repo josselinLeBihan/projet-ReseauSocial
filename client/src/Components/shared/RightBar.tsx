@@ -1,9 +1,13 @@
-import React from "react"
+import React, { useEffect } from "react"
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt"
 import { UserData } from "../../App"
-import { useSelector } from "react-redux"
 import { CommunityData } from "../../redux/api/type"
-import { useLocation } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
+import {
+  getCommunitiesAction,
+  getCommunityAction,
+} from "../../redux/actions/communityActions"
+import { useAppDispatch, useAppSelector } from "../../redux/store"
 
 interface RightBarProps {
   userData: UserData
@@ -11,39 +15,50 @@ interface RightBarProps {
 
 const RightBar: React.FC<RightBarProps> = ({ userData }) => {
   const currentLocation = useLocation().pathname
-  const community: CommunityData = useSelector(
-    (state) => state.community?.community,
+
+  const dispatch = useAppDispatch()
+
+  const communities: CommunityData[] = useAppSelector(
+    (state) => state.community?.communities,
   )
+
+  useEffect(() => {
+    dispatch(getCommunitiesAction())
+  }, [dispatch])
 
   const checkLocation = (chain) => {
     return currentLocation.includes(chain)
   }
 
+  const handleCommunityChange = (e) => {
+    const communityName = e.target.innerText
+
+    dispatch(getCommunityAction(communityName))
+  }
+
   return (
     <div className="flex flex-col h-full w-72 gap-4 p-4 pt-0 bg-gray-50">
-      {checkLocation("/community") && community && (
-        <>
-          <div className="flex flex-col ">
-            <h3 className="text-lg font-semibold">{community?.name}</h3>
-            <div className="flex flex-row gap-2 items-center">
-              <PeopleAltIcon
-                className="text-teal-600"
-                style={{ fontSize: "16px" }}
-              />
-              <p className="text-sm text-teal-600">{`${community?.members?.length} membres`}</p>
-            </div>
-          </div>
-          <img
-            src={community?.image}
-            alt="comunity image"
-            className="w-full h-56"
-          />
-          <span className="">
-            {community?.description.length > 200
-              ? community?.description.slice(0, 200) + "..."
-              : community?.description}
-          </span>
-        </>
+      {checkLocation("/community") && (
+        <div>
+          <p>Mes communautés</p>
+          <ul>
+            {communities && communities.length > 0 ? (
+              communities.map((community) => (
+                <Link
+                  to={`/community/${community.name}`}
+                  className="text-gray-800 text-base px-2 py-2 hover:bg-gray-200 rounded-md flex items-center gap-3"
+                  key={community.name}
+                  onClick={handleCommunityChange}
+                >
+                  <img src={community.image} className="h-6 w-6 rounded-md" />
+                  <p>{community.name}</p>
+                </Link>
+              ))
+            ) : (
+              <p>Aucune communauté trouvée.</p>
+            )}
+          </ul>
+        </div>
       )}
     </div>
   )

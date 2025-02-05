@@ -1,9 +1,9 @@
 import React, { ChangeEvent, FormEvent, useState } from "react"
-import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { signIn } from "../redux/api/authAPI"
 import { signInAction } from "../redux/actions/authActions"
 import { AuthData } from "../redux/api/type"
+import { useAppDispatch } from "../redux/store"
 
 function SignIn() {
   const [loading, setLoading] = useState<boolean>(false)
@@ -13,7 +13,7 @@ function SignIn() {
   const [loginError, setLoginError] = useState<boolean>(false)
 
   const navigate = useNavigate()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const handleSignUp = () => {
     navigate("/signup")
@@ -41,7 +41,7 @@ function SignIn() {
       setLoadingText("Cela prend plus de temps que prévu...")
     }, 5000)
 
-    const result: { success: boolean; message: string } = await dispatch<any>(
+    const result: { success: boolean; message?: string } = await dispatch(
       signInAction(data, navigate),
     )
     setLoginError(!result.success)

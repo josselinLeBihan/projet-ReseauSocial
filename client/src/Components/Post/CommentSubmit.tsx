@@ -2,8 +2,8 @@ import React, { useState } from "react"
 import profilePlaceholder from "../../Assets/profile-placeholder.png"
 import SendIcon from "@mui/icons-material/Send"
 import { CommentCreationData, UserData } from "../../redux/api/type"
-import { useDispatch, useSelector } from "react-redux"
 import { addCommentAction } from "../../redux/actions/commentAction"
+import { useAppDispatch, useAppSelector } from "../../redux/store"
 
 interface CommentSubmitData {
   parentID: string
@@ -12,9 +12,9 @@ interface CommentSubmitData {
 
 function CommentSubmit({ parentId, parentType }) {
   const [content, setContent] = useState<string>()
-  const userData: UserData = useSelector((state) => state.auth?.userData)
+  const userData: UserData = useAppSelector((state) => state.auth?.userData)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const handleOnChange = (e) => {
     setContent(e.target.value)
@@ -33,7 +33,7 @@ function CommentSubmit({ parentId, parentType }) {
       user: userData._id,
     }
 
-    await dispatch<any>(addCommentAction(commentData))
+    await dispatch(addCommentAction(commentData))
 
     setContent("")
   }
@@ -46,9 +46,9 @@ function CommentSubmit({ parentId, parentType }) {
         className="w-11 h-11 shrink-0 rounded-full"
       />
       <input
-        className="appearance-none border-2 border-gray-300 hover:border-gray-400 transition-colors rounded-2xl w-full py-2 px-4  text-gray-800 leading-tight focus:outline-none focus:ring-purple-600 focus:border-purple-600 focus:shadow-outline"
+        className="h-fit appearance-none border-2 w-full bg-gray-100 border-gray-100 hover:border-gray-400 transition-colors rounded-full py-4 pl-10 pr-10 text-gray-800 leading-tight focus:outline-none focus:ring-teal-600 focus:border-teal-600 focus:shadow-outline"
         type="text"
-        placeholder={"Write your comment"}
+        placeholder={"Ecrivez votre commentaire"}
         onChange={handleOnChange}
       />
       <button onClick={handleSubmit()}>

@@ -23,7 +23,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ userData }) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const token = localStorage.getItem("profile")
-  const accessToken = JSON.parse(token)?.accessToken
+  const accessToken = token ? JSON.parse(token)?.accessToken : null
 
   useEffect(() => {
     if (!isAuthenticated(userData, accessToken)) {

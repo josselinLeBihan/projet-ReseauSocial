@@ -2,8 +2,8 @@ import React, { memo, useEffect, useMemo, useState } from "react"
 import PostSubmit from "../Post/PostSubmit"
 import Post from "../Post/Post"
 import { CommunityData, PostData } from "../../redux/api/type"
-import { useDispatch } from "react-redux"
 import { getPostsAction } from "../../redux/actions/postAction"
+import { useAppDispatch, useAppSelector } from "../../redux/store"
 
 const MemoizedPost = memo(Post)
 
@@ -16,16 +16,19 @@ const CommunityMainSection: React.FC<CommunityMainSectionData> = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false) //TODO gestion du chargement
   const [posts, setPosts] = useState<PostData[]>([])
+  const community: CommunityData = useAppSelector(
+    (state) => state.community?.community,
+  )
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     const fetchPosts = async () => {
       setIsLoading(true)
 
       try {
-        const result = await dispatch<any>(getPostsAction(communityId))
-        setPosts(result.data)
+        const result = await dispatch(getPostsAction(communityId))
+        setPosts(result?.data)
       } catch (e) {
         console.log(e)
       }
@@ -42,9 +45,9 @@ const CommunityMainSection: React.FC<CommunityMainSectionData> = ({
   }, [posts])
 
   return (
-    <div>
+    <div className="flex flex-col gap-6">
       <PostSubmit />
-      <div>{memoizedPosts}</div>
+      {memoizedPosts}
     </div>
   )
 }

@@ -22,7 +22,6 @@ exports.getComment = async (req, res, next) => {
       user: user
     }
 
-    console.log(comment)
 
 
     res.status(200).json(comment);

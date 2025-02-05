@@ -37,10 +37,10 @@ const RightBar: React.FC<RightBarProps> = ({ userData }) => {
   }
 
   return (
-    <div className="flex flex-col h-full w-72 gap-4 p-4 pt-0 bg-gray-50">
+    <div className="flex flex-col h-full w-72 gap-4 p-4 pt-0 bg-gray-50 fixed right-0 top-24">
       {checkLocation("/community") && (
-        <div>
-          <p>Mes communautés</p>
+        <div className="flex flex-col gap-2">
+          <p className="text-gray-600">Mes communautés</p>
           <ul>
             {communities && communities.length > 0 ? (
               communities.map((community) => (

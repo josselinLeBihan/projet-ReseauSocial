@@ -3,7 +3,7 @@ import profilePlaceholder from "../../Assets/profile-placeholder.png"
 import HomeIcon from "@mui/icons-material/Home"
 import AccountCircleIcon from "@mui/icons-material/AccountCircle"
 import BookmarkIcon from "@mui/icons-material/Bookmark"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, NavLink, useNavigate } from "react-router-dom"
 import { UserData } from "../../App"
 import GroupIcon from "@mui/icons-material/Group"
 
@@ -18,7 +18,7 @@ const LeftBar: React.FC<LeftBarProps> = ({ userData }) => {
   const navigate = useNavigate()
 
   return (
-    <div className="flex flex-col w-72 gap-4 p-4 pt-0 bg-gray-50">
+    <div className="flex flex-col w-72 gap-4 p-4 pt-0 bg-gray-50 fixed left-0 top-24 h-full">
       <div className="flex flex-col px-4 py-2 bg-zinc-100 rounded-lg  justify-start items-start gap-4 ">
         <div className="flex items-center gap-4">
           <img
@@ -62,34 +62,52 @@ const LeftBar: React.FC<LeftBarProps> = ({ userData }) => {
           </div>
         </div>
       </div>
-      <Link
-        to="/"
-        className="text-gray-800 text-base px-2 py-2 hover:bg-gray-200 rounded-md flex items-center gap-3"
-      >
-        <HomeIcon />
-        <span className="h-fit">Home</span>
-      </Link>
-      <Link
-        to="/community"
-        className="text-gray-800 text-base px-2 py-2 hover:bg-gray-200 rounded-md flex items-center gap-3"
-      >
-        <GroupIcon />
-        <span className="h-fit">Community</span>
-      </Link>
-      <Link
-        to="/" //TODO: Add the correct path
-        className="text-gray-800 text-base px-2 py-2 hover:bg-gray-200 rounded-md flex items-center gap-3"
-      >
-        <AccountCircleIcon />
-        <span className="h-fit">Profile</span>
-      </Link>
-      <Link
-        to="/" //TODO: Add the correct path
-        className="text-gray-800 text-base px-2 py-2 hover:bg-gray-200 rounded-md flex items-center gap-3"
-      >
-        <BookmarkIcon />
-        <span className="h-fit">Saved</span>
-      </Link>
+      <nav>
+        <NavLink
+          to="/"
+          className={({ isActive }) =>
+            `text-gray-800 text-base px-2 py-2 rounded-md flex items-center gap-3 transition ${
+              isActive ? "bg-gray-300" : "hover:bg-gray-200"
+            }`
+          }
+        >
+          <HomeIcon />
+          <span className="h-fit">Home</span>
+        </NavLink>
+        <NavLink
+          to="/community"
+          className={({ isActive }) =>
+            `text-gray-800 text-base px-2 py-2 rounded-md flex items-center gap-3 transition ${
+              isActive ? "bg-gray-300" : "hover:bg-gray-200"
+            }`
+          }
+        >
+          <GroupIcon />
+          <span className="h-fit">Community</span>
+        </NavLink>
+        <NavLink
+          to="/Profile" //TODO: Add the correct path
+          className={({ isActive }) =>
+            `text-gray-800 text-base px-2 py-2 rounded-md flex items-center gap-3 transition ${
+              isActive ? "bg-gray-300" : "hover:bg-gray-200"
+            }`
+          }
+        >
+          <AccountCircleIcon />
+          <span className="h-fit">Profile</span>
+        </NavLink>
+        <NavLink
+          to="/saved" //TODO: Add the correct path
+          className={({ isActive }) =>
+            `text-gray-800 text-base px-2 py-2 rounded-md flex items-center gap-3 transition ${
+              isActive ? "bg-gray-400" : "hover:bg-gray-200"
+            }`
+          }
+        >
+          <BookmarkIcon />
+          <span className="h-fit">Saved</span>
+        </NavLink>
+      </nav>
     </div>
   )
 }

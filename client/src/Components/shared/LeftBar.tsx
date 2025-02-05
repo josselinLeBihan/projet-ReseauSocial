@@ -11,6 +11,27 @@ interface LeftBarProps {
   userData: UserData
 }
 
+const navLinks = [
+  { to: "/", label: "Accueil", icon: <HomeIcon /> },
+  { to: "/community", label: "Communautés", icon: <GroupIcon /> },
+  { to: "/profile", label: "Profile", icon: <AccountCircleIcon /> },
+  { to: "/saved", label: "Sauvegardées", icon: <BookmarkIcon /> },
+]
+
+const NavItem = ({ to, label, icon }) => (
+  <NavLink
+    to={to}
+    className={({ isActive }) =>
+      `text-gray-800 text-base px-2 py-2 rounded-md flex items-center gap-3 transition ${
+        isActive ? "bg-gray-300" : "hover:bg-gray-200"
+      }`
+    }
+  >
+    {icon}
+    <span className="h-fit">{label}</span>
+  </NavLink>
+)
+
 const LeftBar: React.FC<LeftBarProps> = ({ userData }) => {
   const userName = userData?.userName
   const name = userData?.name
@@ -63,50 +84,9 @@ const LeftBar: React.FC<LeftBarProps> = ({ userData }) => {
         </div>
       </div>
       <nav>
-        <NavLink
-          to="/"
-          className={({ isActive }) =>
-            `text-gray-800 text-base px-2 py-2 rounded-md flex items-center gap-3 transition ${
-              isActive ? "bg-gray-300" : "hover:bg-gray-200"
-            }`
-          }
-        >
-          <HomeIcon />
-          <span className="h-fit">Home</span>
-        </NavLink>
-        <NavLink
-          to="/community"
-          className={({ isActive }) =>
-            `text-gray-800 text-base px-2 py-2 rounded-md flex items-center gap-3 transition ${
-              isActive ? "bg-gray-300" : "hover:bg-gray-200"
-            }`
-          }
-        >
-          <GroupIcon />
-          <span className="h-fit">Community</span>
-        </NavLink>
-        <NavLink
-          to="/Profile" //TODO: Add the correct path
-          className={({ isActive }) =>
-            `text-gray-800 text-base px-2 py-2 rounded-md flex items-center gap-3 transition ${
-              isActive ? "bg-gray-300" : "hover:bg-gray-200"
-            }`
-          }
-        >
-          <AccountCircleIcon />
-          <span className="h-fit">Profile</span>
-        </NavLink>
-        <NavLink
-          to="/saved" //TODO: Add the correct path
-          className={({ isActive }) =>
-            `text-gray-800 text-base px-2 py-2 rounded-md flex items-center gap-3 transition ${
-              isActive ? "bg-gray-400" : "hover:bg-gray-200"
-            }`
-          }
-        >
-          <BookmarkIcon />
-          <span className="h-fit">Saved</span>
-        </NavLink>
+        {navLinks.map((link) => (
+          <NavItem key={link.to} {...link} />
+        ))}
       </nav>
     </div>
   )

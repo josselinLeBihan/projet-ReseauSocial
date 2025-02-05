@@ -1,48 +1,38 @@
-import React, { memo, useEffect, useMemo, useState } from "react"
-import PostSubmit from "../Post/PostSubmit"
-import Post from "../Post/Post"
+import React from "react"
 import { CommunityData, PostData } from "../../redux/api/type"
-import { getPostsAction } from "../../redux/actions/postAction"
-import { useAppDispatch, useAppSelector } from "../../redux/store"
-
-const MemoizedPost = memo(Post)
+import { useAppSelector } from "../../redux/store"
+import { NavLink, Outlet } from "react-router-dom"
+import CommunityForum from "./CommunityForum"
 
 interface CommunityMainSectionData {
   communityId: string
 }
 
+const NavItem = ({ to, label }) => (
+  <NavLink
+    to={to}
+    className={({ isActive }) =>
+      `flex justify-center items-center px-6 py-2 border-b-2 border-gray-50 hover:border-teal-600 transition ${
+        isActive ? "border-teal-600" : ""
+      }`
+    }
+  >
+    <span className="h-fit">{label}</span>
+  </NavLink>
+)
+
 const CommunityMainSection: React.FC<CommunityMainSectionData> = ({
   communityId,
 }) => {
-  const [isLoading, setIsLoading] = useState(false) //TODO gestion du chargement
-  const [posts, setPosts] = useState<PostData[]>([])
   const community: CommunityData = useAppSelector(
     (state) => state.community?.community,
   )
 
-  const dispatch = useAppDispatch()
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      setIsLoading(true)
-
-      try {
-        const result = await dispatch(getPostsAction(communityId))
-        setPosts(result?.data)
-      } catch (e) {
-        console.log(e)
-      }
-
-      setIsLoading(false)
-    }
-    fetchPosts()
-  }, [communityId, dispatch])
-
-  const LIMIT = 10 //TODO limite du nombre de poste
-
-  const memoizedPosts = useMemo(() => {
-    return posts.map((post) => <MemoizedPost key={post._id} post={post} />)
-  }, [posts])
+  const navLinks = [
+    { to: `/community/forum/${community.name}`, label: "Forum" },
+    { to: `/community/about/${community.name}`, label: "A propos" },
+    { to: `/community/Members/${community.name}`, label: "Membres" },
+  ]
 
   return (
     <div className="flex flex-col gap-6">
@@ -62,20 +52,13 @@ const CommunityMainSection: React.FC<CommunityMainSectionData> = ({
           </div>
           <p className="text-gray-500">{`${community?.members?.length} membres`}</p>
         </div>
-        <div className="flex">
-          <button className="flex justify-center items-center px-6 py-2 border-b-2 border-gray-50 hover:border-teal-600">
-            Forum
-          </button>
-          <button className="flex justify-center items-center px-6 py-2 border-b-2 border-gray-50 hover:border-teal-600">
-            A propos
-          </button>
-          <button className="flex justify-center items-center px-6 py-2 border-b-2 border-gray-50 hover:border-teal-600">
-            Membres
-          </button>
-        </div>
+        <nav className="flex">
+          {navLinks.map((link) => (
+            <NavItem key={link.to} {...link} />
+          ))}
+        </nav>
       </div>
-      <PostSubmit />
-      {memoizedPosts}
+      <Outlet />
     </div>
   )
 }

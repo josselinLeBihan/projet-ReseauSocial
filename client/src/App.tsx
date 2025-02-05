@@ -9,7 +9,7 @@ import {
   Routes,
 } from "react-router-dom"
 import SignIn from "./Pages/SignIn"
-import { privateRoutes, publicRoutes } from "./routes"
+import { privateRoutes, publicRoutes, RouteData } from "./routes"
 import store, { useAppSelector } from "./redux/store"
 
 export interface UserData {
@@ -19,6 +19,13 @@ export interface UserData {
   userName: string
 }
 
+const renderRoutes = (routes: RouteData[]) =>
+  routes.map(({ path, element, children }) => (
+    <Route key={path} path={path} element={element}>
+      {children && renderRoutes(children)}
+    </Route>
+  ))
+
 function App() {
   const userData: UserData = useAppSelector((state) => state.auth?.userData)
 
@@ -26,9 +33,7 @@ function App() {
     <Router>
       <Routes>
         <Route element={<PrivateRoute userData={userData} />}>
-          {privateRoutes.map((route) => (
-            <Route key={route.path} path={route.path} element={route.element} />
-          ))}
+          {renderRoutes(privateRoutes)}
         </Route>
 
         {publicRoutes.map((route) => (

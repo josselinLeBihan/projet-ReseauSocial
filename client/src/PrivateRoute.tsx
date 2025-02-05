@@ -1,7 +1,6 @@
 import React from "react"
 import { useMemo, useEffect, useState } from "react"
 import { Navigate, Outlet, useNavigate } from "react-router-dom"
-import { useDispatch } from "react-redux"
 import { setInitialAuthState } from "./redux/actions/authActions"
 import { UserData } from "./App"
 

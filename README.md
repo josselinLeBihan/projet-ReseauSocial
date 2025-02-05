@@ -18,7 +18,7 @@ Le projet repose sur les technologies suivantes :
 - Redux (gestion d'état)
 - Tailwind CSS (design responsive et moderne)
 
-#Backend
+# Backend
 - Node.js
 - Express.js
 - MongoDB (base de données NoSQL)

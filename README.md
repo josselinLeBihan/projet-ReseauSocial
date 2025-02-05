@@ -3,7 +3,7 @@ Un réseau social, les fonctionnalités essentielles sont en cours de développe
 ## Présentation du projet
 Ce projet est un réseau social conçu avec la stack MERN (MongoDB, Express.js, React.js, Node.js). Son objectif est d'offrir une plateforme interactive permettant aux utilisateurs de :
 
--Créer un profil
+- Créer un profil
 - Publier et partager des posts
 - Liker et commenter les publications
 - Gérer leur fil d'actualité en temps réel

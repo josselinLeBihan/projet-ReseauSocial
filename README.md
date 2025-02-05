@@ -14,13 +14,13 @@ Ce projet est un réseau social conçu avec la stack MERN (MongoDB, Express.js, 
 Le projet repose sur les technologies suivantes :
 
 # Frontend
-React.js
-Redux (gestion d'état)
-Tailwind CSS (design responsive et moderne)
+- React.js
+- Redux (gestion d'état)
+- Tailwind CSS (design responsive et moderne)
 
 #Backend
-Node.js
-Express.js
-MongoDB (base de données NoSQL)
-JWT Authentication (authentification sécurisée)
-Bcrypt.js (hashage des mots de passe)
+- Node.js
+- Express.js
+- MongoDB (base de données NoSQL)
+- JWT Authentication (authentification sécurisée)
+- Bcrypt.js (hashage des mots de passe)

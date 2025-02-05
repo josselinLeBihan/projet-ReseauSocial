@@ -42,7 +42,7 @@ const CommunityForum: React.FC<CommunityForumData> = () => {
   }, [posts])
 
   return (
-    <div>
+    <div className="flex flex-col gap-6">
       <PostSubmit />
       {memoizedPosts}
     </div>

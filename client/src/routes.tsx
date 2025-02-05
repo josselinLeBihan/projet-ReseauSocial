@@ -38,11 +38,11 @@ export const privateRoutes = [
       },
       {
         path: "about/:communityName",
-        element: <CommunityMembers />,
+        element: <CommunityAbout />,
       },
       {
         path: "members/:communityName",
-        element: <CommunityAbout />,
+        element: <CommunityMembers />,
       },
     ],
   },

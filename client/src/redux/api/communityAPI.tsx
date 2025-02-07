@@ -1,6 +1,5 @@
 import axios, { AxiosResponse } from "axios"
 import { CommunityData, UserData } from "./type"
-import { API, handleApiError } from "./utils"
 import { apiRequest } from "../utils/reduxUtils"
 
 export const getCommunities = async (): Promise<{

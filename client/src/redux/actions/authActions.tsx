@@ -7,6 +7,7 @@ import { AuthData } from "../api/type"
 import { ThunkDispatch } from "@reduxjs/toolkit"
 import { RootState } from "../store"
 import { createAsyncThunkAction } from "../utils/reduxUtils"
+import logger from "../../utils/logger"
 
 type AppDispatch = ThunkDispatch<RootState, unknown, any>
 
@@ -78,9 +79,10 @@ export const signUpAction =
 
       if (response && !response.error) {
         navigate("/signin")
+        logger.info("User signed up successfully")
       }
     } catch (error) {
-      console.error("Erreur dans signUpAction :", error)
+      logger.error("Error in signUpAction", error)
     }
   }
 
@@ -108,11 +110,12 @@ export const signInAction =
 
         localStorage.setItem("profile", JSON.stringify(profile))
         navigate("/")
+        logger.info("User signed in successfully", user)
         return { success: true }
       } else {
         throw new Error("Invalid response data")
       }
     } catch (error) {
-      console.error("Erreur dans signinAction :", error)
+      logger.error("Error in signInAction", error)
     }
   }

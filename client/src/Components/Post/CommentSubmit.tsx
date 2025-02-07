@@ -21,7 +21,6 @@ function CommentSubmit({ parentId, parentType }) {
   }
 
   const handleSubmit = () => async () => {
-    console.log("envoie !")
     if (!content) {
       return
     }

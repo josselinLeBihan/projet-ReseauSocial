@@ -1,4 +1,3 @@
-import { API, handleApiError } from "./utils"
 import {
   PostCreationData,
   PostChangableData,

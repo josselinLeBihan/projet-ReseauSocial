@@ -24,14 +24,3 @@ COMMUNITY_API.interceptors.request.use((req) => {
   req.headers["Content-Type"] = "application/json"
   return authInterceptor(req)
 })
-
-export const handleApiError = async (error) => {
-  try {
-    const errorMessage =
-      error.response?.data?.message || "Une erreur inattendue est survenue."
-    const data = null
-    return { error: errorMessage, data }
-  } catch (err) {
-    throw new Error("Une erreur inattendue est survenue.")
-  }
-}

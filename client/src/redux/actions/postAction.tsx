@@ -7,16 +7,35 @@ import {
   PostData,
 } from "../api/type"
 import { createAsyncThunkAction } from "../utils/reduxUtils"
+import logger from "../../utils/logger"
 
 export const addPostAction = createAsyncThunkAction<[PostCreationData], string>(
   types.ADD_POST,
-  api.addPost,
+  async (postData) => {
+    try {
+      const response = await api.addPost(postData)
+      logger.info("Post added successfully", response.data)
+      return response
+    } catch (error) {
+      logger.error("Error adding post", error)
+      throw error
+    }
+  },
 )
 
 export const getPostsAction = createAsyncThunkAction<
   [CommunityData["_id"]],
   PostData[]
->(types.GET_POSTS, api.getPosts)
+>(types.GET_POSTS, async (communityId) => {
+  try {
+    const response = await api.getPosts(communityId)
+    logger.info("Posts fetched successfully", response.data)
+    return response
+  } catch (error) {
+    logger.error("Error fetching posts", error)
+    throw error
+  }
+})
 
 export const getPostAction = createAsyncThunkAction<
   [PostData["_id"]],

@@ -1,6 +1,6 @@
 import { Dispatch } from "redux"
-import { handleApiError } from "../api/utils"
 import { API } from "../api/utils"
+import logger from "../../utils/logger"
 
 export interface ActionTypeProps {
   REQUEST: string
@@ -26,18 +26,25 @@ export const createAsyncThunkAction = <TArgs extends any[], TResponse>(
   return (...args: TArgs) =>
     async (dispatch: Dispatch) => {
       dispatch({ type: actionTypes.REQUEST })
+      await logger.info(`Action ${actionTypes.REQUEST} déclenchée avec`, args)
 
       try {
         const { error, data } = await asyncFunction(...args)
+
         if (error) {
           throw new Error(error)
         }
 
+        await logger.debug(`Action ${actionTypes.SUCCESS} réussie`, data)
         dispatch({ type: actionTypes.SUCCESS, payload: data })
+
         return { error, data }
       } catch (error: any) {
-        handleApiError(error) //TODO bien géré les erreurs
-        //console.error(`Error in ${actionTypes.REQUEST}:`, error)
+        await logger.error(
+          `Erreur dans l'action ${actionTypes.FAIL}`,
+          error.message,
+        )
+
         dispatch({
           type: actionTypes.FAIL,
           payload: error.message || "Une erreur s'est produite.",

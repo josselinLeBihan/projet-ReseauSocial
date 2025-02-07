@@ -5,6 +5,7 @@ import createAppStore from "./redux/store"
 import axios from "axios"
 import { Provider } from "react-redux"
 import { Helmet } from "react-helmet"
+import logger from "./utils/logger"
 
 const ErrorComponent = ({ errorMessage }) => (
   <div className="text-red-500 font-bold text-center">{errorMessage}</div>
@@ -20,6 +21,7 @@ function AppContainer() {
     const checkServerStatus = async () => {
       try {
         await axios.get("/server-status")
+        logger.info("Server status checked successfully")
       } catch (err) {
         setError(
           "Le serveur n'est pas disponible pour le moment. Veuillez réessayer plus tard. " +
@@ -39,6 +41,7 @@ function AppContainer() {
       try {
         const appStore = await createAppStore()
         setStore(appStore)
+        logger.info("Store initialized successfully")
       } catch (err) {
         setError(`Error initializing the app: ${err.message}`)
       } finally {

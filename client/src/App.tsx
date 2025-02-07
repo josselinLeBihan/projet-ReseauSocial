@@ -1,7 +1,6 @@
 import React, { Suspense } from "react"
 import PrivateRoute from "./PrivateRoute"
 import FallbackLoading from "./Components/Loader/FallbackLoading"
-import { Provider } from "react"
 import {
   BrowserRouter as Router,
   Navigate,

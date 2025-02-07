@@ -1,4 +1,6 @@
 import axios from "axios"
+import * as types from "../constants/authConstants"
+
 const API = axios.create({
   //baseURL: process.env.REACT_APP_API_URL,
   baseURL: "http://localhost:3000",
@@ -24,13 +26,13 @@ export const refreshTokenAction = (refreshToken) => async (dispatch) => {
     const payload = response.data
     localStorage.setItem("profile", JSON.stringify({ ...profile, ...payload }))
     dispatch({
-      type: "REFRESH_TOKEN_SUCCESS",
+      type: types.REFRESH_TOKEN.SUCESS,
       payload: payload,
     })
   } catch (error) {
     localStorage.removeItem("profile")
     dispatch({
-      type: "REFRESH_TOKEN_FAIL",
+      type: types.REFRESH_TOKEN.FAIL,
       payload: error.response.data,
     })
   }

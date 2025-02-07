@@ -1,4 +1,3 @@
-import { API, handleApiError } from "./utils"
 import { CommentData, CommentCreationData } from "./type"
 import { apiRequest } from "../utils/reduxUtils"
 

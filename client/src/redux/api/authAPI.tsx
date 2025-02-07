@@ -1,4 +1,4 @@
-import { API, handleApiError } from "./utils"
+import { API } from "./utils"
 import { SignUpData, UserProfile } from "./type"
 import { AuthData } from "./type"
 import { apiRequest } from "../utils/reduxUtils"

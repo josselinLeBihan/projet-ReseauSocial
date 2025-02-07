@@ -45,7 +45,6 @@ exports.createPost = async (req, res, next) => {
 exports.getPosts = async (req, res, next) => {
   try {
     const { communityId } = req.params
-    console.log("getPost : " + communityId)
 
     const posts = await Post.find({ community: communityId }).sort({
       createAt: -1,

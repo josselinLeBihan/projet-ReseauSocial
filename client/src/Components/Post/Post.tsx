@@ -8,6 +8,7 @@ import Comment from "./Comment"
 import { PostData, UserData } from "../../redux/api/type"
 import { getUserAction } from "../../redux/actions/userActions"
 import { useAppDispatch } from "../../redux/store"
+import logger from "../../utils/logger"
 
 interface PostParams {
   post: PostData
@@ -24,8 +25,13 @@ const Post: React.FC<PostParams> = ({ post }) => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const result = await dispatch(getUserAction(post.user))
-      setUser(result?.data)
+      try {
+        const result = await dispatch(getUserAction(post.user))
+        setUser(result?.data)
+        logger.info("User fetched successfully", result?.data)
+      } catch (error) {
+        logger.error("Error fetching user", error)
+      }
     }
     fetchUser()
   }, [dispatch, post.user])

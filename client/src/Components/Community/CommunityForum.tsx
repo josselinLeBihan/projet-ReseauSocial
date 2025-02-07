@@ -28,9 +28,7 @@ const CommunityForum: React.FC<CommunityForumData> = () => {
         if (result?.data) {
           setPosts(result.data)
         }
-      } catch (e) {
-        console.log(e)
-      }
+      } catch (e) {}
 
       setIsLoading(false)
     }

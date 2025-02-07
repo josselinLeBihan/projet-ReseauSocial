@@ -9,22 +9,22 @@ const commentReducer = (state = initialState, action) => {
   const { type, payload } = action
 
   switch (type) {
-    case types.ADD_COMMENT_SUCCESS:
+    case types.ADD_COMMENT.SUCCESS:
       return {
         ...state,
         successMessage: payload ? payload : null,
       }
-    case types.ADD_COMMENT_FAIL:
+    case types.ADD_COMMENT.FAIL:
       return {
         ...state,
         error: payload,
       }
-    case types.GET_COMMENTS_SUCCESS:
+    case types.GET_COMMENT.SUCCESS:
       return {
         ...state,
         successMessage: payload ? payload : null,
       }
-    case types.GET_COMMENTS_FAIL:
+    case types.GET_COMMENT.FAIL:
       return {
         ...state,
         error: payload,

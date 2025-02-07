@@ -25,7 +25,9 @@ const CommunityForum: React.FC<CommunityForumData> = () => {
 
       try {
         const result = await dispatch(getPostsAction(community._id))
-        setPosts(result?.data)
+        if (result?.data) {
+          setPosts(result.data)
+        }
       } catch (e) {
         console.log(e)
       }

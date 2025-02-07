@@ -1,8 +1,11 @@
 import { API, handleApiError } from "./utils"
-import { SignUpData } from "./type"
+import { SignUpData, UserProfile } from "./type"
 import { AuthData } from "./type"
+import { apiRequest } from "../utils/reduxUtils"
 
-export const signIn = async (data: AuthData) => {
+export const signIn = async (
+  data: AuthData,
+): Promise<{ error?: string; data?: UserProfile }> => {
   try {
     const res = await API.post("/auth/signin", data, {
       headers: {
@@ -10,41 +13,29 @@ export const signIn = async (data: AuthData) => {
       },
     })
     if (res && res.data) {
-      return { error: null, data: res.data }
+      return { error: "", data: res.data }
     } else {
-      return { error: "No data received from server", data: null }
+      return { error: "No data received from server", data: undefined }
     }
   } catch (error) {
-    return handleApiError(error)
+    return error
   }
 }
 
-export const signUp = async (data: SignUpData) => {
-  try {
-    const res = await API.post("/auth/signup", data, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-    if (res && res.data) {
-      return { error: null, data: res.data }
-    } else {
-      return { error: "No data received from server", data: null }
-    }
-  } catch (error) {
-    return handleApiError(error)
-  }
+export const signUp = async (
+  data: SignUpData,
+): Promise<{
+  error?: string
+  data?: string
+}> => {
+  return await apiRequest<string>("POST", `/auth/signup`, data)
 }
 
-export const logout = async () => {
-  try {
-    const res = await API.post("/auth/logout", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-    return { error: null, data: res.data }
-  } catch (error) {
-    return handleApiError(error)
-  }
+export const logout = async (): Promise<{
+  error?: string
+  data?: string
+}> => {
+  return await apiRequest<string>("POST", `/auth/logout`, {
+    Headers: { "Content-Type": "application/json" },
+  })
 }

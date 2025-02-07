@@ -1,0 +1,91 @@
+import { Dispatch } from "redux"
+import { handleApiError } from "../api/utils"
+import { API } from "../api/utils"
+
+export interface ActionTypeProps {
+  REQUEST: string
+  SUCCESS: string
+  FAIL: string
+}
+
+// Fonction générique qui crée une action asynchrone Redux
+/**
+ * @TARGs le type d'arguments pour l'API
+ * @TResponse le type attendu de la réponse
+ * @param actionTypes Constantes de l'action
+ * @param asyncFunction API correspondant à l'action
+ * @returns
+ */
+
+export const createAsyncThunkAction = <TArgs extends any[], TResponse>(
+  actionTypes: ActionTypeProps,
+  asyncFunction: (
+    ...args: TArgs
+  ) => Promise<{ error?: string; data?: TResponse }>,
+) => {
+  return (...args: TArgs) =>
+    async (dispatch: Dispatch) => {
+      dispatch({ type: actionTypes.REQUEST })
+
+      try {
+        const { error, data } = await asyncFunction(...args)
+        if (error) {
+          throw new Error(error)
+        }
+
+        dispatch({ type: actionTypes.SUCCESS, payload: data })
+        return { error, data }
+      } catch (error: any) {
+        handleApiError(error) //TODO bien géré les erreurs
+        //console.error(`Error in ${actionTypes.REQUEST}:`, error)
+        dispatch({
+          type: actionTypes.FAIL,
+          payload: error.message || "Une erreur s'est produite.",
+        })
+      }
+    }
+}
+
+//fonction générique qui crée les constantes
+export const createConst = (constantName: string): ActionTypeProps => {
+  return {
+    REQUEST: `${constantName}_REQUEST`,
+    SUCCESS: `${constantName}_SUCCESS`,
+    FAIL: `${constantName}_FAIL`,
+  }
+}
+
+interface ApiResponse<T> {
+  error?: string
+  data?: T
+}
+
+type HttpMethod = "GET" | "POST" | "DELETE"
+
+//Fonction généique qui gère les API
+export const apiRequest = async <T extends any>(
+  method: HttpMethod,
+  endpoint: string,
+  body?: any,
+): Promise<ApiResponse<T>> => {
+  try {
+    let response
+
+    switch (method) {
+      case "GET":
+        response = await API.get<T>(endpoint)
+        break
+      case "POST":
+        response = await API.post<T>(endpoint, body)
+        break
+      case "DELETE":
+        response = await API.delete<T>(endpoint)
+        break
+      default:
+        throw new Error("Méthode HTTP non supportée")
+    }
+    return { data: response.data }
+  } catch (error: any) {
+    return { error: error.message || "Une erreur est survenue" }
+  }
+}

@@ -1,8 +1,4 @@
 import * as types from "../constants/authConstants"
-import {
-  GET_COMMUNITY_SUCCESS,
-  GET_COMMUNITY_FAIL,
-} from "../constants/communityConstants"
 
 const initialState = {
   userData: null,
@@ -33,7 +29,7 @@ const authReducer = (state = initialState, action) => {
         userData: payload ? payload : null,
       }
 
-    case types.SIGNUP_SUCCESS:
+    case types.SIGNUP.SUCCESS:
       return {
         ...state,
         signInError: null,
@@ -41,7 +37,7 @@ const authReducer = (state = initialState, action) => {
         successMessage: payload ? payload : null,
       }
 
-    case types.SIGNUP_FAIL:
+    case types.SIGNUP.FAIL:
       return {
         ...state,
         successMessage: null,
@@ -49,7 +45,7 @@ const authReducer = (state = initialState, action) => {
         signUpError: payload ? payload : [],
       }
 
-    case types.SIGNIN_SUCCESS:
+    case types.SIGNIN.SUCCESS:
       return {
         ...state,
         userData: payload ? payload.user : null,
@@ -59,7 +55,7 @@ const authReducer = (state = initialState, action) => {
         successMessage: payload ? payload : null,
       }
 
-    case types.SIGNIN_FAIL:
+    case types.SIGNIN.FAIL:
       return {
         ...state,
         successMessage: null,
@@ -79,14 +75,14 @@ const authReducer = (state = initialState, action) => {
         isModeratorOfThisCommunity: false,
       }
 
-    case types.REFRESH_TOKEN_SUCCESS:
+    case types.REFRESH_TOKEN.SUCCESS:
       return {
         ...state,
         accessToken: payload ? payload.accessToken : null,
         refreshToken: payload ? payload.refreshToken : null,
       }
 
-    case types.REFRESH_TOKEN_FAIL:
+    case types.REFRESH_TOKEN.FAIL:
       return {
         ...state,
         userData: null,
@@ -95,42 +91,6 @@ const authReducer = (state = initialState, action) => {
         signUpError: [],
         signInError: null,
         successMessage: null,
-      }
-
-    case types.GET_CONTEXT_AUTH_DATA_SUCCESS:
-      return {
-        ...state,
-        contextAuthData: payload ? payload : null,
-        contextAuthError: null,
-      }
-
-    case types.GET_CONTEXT_AUTH_DATA_FAIL:
-      return {
-        ...state,
-        contextAuthData: null,
-        contextAuthError: payload ? payload : null,
-      }
-
-    case types.GET_TRUSTED_AUTH_CONTEXT_DATA_SUCCESS:
-      return {
-        ...state,
-        trustedAuthContextData: payload ? payload : [],
-        contextAuthError: null,
-      }
-
-    case types.GET_TRUSTED_AUTH_CONTEXT_DATA_FAIL:
-      return {
-        ...state,
-        trustedAuthContextData: [],
-        contextAuthError: payload ? payload : null,
-      }
-
-    case types.DELETE_CONTEXT_AUTH_DATA_FAIL:
-    case types.UNBLOCK_CONTEXT_AUTH_DATA_FAIL:
-    case types.BLOCK_CONTEXT_AUTH_DATA_FAIL:
-      return {
-        ...state,
-        contextAuthError: payload ? payload : null,
       }
 
     case types.CLEAR_MESSAGE:

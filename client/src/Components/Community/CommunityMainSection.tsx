@@ -34,6 +34,10 @@ const CommunityMainSection: React.FC<CommunityMainSectionData> = ({
     { to: `/community/Members/${community.name}`, label: "Membres" },
   ]
 
+  const handleOnClick = () => {
+    //TODO ajout de l'utilisateur à la communauté
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex rounded-2xl flex-col gap-2 bg-gray-50">
@@ -46,7 +50,10 @@ const CommunityMainSection: React.FC<CommunityMainSectionData> = ({
             <h1 className="text-lg text-gray-900 font-medium">
               {community?.name}
             </h1>
-            <button className="flex bg-teal-600 text-gray-50 hover:bg-teal-700 px-2 py-1 rounded">
+            <button
+              className="flex bg-teal-600 text-gray-50 hover:bg-teal-700 px-2 py-1 rounded"
+              onClick={handleOnClick}
+            >
               Suivre
             </button>
           </div>

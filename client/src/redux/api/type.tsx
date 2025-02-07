@@ -11,6 +11,7 @@ export interface AuthData {
 export interface UserProfile {
   accessToken: string
   refreshToken: string
+  accessTokenUpdatedAt: Date
   user: UserData
 }
 

@@ -27,7 +27,7 @@ function Comment({ id }: CommentProps) {
     const fetchComment = async () => {
       try {
         const result = await dispatch(getCommentAction(id))
-        if (isMounted) setComment(result.data)
+        if (isMounted && result?.data) setComment(result.data)
       } catch (error) {
         console.error("Erreur lors de la récupération du commentaire :", error)
       }

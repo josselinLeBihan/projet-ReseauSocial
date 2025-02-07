@@ -4,8 +4,9 @@ import { isValidToken } from "../utils/authUtils"
 import { refreshTokenAction } from "./refreshTokenAction"
 import { SignUpData, UserProfile } from "../api/type"
 import { AuthData } from "../api/type"
-import { Dispatch, ThunkDispatch } from "@reduxjs/toolkit"
+import { ThunkDispatch } from "@reduxjs/toolkit"
 import { RootState } from "../store"
+import { createAsyncThunkAction } from "../utils/reduxUtils"
 
 type AppDispatch = ThunkDispatch<RootState, unknown, any>
 
@@ -68,82 +69,50 @@ export const logoutAction = () => async (dispatch) => {
 }
 
 export const signUpAction =
-  (formData: SignUpData, navigate) => async (dispatch) => {
+  (formData: SignUpData, navigate) => async (dispatch: AppDispatch) => {
     try {
-      localStorage.removeItem("profile")
-      const response = await api.signUp(formData)
-      const { error } = response
-      if (error) {
-        console.log("action: " + error)
-        dispatch({
-          type: types.SIGNUP_FAIL,
-          payload: error,
-        })
-        return {
-          success: false,
-          message: error.message || "Une erreur s'est produite.",
-        }
-      } else {
-        dispatch({
-          type: types.SIGNUP_SUCCESS,
-          payload: types.SIGNUP_SUCCESS_MESSAGE,
-        })
+      const response = await createAsyncThunkAction<[SignUpData], string>(
+        types.SIGNUP,
+        api.signUp,
+      )(formData)(dispatch)
+
+      if (response && !response.error) {
         navigate("/signin")
       }
     } catch (error) {
-      console.log("action: " + error.message)
-      dispatch({
-        type: types.SIGNUP_FAIL,
-        payload: error.message || "Une erreur s'est produite.",
-      })
-      return {
-        success: false,
-        message: error.message || "Une erreur s'est produite.",
-      }
+      console.error("Erreur dans signUpAction :", error)
     }
   }
 
 export const signInAction =
-  (formData: AuthData, navigate) => async (dispatch) => {
+  (formData: AuthData, navigate) => async (dispatch: AppDispatch) => {
     try {
-      const response = await api.signIn(formData)
-      const { error, data } = response
+      const response = await createAsyncThunkAction<[AuthData], UserProfile>(
+        types.SIGNIN,
+        api.signIn,
+      )(formData)(dispatch)
 
-      if (error) {
-        dispatch({
-          type: types.SIGNIN_FAIL,
-          payload: error,
-        })
-        return { success: false, message: error }
+      if (response?.error) {
+        throw Error(response.error)
       }
 
-      // En cas de succès
-      const { user, accessToken, refreshToken, accessTokenUpdatedAt } = data
-      const profile = {
-        user,
-        accessToken,
-        refreshToken,
-        accessTokenUpdatedAt,
+      if (response?.data) {
+        const { user, accessToken, refreshToken, accessTokenUpdatedAt } =
+          response.data
+        const profile = {
+          user,
+          accessToken,
+          refreshToken,
+          accessTokenUpdatedAt,
+        }
+
+        localStorage.setItem("profile", JSON.stringify(profile))
+        navigate("/")
+        return { success: true }
+      } else {
+        throw new Error("Invalid response data")
       }
-
-      localStorage.setItem("profile", JSON.stringify(profile))
-
-      dispatch({
-        type: types.SIGNIN_SUCCESS,
-        payload: profile,
-      })
-
-      navigate("/")
-      return { success: true }
     } catch (error) {
-      console.error("Erreur dans signInAction :", error)
-      dispatch({
-        type: types.SIGNIN_FAIL,
-        payload: error.message || "Une erreur s'est produite.",
-      })
-      return {
-        success: false,
-        message: error.message || "Une erreur s'est produite.",
-      }
+      console.error("Erreur dans signinAction :", error)
     }
   }

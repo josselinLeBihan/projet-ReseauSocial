@@ -1,11 +1,18 @@
-import React from "react"
-import { CommunityData, PostData } from "../../redux/api/type"
-import { useAppSelector } from "../../redux/store"
+import React, { memo, useEffect, useMemo, useState } from "react"
+import { CommunityData, PostData, UserData } from "../../redux/api/type"
+import { useAppDispatch, useAppSelector } from "../../redux/store"
 import { NavLink, Outlet } from "react-router-dom"
 import CommunityForum from "./CommunityForum"
+import {
+  joinCommunityAction,
+  joinCommunityAndFetchDataAction,
+  leaveFetchDataAction,
+} from "../../redux/actions/communityActions"
+import logger from "../../utils/logger"
 
 interface CommunityMainSectionData {
-  communityId: string
+  communityId: CommunityData["_id"]
+  userData: UserData
 }
 
 const NavItem = ({ to, label }) => (
@@ -23,19 +30,54 @@ const NavItem = ({ to, label }) => (
 
 const CommunityMainSection: React.FC<CommunityMainSectionData> = ({
   communityId,
+  userData,
 }) => {
   const community: CommunityData = useAppSelector(
     (state) => state.community?.community,
   )
-
   const navLinks = [
     { to: `/community/forum/${community.name}`, label: "Forum" },
     { to: `/community/about/${community.name}`, label: "A propos" },
     { to: `/community/Members/${community.name}`, label: "Membres" },
   ]
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isMember, setIsMember] = useState<boolean>(false)
+
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    if (community) {
+      const checkMember = community?.members?.includes(userData._id)
+      logger.debug(
+        "Verification de l'adhesion de l'utilisateur à la communauté. Resulat: ",
+        checkMember,
+      )
+      setIsMember(checkMember || false)
+    }
+  }, [community])
+
+  const handleMembership = async () => {
+    if (isLoading) return
+
+    setIsLoading(true)
+    try {
+      if (!isMember) {
+        await dispatch(joinCommunityAndFetchDataAction(community, userData._id))
+      } else {
+        await dispatch(leaveFetchDataAction(community, userData._id))
+      }
+    } catch (e) {
+      logger.error(
+        "Une erreur est survenue lors du changement d'adhesion à la communauté",
+        e,
+      )
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const handleOnClick = () => {
-    //TODO ajout de l'utilisateur à la communauté
+    handleMembership()
   }
 
   return (
@@ -54,7 +96,7 @@ const CommunityMainSection: React.FC<CommunityMainSectionData> = ({
               className="flex bg-teal-600 text-gray-50 hover:bg-teal-700 px-2 py-1 rounded"
               onClick={handleOnClick}
             >
-              Suivre
+              {isMember ? "Quitter" : "Rejoindre"}
             </button>
           </div>
           <p className="text-gray-500">{`${community?.members?.length} membres`}</p>

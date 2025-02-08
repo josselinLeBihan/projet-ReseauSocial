@@ -40,7 +40,7 @@ exports.createPost = async (req, res, next) => {
 /**
  * Réccupère les posts d'une communauté
  *
- * * @route post/community/:communityId
+ * * @route POST /community/:communityId
  */
 exports.getPosts = async (req, res, next) => {
   try {
@@ -60,7 +60,7 @@ exports.getPosts = async (req, res, next) => {
 /**
  * Modifie un post
  *
- * * @route post/modify/:id
+ * * @route POST /modify/:id
  */
 exports.modifyPost = async (req, res, next) => {
   try {
@@ -77,7 +77,7 @@ exports.modifyPost = async (req, res, next) => {
 /**
  * Supprime un post
  *
- * * @route post/delete/:id
+ * * @route POST /delete/:id
  */
 exports.deletePost = async (req, res, next) => {
   try {
@@ -93,7 +93,7 @@ exports.deletePost = async (req, res, next) => {
 /**
  * Réccupère un post
  *
- * * @route post/:id
+ * * @route POST /:id
  */
 exports.getPost = async (req, res, next) => {
   try {

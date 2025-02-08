@@ -4,7 +4,7 @@ const initialState = {
   communities: [],
   error: null,
   community: null,
-  joinedCommunities: null,
+  joinedCommunities: [],
   notJoinedCommunities: [],
 }
 
@@ -60,7 +60,7 @@ const communityReducer = (state = initialState, action) => {
         notJoinedCommunities: state.notJoinedCommunities.filter(
           (community) => community.name !== payload.name,
         ),
-        error: null,
+        communityError: null,
       }
     case types.JOIN_COMMUNITY.FAIL:
       return {

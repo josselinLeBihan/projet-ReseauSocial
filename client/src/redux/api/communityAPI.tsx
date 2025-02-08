@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios"
 import { CommunityData, UserData } from "./type"
 import { apiRequest } from "../utils/reduxUtils"
+import logger from "../../utils/logger"
 
 export const getCommunities = async (): Promise<{
   error?: string
@@ -17,24 +18,30 @@ export const getCommunity = async (
 
 export const joinCommunity = async (
   communityId: CommunityData["_id"],
+  userId: UserData["_id"],
 ): Promise<{ error?: string; data?: string }> => {
-  return await apiRequest<string>("POST", `/community/${communityId}/join`)
+  return await apiRequest<string>("POST", `/community/${communityId}/join`, {
+    userId,
+  })
 }
 
 export const leaveCommunity = async (
   communityId: CommunityData["_id"],
+  userId: UserData["_id"],
 ): Promise<{ error?: string; data?: string }> => {
-  return await apiRequest<string>("POST", `/community/${communityId}/leave`)
+  return await apiRequest<string>("POST", `/community/${communityId}/leave`, {
+    userId,
+  })
 }
 
-export const getJoinedCommunity = async (): Promise<{
+export const getJoinedCommunities = async (): Promise<{
   error?: string
   data?: CommunityData[]
 }> => {
   return await apiRequest<CommunityData[]>("POST", `/community/member`)
 }
 
-export const getNotJoinedCommunity = async (): Promise<{
+export const getNotJoinedCommunities = async (): Promise<{
   error?: string
   data?: CommunityData[]
 }> => {

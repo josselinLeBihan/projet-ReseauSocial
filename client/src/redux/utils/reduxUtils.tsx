@@ -41,7 +41,7 @@ export const createAsyncThunkAction = <TArgs extends any[], TResponse>(
         return { error, data }
       } catch (error: any) {
         await logger.error(
-          `Erreur dans l'action ${actionTypes.FAIL}`,
+          `Erreur dans l'action ${actionTypes.REQUEST}`,
           error.message,
         )
 
@@ -75,6 +75,11 @@ export const apiRequest = async <T extends any>(
   endpoint: string,
   body?: any,
 ): Promise<ApiResponse<T>> => {
+  await logger.debug(
+    `Requête ${method} ${endpoint} ${body && "déclenchée avec"}`,
+    body || "",
+  )
+
   try {
     let response
 
@@ -91,8 +96,9 @@ export const apiRequest = async <T extends any>(
       default:
         throw new Error("Méthode HTTP non supportée")
     }
+    await logger.debug(`Réponse de l'API pour ${method} ${endpoint}`, response)
     return { data: response.data }
   } catch (error: any) {
-    return { error: error.message || "Une erreur est survenue" }
+    return { error: error.response.data.message || "Une erreur est survenue" }
   }
 }

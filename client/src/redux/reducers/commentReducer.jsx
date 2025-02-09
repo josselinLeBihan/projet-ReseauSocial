@@ -1,4 +1,4 @@
-import * as types from "../constants/authConstants"
+import * as types from "../constants/commentConstants"
 
 const initialState = {
   error: null,
@@ -33,3 +33,5 @@ const commentReducer = (state = initialState, action) => {
       return state
   }
 }
+
+export default commentReducer

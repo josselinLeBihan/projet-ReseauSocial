@@ -18,10 +18,7 @@ function CommunityHome() {
   return (
     <div className="flex flex-col gap-6">
       {community && communityName ? (
-        <CommunityMainSection
-          communityId={community?._id}
-          userData={userData}
-        />
+        <CommunityMainSection community={community} userData={userData} />
       ) : (
         <CommunityPresentation />
       )}

@@ -1,45 +1,23 @@
-import React, { memo, useEffect, useMemo, useState } from "react"
-import { CommunityData, PostData, UserData } from "../../redux/api/type"
-import { useAppDispatch, useAppSelector } from "../../redux/store"
-import { NavLink, Outlet } from "react-router-dom"
-import CommunityForum from "./CommunityForum"
+import React, { useEffect, useState } from "react"
+import { CommunityData, UserData } from "../../redux/api/type"
+import { useAppDispatch } from "../../redux/store"
+import { Outlet } from "react-router-dom"
 import {
-  joinCommunityAction,
   joinCommunityAndFetchDataAction,
   leaveFetchDataAction,
 } from "../../redux/actions/communityActions"
 import logger from "../../utils/logger"
+import ComponentNavBar from "../shared/ComponentNavBar"
 
 interface CommunityMainSectionData {
-  communityId: CommunityData["_id"]
+  community: CommunityData
   userData: UserData
 }
 
-const NavItem = ({ to, label }) => (
-  <NavLink
-    to={to}
-    className={({ isActive }) =>
-      `flex justify-center items-center px-6 py-2 border-b-2 border-gray-50 hover:border-teal-600 transition ${
-        isActive ? "border-teal-600" : ""
-      }`
-    }
-  >
-    <span className="h-fit">{label}</span>
-  </NavLink>
-)
-
 const CommunityMainSection: React.FC<CommunityMainSectionData> = ({
-  communityId,
+  community,
   userData,
 }) => {
-  const community: CommunityData = useAppSelector(
-    (state) => state.community?.community,
-  )
-  const navLinks = [
-    { to: `/community/forum/${community.name}`, label: "Forum" },
-    { to: `/community/about/${community.name}`, label: "A propos" },
-    { to: `/community/Members/${community.name}`, label: "Membres" },
-  ]
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isMember, setIsMember] = useState<boolean>(false)
 
@@ -56,7 +34,7 @@ const CommunityMainSection: React.FC<CommunityMainSectionData> = ({
     }
   }, [community])
 
-  const handleMembership = async () => {
+  const handleMembershipChange = async () => {
     if (isLoading) return
 
     setIsLoading(true)
@@ -76,10 +54,11 @@ const CommunityMainSection: React.FC<CommunityMainSectionData> = ({
     }
   }
 
-  const handleOnClick = () => {
-    handleMembership()
-  }
-
+  const navLinks = [
+    { to: `/community/forum/${community?.name}`, label: "Forum" },
+    { to: `/community/about/${community?.name}`, label: "A propos" },
+    { to: `/community/Members/${community?.name}`, label: "Membres" },
+  ]
   return (
     <div className="flex flex-col gap-6">
       <div className="flex rounded-2xl flex-col gap-2 bg-gray-50">
@@ -94,7 +73,7 @@ const CommunityMainSection: React.FC<CommunityMainSectionData> = ({
             </h1>
             <button
               className="flex bg-teal-600 text-gray-50 hover:bg-teal-700 px-2 py-1 rounded"
-              onClick={handleOnClick}
+              onClick={handleMembershipChange}
             >
               {isMember ? "Quitter" : "Rejoindre"}
             </button>
@@ -103,7 +82,7 @@ const CommunityMainSection: React.FC<CommunityMainSectionData> = ({
         </div>
         <nav className="flex">
           {navLinks.map((link) => (
-            <NavItem key={link.to} {...link} />
+            <ComponentNavBar key={link.to} {...link} />
           ))}
         </nav>
       </div>

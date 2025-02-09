@@ -1,4 +1,4 @@
-import * as types from "../constants/authConstants"
+import * as types from "../constants/userConstants"
 
 const initialState = {
   user: {},
@@ -16,3 +16,5 @@ const userReducer = (state = initialState, action) => {
       return state
   }
 }
+
+export default userReducer

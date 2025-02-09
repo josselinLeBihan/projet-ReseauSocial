@@ -35,11 +35,6 @@ const postReducer = (state = initialState, action) => {
         ...state,
         successMessage: payload ? payload : null,
       }
-    case types.GET_POSTS.FAIL:
-      return {
-        ...state,
-        error: payload,
-      }
     case types.DELETE_POST.SUCCESS:
       return {
         ...state,
@@ -64,3 +59,5 @@ const postReducer = (state = initialState, action) => {
       return state
   }
 }
+
+export default postReducer

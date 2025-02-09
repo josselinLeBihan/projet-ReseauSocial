@@ -1,4 +1,3 @@
-import { data } from "react-router-dom"
 import * as api from "../api/communityAPI"
 import * as types from "../constants/communityConstants"
 import { CommunityData, UserData } from "../api/type"

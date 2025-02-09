@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for Components/shared/ComponentNavBar.tsx</title>
+    <title>Code coverage report for redux/api/commentAPI.tsx</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">Components/shared</a> ComponentNavBar.tsx</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">redux/api</a> commentAPI.tsx</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">27.27% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>13/13</span>
+                <span class='fraction'>3/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.66% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/3</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>0/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">27.27% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>13/13</span>
+                <span class='fraction'>3/11</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -82,44 +82,47 @@
 <a name='L17'></a><a href='#L17'>17</a>
 <a name='L18'></a><a href='#L18'>18</a>
 <a name='L19'></a><a href='#L19'>19</a>
-<a name='L20'></a><a href='#L20'>20</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React from "react"
-import { NavLink } from "react-router-dom"
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { CommentData, CommentCreationData } from "./type"
+import { apiRequest } from "../utils/reduxUtils"
 &nbsp;
-function ComponentNavBar({ to, label }) {
-  return (
-    &lt;NavLink
-      to={to}
-      className={({ isActive }) =&gt;
-        `flex justify-center items-center px-6 py-2 border-b-2 border-gray-50 hover:border-teal-600 transition ${
-<span class="branch-0 cbranch-no" title="branch not covered" >          isActive ? "border-teal-600" : "</span>"
-        }`
-      }
-    &gt;
-      &lt;span className="h-fit"&gt;{label}&lt;/span&gt;
-    &lt;/NavLink&gt;
-  )
-}
+export const addComment = <span class="fstat-no" title="function not covered" >async (</span>
+<span class="cstat-no" title="statement not covered" >  comment: CommentCreationData,</span>
+): Promise&lt;{
+  error?: string
+  data?: string
+<span class="cstat-no" title="statement not covered" >}&gt; =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  return await apiRequest&lt;string&gt;("POST", `/comment`, comment)</span>
+<span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
-export default ComponentNavBar
+export const getComment = <span class="fstat-no" title="function not covered" >async (</span>
+<span class="cstat-no" title="statement not covered" >  id: CommentData["_id"],</span>
+): Promise&lt;{
+  error?: string
+  data?: CommentData
+<span class="cstat-no" title="statement not covered" >}&gt; =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  return await apiRequest&lt;CommentData&gt;("GET", `/comment/${id}`)</span>
+<span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -127,7 +130,7 @@ export default ComponentNavBar
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-02-09T14:58:55.485Z
+                at 2025-02-09T15:56:32.964Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

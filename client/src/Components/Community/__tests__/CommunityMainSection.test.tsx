@@ -10,7 +10,6 @@ import CommunityMainSection from "../CommunityMainSection"
 import { CommunityData, UserData } from "../../../redux/api/type"
 import { joinCommunityAndFetchDataAction } from "../../../redux/actions/communityActions"
 
-// Mock des actions Redux pour éviter les appels API
 vi.mock("../../../redux/actions/communityActions", () => ({
   joinCommunityAndFetchDataAction: vi.fn(() => async () => {}),
   leaveFetchDataAction: vi.fn(() => async () => {}),

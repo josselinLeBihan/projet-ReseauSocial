@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for redux/constants/communityConstants.tsx</title>
+    <title>Code coverage report for redux/actions/commentAction.tsx</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">redux/constants</a> communityConstants.tsx</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">redux/actions</a> commentAction.tsx</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>14/14</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>14/14</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
@@ -77,37 +77,34 @@
 <a name='L12'></a><a href='#L12'>12</a>
 <a name='L13'></a><a href='#L13'>13</a>
 <a name='L14'></a><a href='#L14'>14</a>
-<a name='L15'></a><a href='#L15'>15</a>
-<a name='L16'></a><a href='#L16'>16</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L15'></a><a href='#L15'>15</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { ActionTypeProps, createConst } from "../utils/reduxUtils"
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import * as api from "../api/commentAPI"
+import * as types from "../constants/commentConstants"
+import { CommentData, CommentCreationData } from "../api/type"
+import { createAsyncThunkAction } from "../utils/reduxUtils"
 &nbsp;
-export const GET_COMMUNITY: ActionTypeProps = createConst("GET_COMMUNITY")
-export const GET_COMMUNITIES: ActionTypeProps = createConst("GET_COMMUNITIES")
-export const GET_JOINED_COMMUNITIES: ActionTypeProps = createConst(
-  "GET_JOINED_COMMUNITIES",
-)
-export const GET_NOT_JOINED_COMMUNITIES: ActionTypeProps = createConst(
-  "GET_NOT_JOINED_COMMUNITIES",
-)
-export const JOIN_COMMUNITY: ActionTypeProps = createConst("JOIN_COMMUNITY")
-export const LEAVE_COMMUNITY: ActionTypeProps = createConst("LEAVE_COMMUNITY")
-export const GET_COMMUNITY_MEMBERS: ActionTypeProps = createConst(
-  "GET_COMMUNITY_MEMBERS",
-)
+export const getCommentAction = createAsyncThunkAction&lt;
+  [CommentData["_id"]],
+  CommentData
+&gt;(types.GET_COMMENT, api.getComment)
+&nbsp;
+export const addCommentAction = createAsyncThunkAction&lt;
+  [CommentCreationData],
+  string
+&gt;(types.ADD_COMMENT, api.addComment)
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->

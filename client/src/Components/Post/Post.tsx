@@ -27,7 +27,9 @@ const Post: React.FC<PostParams> = ({ post }) => {
     const fetchUser = async () => {
       try {
         const result = await dispatch(getUserAction(post.user))
-        setUser(result?.data)
+        if (result?.data) {
+          setUser(result.data)
+        }
         logger.info("User fetched successfully", result?.data)
       } catch (error) {
         logger.error("Error fetching user", error)
@@ -40,7 +42,7 @@ const Post: React.FC<PostParams> = ({ post }) => {
     setShowCommentSection(!showCommentSection)
   }
 
-  //Réccupération des sous commentaire
+  //TODO gérer la limite d'affichage des commentaires
   const LIMIT = 5
 
   const memoizedComments = useMemo(() => {
@@ -80,6 +82,7 @@ const Post: React.FC<PostParams> = ({ post }) => {
         <Like />
         <div className="flex gap-2">
           <button
+            id="comment-button"
             className="text-gray-500 hover:text-gray-900 text-sm"
             onClick={handleCommentOnClick}
           >

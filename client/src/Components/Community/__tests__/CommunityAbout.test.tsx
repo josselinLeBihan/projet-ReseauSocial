@@ -6,20 +6,9 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import "@testing-library/jest-dom"
 import { MemoryRouter } from "react-router-dom"
 import rootReducer from "../../../redux/reducers/index" // Assure-toi du bon chemin
-import CommunityForum from "../CommunityForum"
+import CommunityAbout from "../CommunityAbout"
 import { CommunityData, PostData } from "../../../redux/api/type"
 import * as types from "../../../redux/constants/communityConstants"
-import { getPostsAction } from "../../../redux/actions/postAction"
-
-vi.mock("../../../redux/actions/postAction", () => ({
-  getPostsAction: vi.fn(() => async () => ({
-    data: [mockPost],
-  })),
-}))
-
-vi.mock("../../../redux/actions/userActions", () => ({
-  getUserAction: vi.fn(() => async () => {}),
-}))
 
 const mockCommunity: CommunityData = {
   _id: "community123",
@@ -27,15 +16,6 @@ const mockCommunity: CommunityData = {
   members: [],
   image: "https://via.placeholder.com/150",
   description: "description",
-}
-
-const mockPost: PostData = {
-  _id: "post123",
-  createdAt: "date",
-  comments: [],
-  user: "user123",
-  community: "community123",
-  content: "post123",
 }
 
 describe("CommunityForum", () => {
@@ -62,7 +42,7 @@ describe("CommunityForum", () => {
     })
   })
 
-  it("Dispatch getPostsAction puis affiche les posts fournit", async () => {
+  it("Affiche la description de la communauté", async () => {
     await act(async () => {
       await store.dispatch({
         type: types.GET_COMMUNITY.SUCCESS,
@@ -74,14 +54,11 @@ describe("CommunityForum", () => {
     render(
       <Provider store={store}>
         <MemoryRouter>
-          <CommunityForum />
+          <CommunityAbout />
         </MemoryRouter>
       </Provider>,
     )
 
-    expect(getPostsAction).toHaveBeenCalledTimes(1)
-    expect(getPostsAction).toHaveBeenCalledWith(mockCommunity._id)
-
-    expect(await screen.findByText(/post123/)).toBeInTheDocument()
+    expect(await screen.findByText(/description/)).toBeInTheDocument()
   })
 })

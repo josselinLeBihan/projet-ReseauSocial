@@ -9,10 +9,15 @@ import rootReducer from "../../../redux/reducers/index" // Assure-toi du bon che
 import CommunityMainSection from "../CommunityMainSection"
 import { CommunityData, UserData } from "../../../redux/api/type"
 import { joinCommunityAndFetchDataAction } from "../../../redux/actions/communityActions"
+import logger from "../../../utils/logger"
 
 vi.mock("../../../redux/actions/communityActions", () => ({
   joinCommunityAndFetchDataAction: vi.fn(() => async () => {}),
   leaveFetchDataAction: vi.fn(() => async () => {}),
+}))
+
+vi.mock("../../../redux/actions/userActions", () => ({
+  getUserAction: vi.fn(() => async () => {}),
 }))
 
 const mockCommunity: CommunityData = {
@@ -80,6 +85,35 @@ describe("CommunityMainSection", () => {
     expect(joinCommunityAndFetchDataAction).toHaveBeenCalledWith(
       mockCommunity,
       mockUser._id,
+    )
+  })
+
+  it("affiche une erreur dans logger.error si l'adhésion échoue", async () => {
+    vi.spyOn(logger, "error").mockImplementation(() => {})
+
+    vi.mock("../../../redux/actions/communityActions", () => ({
+      joinCommunityAndFetchDataAction: vi.fn(() => async () => {
+        throw new Error("Échec de l'adhésion")
+      }),
+    }))
+
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <CommunityMainSection community={mockCommunity} userData={mockUser} />
+        </MemoryRouter>
+      </Provider>,
+    )
+
+    const joinButton = screen.getByRole("button", { name: /Rejoindre/i })
+
+    await act(async () => {
+      fireEvent.click(joinButton)
+    })
+
+    expect(logger.error).toHaveBeenCalledWith(
+      "Une erreur est survenue lors du changement d'adhesion à la communauté",
+      expect.any(Error),
     )
   })
 })

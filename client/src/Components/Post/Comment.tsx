@@ -7,7 +7,6 @@ import { getCommentAction } from "../../redux/actions/commentAction"
 import CommentSubmit from "./CommentSubmit"
 import { useAppDispatch } from "../../redux/store"
 
-// Mémorise les commentaires pour éviter des re-render non nécessaires
 const MemoizedComment = memo(Comment)
 const LIMIT = 5 // Nombre maximum de sous-commentaires à afficher
 
@@ -40,6 +39,7 @@ function Comment({ id }: CommentProps) {
     }
   }, [id, dispatch])
 
+  //TODO permetre de voir plus de commentaires
   const subComments = useMemo(() => {
     return (comment?.comments ?? []).slice(0, LIMIT)
   }, [comment])

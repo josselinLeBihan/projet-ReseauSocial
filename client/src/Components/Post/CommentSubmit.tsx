@@ -50,7 +50,7 @@ function CommentSubmit({ parentId, parentType }) {
         placeholder={"Ecrivez votre commentaire"}
         onChange={handleOnChange}
       />
-      <button onClick={handleSubmit()}>
+      <button onClick={handleSubmit()} data-testid="send-button">
         <SendIcon className="text-gray-500 hover:text-gray-900" />
       </button>
     </div>

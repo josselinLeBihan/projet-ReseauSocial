@@ -7,6 +7,7 @@ import SendIcon from "@mui/icons-material/Send"
 import { CommunityData, PostCreationData, UserData } from "../../redux/api/type"
 import { addPostAction } from "../../redux/actions/postAction"
 import { useAppDispatch, useAppSelector } from "../../redux/store"
+import logger from "../../utils/logger"
 
 function PostSubmit() {
   const dispatch = useAppDispatch()
@@ -43,6 +44,10 @@ function PostSubmit() {
   }
 
   const handleSubmit = () => async () => {
+    if (!userData) {
+      logger.error("Userdata undefined", userData)
+      return
+    }
     const postData: PostCreationData = {
       content: body,
       user: userData._id,
@@ -84,7 +89,7 @@ function PostSubmit() {
             onClick={handleSubmit()}
           >
             <SendIcon />
-            <p>Envoyer</p>
+            Envoyer
           </button>
         </div>
       </div>

@@ -13,7 +13,7 @@ import { getPostsAction } from "../../../redux/actions/postAction"
 
 vi.mock("../../../redux/actions/postAction", () => ({
   getPostsAction: vi.fn(() => async () => ({
-    data: [mockPost],
+    data: [mockPost1, mockPost2],
   })),
 }))
 
@@ -29,13 +29,21 @@ const mockCommunity: CommunityData = {
   description: "description",
 }
 
-const mockPost: PostData = {
+const mockPost1: PostData = {
   _id: "post123",
   createdAt: "date",
   comments: [],
   user: "user123",
   community: "community123",
   content: "post123",
+}
+const mockPost2: PostData = {
+  _id: "post456",
+  createdAt: "date",
+  comments: [],
+  user: "user123",
+  community: "community123",
+  content: "post456",
 }
 
 describe("CommunityForum", () => {
@@ -83,5 +91,6 @@ describe("CommunityForum", () => {
     expect(getPostsAction).toHaveBeenCalledWith(mockCommunity._id)
 
     expect(await screen.findByText(/post123/)).toBeInTheDocument()
+    expect(await screen.findByText(/post456/)).toBeInTheDocument()
   })
 })

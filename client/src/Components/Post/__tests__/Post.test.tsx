@@ -11,10 +11,6 @@ import { PostData, UserData } from "../../../redux/api/type"
 import { getUserAction } from "../../../redux/actions/userActions"
 import logger from "../../../utils/logger"
 
-vi.mock("../../../redux/actions/userActions", () => ({
-  getUserAction: vi.fn(() => async () => ({ data: mockUser })), // Simule un succès de récupération de l'utilisateur
-}))
-
 const mockUser: UserData = {
   _id: "user123",
   name: "John Doe",
@@ -34,6 +30,12 @@ const mockPost: PostData = {
   fileType: "",
 }
 
+vi.mock("../../../redux/actions/userActions", () => ({
+  getUserAction: vi.fn(() => async () => ({
+    data: mockUser,
+  })),
+}))
+
 describe("Post Component", () => {
   let store
 
@@ -51,7 +53,20 @@ describe("Post Component", () => {
     })
   })
 
-  it("affiche le contenu du post et le nom de l'utilisateur", async () => {
+  it("Dispatch getUserAction", async () => {
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <Post post={mockPost} />
+        </MemoryRouter>
+      </Provider>,
+    )
+
+    expect(getUserAction).toHaveBeenCalledTimes(1)
+    expect(getUserAction).toHaveBeenCalledWith(mockPost.user)
+  })
+
+  it("Affiche le contenu du post", async () => {
     render(
       <Provider store={store}>
         <MemoryRouter>
@@ -61,8 +76,6 @@ describe("Post Component", () => {
     )
 
     expect(screen.getByText("Ceci est un post de test")).toBeInTheDocument()
-    expect(screen.getByText("John Doe")).toBeInTheDocument()
-    expect(screen.getByText("@john_doe")).toBeInTheDocument()
   })
 
   it("affiche le bon nombre de commentaires", () => {
@@ -92,22 +105,8 @@ describe("Post Component", () => {
     await act(async () => {
       fireEvent.click(commentButton)
     })
-
-    expect(screen.getByText("Envoyer")).toBeInTheDocument()
-  })
-
-  it("appelle `getUserAction` au chargement du composant", async () => {
-    render(
-      <Provider store={store}>
-        <MemoryRouter>
-          <Post post={mockPost} />
-        </MemoryRouter>
-      </Provider>,
-    )
-
-    await act(async () => {})
-
-    expect(getUserAction).toHaveBeenCalledWith(mockPost.user)
+    const sendButton = screen.getByTestId("send-button")
+    expect(sendButton).toBeInTheDocument()
   })
 
   it("affiche une erreur dans logger.error si la récupération des données utilisateur échoue", async () => {

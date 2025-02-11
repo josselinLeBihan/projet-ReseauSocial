@@ -66,7 +66,7 @@ describe("RightBar Component", () => {
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={["/community"]}>
-          <RightBar userData={mockUser} />
+          <RightBar />
         </MemoryRouter>
       </Provider>,
     )

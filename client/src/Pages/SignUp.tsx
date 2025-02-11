@@ -6,6 +6,7 @@ import validateSignUpForm, {
   FormulaireData,
 } from "../Components/SignUp/SignUpValidation"
 import { useAppDispatch, useAppSelector } from "../redux/store"
+import logger from "../utils/logger"
 
 const SignUp: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false)
@@ -66,20 +67,26 @@ const SignUp: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    logger.info("Début de la création de compte.")
 
     setLoading(true)
     setLoadingText("Création de compte en cours...")
 
-    const signUpData: SignUpData = {
-      name: formValues.name,
-      email: formValues.email,
-      userName: formValues.username,
-      password: formValues.password,
-    }
+    try {
+      const signUpData: SignUpData = {
+        name: formValues.name,
+        email: formValues.email,
+        userName: formValues.username,
+        password: formValues.password,
+      }
 
-    dispatch(signUpAction(signUpData, navigate)).finally(() =>
-      setLoading(false),
-    )
+      dispatch(signUpAction(signUpData, navigate)).finally(() =>
+        setLoading(false),
+      )
+      logger.info("Fin du processus de création de compte")
+    } catch (error) {
+      logger.error("Echec de la création de compte :", error)
+    }
   }
 
   return (
@@ -122,6 +129,7 @@ const SignUp: React.FC = () => {
                 </label>
                 <input
                   id={field}
+                  data-testid={`${field}-input`}
                   name={field}
                   type="text"
                   className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${showStatus(errors[field as keyof FormData].status)}`}
@@ -148,6 +156,7 @@ const SignUp: React.FC = () => {
               <div className="relative">
                 <input
                   id="password"
+                  data-testid="password-input"
                   name="password"
                   type={showPassword ? "text" : "password"}
                   className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${showStatus(errors.password.status)}`}
@@ -178,6 +187,7 @@ const SignUp: React.FC = () => {
               </label>
               <input
                 id="confirmPassword"
+                data-testid="confirmPassword-input"
                 name="confirmPassword"
                 type={showPassword ? "text" : "password"}
                 className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${showStatus(errors.confirmPassword.status)}`}
@@ -196,6 +206,7 @@ const SignUp: React.FC = () => {
             <div className="mt-6">
               <button
                 type="submit"
+                data-testid="submit-button"
                 disabled={!sendable}
                 className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
                   !sendable

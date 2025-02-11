@@ -9,6 +9,7 @@ import { PostData, UserData } from "../../redux/api/type"
 import { getUserAction } from "../../redux/actions/userActions"
 import { useAppDispatch } from "../../redux/store"
 import logger from "../../utils/logger"
+import { error } from "loglevel"
 
 interface PostParams {
   post: PostData
@@ -25,18 +26,25 @@ const Post: React.FC<PostParams> = ({ post }) => {
 
   useEffect(() => {
     const fetchUser = async () => {
+      logger.debug(`Chargement de l'utilisateur ${post.user}...`)
       try {
         const result = await dispatch(getUserAction(post.user))
 
         if (result?.data) {
           setUser(result.data)
+          logger.debug(`Utilisateur ${post.user} chargé avec succès.`)
+        } else {
+          throw error("Le resultat de la requête est vide")
         }
       } catch (error) {
-        logger.error("Error fetching user", error)
+        logger.error(
+          `Erreur lors du chargement de l'utilisateur ${post.user}:`,
+          error,
+        )
       }
     }
     fetchUser()
-  }, [dispatch, post.user])
+  }, [dispatch, _id])
 
   const handleCommentOnClick = () => {
     setShowCommentSection(!showCommentSection)
@@ -46,7 +54,7 @@ const Post: React.FC<PostParams> = ({ post }) => {
   const LIMIT = 5
 
   const memoizedComments = useMemo(() => {
-    return (comments ?? [])
+    return (comments || [])
       .slice(0, LIMIT)
       .map((childComment) => (
         <MemoizedComment key={childComment} id={childComment} />

@@ -6,6 +6,7 @@ import { CommentData, UserData } from "../../redux/api/type"
 import { getCommentAction } from "../../redux/actions/commentAction"
 import CommentSubmit from "./CommentSubmit"
 import { useAppDispatch } from "../../redux/store"
+import logger from "../../utils/logger"
 
 const MemoizedComment = memo(Comment)
 const LIMIT = 5 // Nombre maximum de sous-commentaires à afficher
@@ -22,13 +23,17 @@ function Comment({ id }: CommentProps) {
 
   useEffect(() => {
     let isMounted = true
+    logger.debug(`Chargement du commentaire ${id}...`)
 
     const fetchComment = async () => {
       try {
         const result = await dispatch(getCommentAction(id))
-        if (isMounted && result?.data) setComment(result.data)
+        if (isMounted && result?.data) {
+          setComment(result.data)
+          logger.debug(`Commentaire ${id} chargé avec succès.`)
+        }
       } catch (error) {
-        console.error("Erreur lors de la récupération du commentaire :", error)
+        logger.error(`Erreur lors du chargement du commentaire ${id} :`, error)
       }
     }
 

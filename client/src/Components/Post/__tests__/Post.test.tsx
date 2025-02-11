@@ -129,7 +129,7 @@ describe("Post Component", () => {
     await act(async () => {})
 
     expect(logger.error).toHaveBeenCalledWith(
-      "Error fetching user",
+      "Erreur lors du chargement de l'utilisateur user123:",
       expect.any(Error),
     )
   })

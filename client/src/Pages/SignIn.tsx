@@ -4,6 +4,8 @@ import { signIn } from "../redux/api/authAPI"
 import { signInAction } from "../redux/actions/authActions"
 import { AuthData } from "../redux/api/type"
 import { useAppDispatch } from "../redux/store"
+import logger from "../utils/logger"
+import { error } from "loglevel"
 
 function SignIn() {
   const [loading, setLoading] = useState<boolean>(false)
@@ -16,6 +18,7 @@ function SignIn() {
   const dispatch = useAppDispatch()
 
   const handleSignUp = () => {
+    logger.info("Redirection vers la page d'inscription")
     navigate("/signup")
   }
 
@@ -29,6 +32,7 @@ function SignIn() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
+    logger.info("Début de la connexion avec :", { email })
     setLoading(true)
     setLoadingText("Connexion au compte en cour ...")
 
@@ -39,14 +43,27 @@ function SignIn() {
 
     const timeOut = setTimeout(() => {
       setLoadingText("Cela prend plus de temps que prévu...")
+      logger.warn("Connexion plus longue que prévu")
     }, 5000)
 
-    const result: { success: boolean; message?: string } = await dispatch(
-      signInAction(data, navigate),
-    )
-    setLoginError(!result.success)
-    setLoading(false)
-    clearTimeout(timeOut)
+    try {
+      const result: { success: boolean; message?: string } = await dispatch(
+        signInAction(data, navigate),
+      )
+
+      if (result.success) {
+        logger.info("Connexion réussie pour :", email)
+      } else {
+        throw new Error(result.message)
+      }
+
+      setLoading(false)
+      clearTimeout(timeOut)
+      logger.info("Fin du processus de connexion")
+    } catch (error) {
+      logger.error("Échec de la connexion :", error)
+      setLoginError(true)
+    }
   }
 
   return (
@@ -79,6 +96,7 @@ function SignIn() {
               className={`bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border ${!loginError ? `border-gray-300` : `border-red-500`} rounded py-2 px-4 block w-full appearance-none`}
               type="email"
               onChange={handleEmailChange}
+              data-testid="email-input"
             />
           </div>
           <div className="mt-4">
@@ -94,6 +112,7 @@ function SignIn() {
               className={`bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border ${!loginError ? `border-gray-300` : `border-red-500`} rounded py-2 px-4 block w-full appearance-none`}
               type="password"
               onChange={handlePasswordChange}
+              data-testid="password-input"
             />
           </div>
           <div className="mt-8">

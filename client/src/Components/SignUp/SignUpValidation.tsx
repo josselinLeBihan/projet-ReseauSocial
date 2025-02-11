@@ -11,7 +11,7 @@ export interface FormulaireData {
   confirmPassword: ChampData
 }
 
-const nameValidation = (name: string): ChampData => {
+export const nameValidation = (name: string): ChampData => {
   if (!name.trim()) {
     return { status: "error", error: "Le nom d'utilisateur est requis." }
   }
@@ -24,14 +24,14 @@ const nameValidation = (name: string): ChampData => {
   return { status: "validate", error: "" }
 }
 
-const usernameValidation = (username: string): ChampData => {
+export const usernameValidation = (username: string): ChampData => {
   if (!username.trim()) {
     return { status: "error", error: "Le nom d'utilisateur est requis." }
   }
   return { status: "validate", error: "" }
 }
 
-const emailValidation = (email: string): ChampData => {
+export const emailValidation = (email: string): ChampData => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   if (!emailRegex.test(email)) {
     return { status: "error", error: "L'adresse e-mail est incorrecte." }
@@ -39,7 +39,7 @@ const emailValidation = (email: string): ChampData => {
   return { status: "validate", error: "" }
 }
 
-const passwordValidation = (password: string): ChampData => {
+export const passwordValidation = (password: string): ChampData => {
   if (password.length < 6 || !/\d/.test(password)) {
     return {
       status: "error",
@@ -50,7 +50,7 @@ const passwordValidation = (password: string): ChampData => {
   return { status: "validate", error: "" }
 }
 
-const confirmPasswordValidation = (
+export const confirmPasswordValidation = (
   password: string,
   confirmPassword: string,
 ): ChampData => {
@@ -60,7 +60,7 @@ const confirmPasswordValidation = (
   return { status: "validate", error: "" }
 }
 
-const validateSignUpForm = (form): FormulaireData => {
+const SignUpValidation = (form): FormulaireData => {
   const validationResult: FormulaireData = {
     name: nameValidation(form.name),
     username: usernameValidation(form.username),
@@ -74,4 +74,4 @@ const validateSignUpForm = (form): FormulaireData => {
   return validationResult
 }
 
-export default validateSignUpForm
+export default SignUpValidation

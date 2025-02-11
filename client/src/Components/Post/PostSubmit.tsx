@@ -43,20 +43,31 @@ function PostSubmit() {
     setBody(e.target.value)
   }
 
-  const handleSubmit = () => async () => {
+  const handleSubmit = async () => {
     if (!userData) {
-      logger.error("Userdata undefined", userData)
+      logger.error("Userdata n'est pas définit", userData)
       return
     }
-    const postData: PostCreationData = {
-      content: body,
-      user: userData._id,
-      community: commmunity._id,
+
+    if (!body.trim()) {
+      logger.warn("Tentative d'envoi d'un post vide.")
+      return
     }
+    try {
+      logger.info(`Création d'un post par ${userData.name}...`)
+      const postData: PostCreationData = {
+        content: body,
+        user: userData._id,
+        community: commmunity._id,
+      }
 
-    await dispatch(addPostAction(postData))
+      await dispatch(addPostAction(postData))
 
-    setBody("")
+      setBody("")
+      logger.info(`Post créé avec succés`)
+    } catch (error) {
+      logger.error("Erreur lors de la création du Post :", error)
+    }
   }
 
   return (
@@ -86,7 +97,7 @@ function PostSubmit() {
           </div>
           <button
             className="text-gray-200 bg-teal-600 text-base px-2 py-2 hover:bg-teal-500 rounded-md flex items-center gap-2 "
-            onClick={handleSubmit()}
+            onClick={handleSubmit}
           >
             <SendIcon />
             Envoyer

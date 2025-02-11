@@ -13,8 +13,11 @@ function CommunityHome() {
     (state) => state.community?.community,
   )
 
-  logger.info("Changment de communauté: ", community) //TODO
-
+  if (!userData) {
+    logger.warn("Aucune donnée utilisateur reçu dans CommunityHome")
+  } else {
+    logger.info("CommunityHome monté avec les données utilisateur :" + userData)
+  }
   return (
     <div className="flex flex-col gap-6">
       {community && communityName ? (

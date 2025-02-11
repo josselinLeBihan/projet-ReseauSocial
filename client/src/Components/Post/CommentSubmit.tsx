@@ -4,6 +4,7 @@ import SendIcon from "@mui/icons-material/Send"
 import { CommentCreationData, UserData } from "../../redux/api/type"
 import { addCommentAction } from "../../redux/actions/commentAction"
 import { useAppDispatch, useAppSelector } from "../../redux/store"
+import logger from "../../utils/logger"
 
 interface CommentSubmitData {
   parentID: string
@@ -11,7 +12,7 @@ interface CommentSubmitData {
 }
 
 function CommentSubmit({ parentId, parentType }) {
-  const [content, setContent] = useState<string>()
+  const [content, setContent] = useState<string>("")
   const userData: UserData = useAppSelector((state) => state.auth?.userData)
 
   const dispatch = useAppDispatch()
@@ -20,21 +21,28 @@ function CommentSubmit({ parentId, parentType }) {
     setContent(e.target.value)
   }
 
-  const handleSubmit = () => async () => {
-    if (!content) {
+  const handleSubmit = async () => {
+    if (!content.trim()) {
+      logger.warn("Tentative d'envoi d'un commentaire vide.")
       return
     }
 
-    const commentData: CommentCreationData = {
-      parentId: parentId,
-      parentType: parentType,
-      content: content,
-      user: userData._id,
+    try {
+      logger.info(`Ajout d'un commentaire par ${userData?.name}...`)
+
+      const commentData: CommentCreationData = {
+        parentId: parentId,
+        parentType: parentType,
+        content: content,
+        user: userData._id,
+      }
+
+      await dispatch(addCommentAction(commentData))
+      setContent("")
+      logger.info("Commentaire ajouté avec succès")
+    } catch (error) {
+      logger.error("Erreur lors de l'ajout du commentaire :", error)
     }
-
-    await dispatch(addCommentAction(commentData))
-
-    setContent("")
   }
 
   return (
@@ -50,7 +58,7 @@ function CommentSubmit({ parentId, parentType }) {
         placeholder={"Ecrivez votre commentaire"}
         onChange={handleOnChange}
       />
-      <button onClick={handleSubmit()} data-testid="send-button">
+      <button onClick={handleSubmit} data-testid="send-button">
         <SendIcon className="text-gray-500 hover:text-gray-900" />
       </button>
     </div>

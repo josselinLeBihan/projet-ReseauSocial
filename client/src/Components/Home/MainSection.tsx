@@ -4,9 +4,7 @@ import ComonLoading from "../Loader/ComonLoading"
 import Post from "../Post/Post"
 import { PostData } from "../../redux/api/type"
 
-// Mémorise le post pour éviter des re-render non nécessaire
 const MemoizedPost = memo(Post)
-//TODO Supprimé tempPost
 
 function MainSection(userdata) {
   const [isLoading, setIsLoading] = useState(false) //TODO gestion du chargement

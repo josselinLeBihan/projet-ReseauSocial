@@ -27,3 +27,6 @@ dist-ssr
 
 # Environment
 .env 
+
+#other
+coverage

@@ -6,6 +6,7 @@ import BookmarkIcon from "@mui/icons-material/Bookmark"
 import { Link, NavLink, useNavigate } from "react-router-dom"
 import { UserData } from "../../App"
 import GroupIcon from "@mui/icons-material/Group"
+import logger from "../../utils/logger"
 
 interface LeftBarProps {
   userData: UserData
@@ -33,10 +34,14 @@ const NavItem = ({ to, label, icon }) => (
 )
 
 const LeftBar: React.FC<LeftBarProps> = ({ userData }) => {
+  if (!userData) {
+    logger.warn("Aucune donnée utilisateur reçu dans LeftBar")
+  } else {
+    logger.info("LeftBar monté avec les données utilisateur :" + userData)
+  }
+
   const userName = userData?.userName
   const name = userData?.name
-
-  const navigate = useNavigate()
 
   return (
     <div className="flex flex-col w-72 gap-4 p-4 pt-0 bg-gray-50 fixed left-0 top-24 h-full">

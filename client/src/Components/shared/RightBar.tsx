@@ -8,12 +8,12 @@ import {
   getCommunityAction,
 } from "../../redux/actions/communityActions"
 import { useAppDispatch, useAppSelector } from "../../redux/store"
+import logger from "../../utils/logger"
 
-interface RightBarProps {
-  userData: UserData
-}
+interface RightBarProps {}
 
-const RightBar: React.FC<RightBarProps> = ({ userData }) => {
+const RightBar: React.FC<RightBarProps> = () => {
+  logger.info("RightBar monté : récupération des communautés en cours...")
   const currentLocation = useLocation().pathname
 
   const dispatch = useAppDispatch()
@@ -23,7 +23,12 @@ const RightBar: React.FC<RightBarProps> = ({ userData }) => {
   )
 
   useEffect(() => {
-    dispatch(getCommunitiesAction())
+    try {
+      dispatch(getCommunitiesAction())
+      logger.debug("Communautés récupérées :", communities)
+    } catch (e) {
+      logger.error("Erreur lors de la récupération des communautés :", e)
+    }
   }, [dispatch])
 
   const checkLocation = (chain) => {
@@ -32,7 +37,6 @@ const RightBar: React.FC<RightBarProps> = ({ userData }) => {
 
   const handleCommunityChange = (e) => {
     const communityName = e.target.innerText
-
     dispatch(getCommunityAction(communityName))
   }
 
@@ -51,7 +55,7 @@ const RightBar: React.FC<RightBarProps> = ({ userData }) => {
                   onClick={handleCommunityChange}
                 >
                   <img src={community.image} className="h-6 w-6 rounded-md" />
-                  <p>{community.name}</p>
+                  {community.name}
                 </Link>
               ))
             ) : (

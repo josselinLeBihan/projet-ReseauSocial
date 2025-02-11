@@ -41,7 +41,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ userData }) => {
           <Outlet />
         </div>
 
-        <RightBar userData={userData} />
+        <RightBar />
       </div>
     </div>
   ) : (

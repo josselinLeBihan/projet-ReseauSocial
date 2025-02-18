@@ -1,21 +1,22 @@
 const Post = require("../models/post.model")
 const mongoose = require("mongoose")
+const logger = require("../utils/logger") // Import du logger Winston
 
 /**
  * Crée un post
  *
- * @route post/
+ * @route POST /post/
  */
 exports.createPost = async (req, res, next) => {
   try {
     const { content, user, fileUrl, fileType, community } = req.body
 
     if (!content || !user) {
-      console.error("⚠️ Champs manquants !")
+      logger.warn("⚠️ Champs manquants lors de la création du post.")
       return res.status(400).json({ error: "Tous les champs sont requis." })
     }
 
-    //TODO : verifier si l'utilisateur existe
+    // TODO : Vérifier si l'utilisateur existe (par exemple avec un User.findById)
 
     const _id = new mongoose.Types.ObjectId()
 
@@ -30,29 +31,38 @@ exports.createPost = async (req, res, next) => {
     })
 
     await post.save()
+    logger.info(
+      `✅ Post créé avec succès : ID ${_id} par l'utilisateur ${user}`
+    )
     res.status(201).json({ message: "Post créé !" })
   } catch (error) {
-    console.error("Erreur lors de la création du post :", error)
+    logger.error(`❌ Erreur lors de la création du post : ${error.message}`)
     res.status(500).json({ error: "Une erreur est survenue." })
   }
 }
 
 /**
- * Réccupère les posts d'une communauté
+ * Récupère les posts d'une communauté
  *
- * * @route POST /community/:communityId
+ * @route GET /community/:communityId
  */
 exports.getPosts = async (req, res, next) => {
   try {
     const { communityId } = req.params
 
+    logger.info(
+      `🔍 Tentative de récupération des posts pour la communauté : ${communityId}`
+    )
     const posts = await Post.find({ community: communityId }).sort({
       createAt: -1,
     })
 
+    logger.info(`✅ Posts récupérés pour la communauté : ${communityId}`)
     res.status(200).json(posts)
   } catch (error) {
-    console.error("Erreur lors de la récupération des posts :", error)
+    logger.error(
+      `❌ Erreur lors de la récupération des posts pour la communauté (${req.params.communityId}) : ${error.message}`
+    )
     res.status(500).json({ error: "Une erreur est survenue." })
   }
 }
@@ -60,16 +70,30 @@ exports.getPosts = async (req, res, next) => {
 /**
  * Modifie un post
  *
- * * @route POST /modify/:id
+ * @route POST /modify/:id
  */
 exports.modifyPost = async (req, res, next) => {
   try {
     const { content, fileUrl, fileType } = req.body
     const { id } = req.params
-    Post.updateOne({ _id: id }, { content, fileUrl, fileType })
+
+    logger.info(`🔧 Tentative de modification du post : ID ${id}`)
+    const result = await Post.updateOne(
+      { _id: id },
+      { content, fileUrl, fileType }
+    )
+
+    if (result.nModified === 0) {
+      logger.warn(`⚠️ Aucun changement détecté pour le post : ID ${id}`)
+      return res.status(400).json({ message: "Aucune modification appliquée." })
+    }
+
+    logger.info(`✅ Post modifié avec succès : ID ${id}`)
     res.status(200).json({ message: "Post modifié !" })
   } catch (error) {
-    console.error("Erreur lors de la modification du post :", error)
+    logger.error(
+      `❌ Erreur lors de la modification du post (ID ${req.params.id}) : ${error.message}`
+    )
     res.status(500).json({ error: "Une erreur est survenue." })
   }
 }
@@ -77,31 +101,53 @@ exports.modifyPost = async (req, res, next) => {
 /**
  * Supprime un post
  *
- * * @route POST /delete/:id
+ * @route POST /delete/:id
  */
 exports.deletePost = async (req, res, next) => {
   try {
     const { id } = req.params
-    await Post.deleteOne({ _id: id })
+
+    logger.info(`🗑️ Tentative de suppression du post : ID ${id}`)
+    const result = await Post.deleteOne({ _id: id })
+
+    if (result.deletedCount === 0) {
+      logger.warn(`⚠️ Aucun post trouvé pour suppression : ID ${id}`)
+      return res.status(404).json({ message: "Post non trouvé." })
+    }
+
+    logger.info(`✅ Post supprimé avec succès : ID ${id}`)
     res.status(200).json({ message: "Post supprimé !" })
   } catch (error) {
-    console.error("Erreur lors de la suppréssion du post :", error)
+    logger.error(
+      `❌ Erreur lors de la suppression du post (ID ${req.params.id}) : ${error.message}`
+    )
     res.status(500).json({ error: "Une erreur est survenue." })
   }
 }
 
 /**
- * Réccupère un post
+ * Récupère un post
  *
- * * @route POST /:id
+ * @route GET /post/:id
  */
 exports.getPost = async (req, res, next) => {
   try {
     const { id } = req.params
+
+    logger.info(`🔍 Tentative de récupération du post : ID ${id}`)
     const post = await Post.findOne({ _id: id })
+
+    if (!post) {
+      logger.warn(`⚠️ Post non trouvé : ID ${id}`)
+      return res.status(404).json({ error: "Post non trouvé." })
+    }
+
+    logger.info(`✅ Post récupéré avec succès : ID ${id}`)
     res.status(200).json(post)
   } catch (error) {
-    console.error("Erreur lors de la récupération du post :", error)
+    logger.error(
+      `❌ Erreur lors de la récupération du post (ID ${req.params.id}) : ${error.message}`
+    )
     res.status(500).json({ error: "Une erreur est survenue." })
   }
 }

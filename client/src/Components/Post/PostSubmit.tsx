@@ -7,7 +7,7 @@ import SendIcon from "@mui/icons-material/Send"
 import { CommunityData, PostCreationData, UserData } from "../../redux/api/type"
 import { addPostAction } from "../../redux/actions/postAction"
 import { useAppDispatch, useAppSelector } from "../../redux/store"
-import logger from "../../utils/logger"
+import { logger } from "../../utils/logger"
 
 function PostSubmit() {
   const dispatch = useAppDispatch()

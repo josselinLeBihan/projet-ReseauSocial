@@ -6,7 +6,7 @@ import {
   joinCommunityAndFetchDataAction,
   leaveFetchDataAction,
 } from "../../redux/actions/communityActions"
-import logger from "../../utils/logger"
+import { logger } from "../../utils/logger"
 import ComponentNavBar from "../shared/ComponentNavBar"
 
 interface CommunityMainSectionData {

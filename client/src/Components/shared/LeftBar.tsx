@@ -6,7 +6,7 @@ import BookmarkIcon from "@mui/icons-material/Bookmark"
 import { Link, NavLink, useNavigate } from "react-router-dom"
 import { UserData } from "../../App"
 import GroupIcon from "@mui/icons-material/Group"
-import logger from "../../utils/logger"
+import { logger } from "../../utils/logger"
 
 interface LeftBarProps {
   userData: UserData

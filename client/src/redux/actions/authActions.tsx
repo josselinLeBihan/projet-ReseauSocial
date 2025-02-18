@@ -7,7 +7,7 @@ import { AuthData } from "../api/type"
 import { ThunkDispatch } from "@reduxjs/toolkit"
 import { RootState } from "../store"
 import { createAsyncThunkAction } from "../utils/reduxUtils"
-import logger from "../../utils/logger"
+import { logger } from "../../utils/logger"
 
 type AppDispatch = ThunkDispatch<RootState, unknown, any>
 

@@ -9,7 +9,7 @@ import rootReducer from "../../../redux/reducers/index" // Assure-toi du bon che
 import CommunityMainSection from "../CommunityMainSection"
 import { CommunityData, UserData } from "../../../redux/api/type"
 import { joinCommunityAndFetchDataAction } from "../../../redux/actions/communityActions"
-import logger from "../../../utils/logger"
+import { logger } from "../../../utils/logger"
 
 vi.mock("../../../redux/actions/communityActions", () => ({
   joinCommunityAndFetchDataAction: vi.fn(() => async () => {}),

@@ -6,7 +6,7 @@ import { CommentData, UserData } from "../../redux/api/type"
 import { getCommentAction } from "../../redux/actions/commentAction"
 import CommentSubmit from "./CommentSubmit"
 import { useAppDispatch } from "../../redux/store"
-import logger from "../../utils/logger"
+import { logger } from "../../utils/logger"
 
 const MemoizedComment = memo(Comment)
 const LIMIT = 5 // Nombre maximum de sous-commentaires à afficher

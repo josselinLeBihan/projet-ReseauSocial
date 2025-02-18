@@ -4,7 +4,7 @@ import { signIn } from "../redux/api/authAPI"
 import { signInAction } from "../redux/actions/authActions"
 import { AuthData } from "../redux/api/type"
 import { useAppDispatch } from "../redux/store"
-import logger from "../utils/logger"
+import { logger } from "../utils/logger"
 import { error } from "loglevel"
 
 function SignIn() {

@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/store"
 import { CommunityData, PostData } from "../../redux/api/type"
 import { getPostsAction } from "../../redux/actions/postAction"
 import Post from "../Post/Post"
-import logger from "../../utils/logger"
+import { logger } from "../../utils/logger"
 
 const MemoizedPost = memo(Post)
 

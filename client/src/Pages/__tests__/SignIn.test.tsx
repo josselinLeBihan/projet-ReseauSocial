@@ -8,7 +8,7 @@ import { MemoryRouter } from "react-router-dom"
 import SignIn from "../SignIn"
 import rootReducer from "../../redux/reducers"
 import { signInAction } from "../../redux/actions/authActions"
-import logger from "../../utils/logger"
+import { logger } from "../../utils/logger"
 
 vi.mock("../../redux/actions/authActions", () => ({
   signInAction: vi.fn(() => async () => ({ success: true })),

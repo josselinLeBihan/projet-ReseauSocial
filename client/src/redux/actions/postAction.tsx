@@ -7,7 +7,7 @@ import {
   PostData,
 } from "../api/type"
 import { createAsyncThunkAction } from "../utils/reduxUtils"
-import logger from "../../utils/logger"
+import { logger } from "../../utils/logger"
 
 export const addPostAction = createAsyncThunkAction<[PostCreationData], string>(
   types.ADD_POST,

@@ -8,7 +8,7 @@ import {
   getCommunityAction,
 } from "../../redux/actions/communityActions"
 import { useAppDispatch, useAppSelector } from "../../redux/store"
-import logger from "../../utils/logger"
+import { logger } from "../../utils/logger"
 
 interface RightBarProps {}
 

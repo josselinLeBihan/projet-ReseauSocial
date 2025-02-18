@@ -8,7 +8,7 @@ import Comment from "./Comment"
 import { PostData, UserData } from "../../redux/api/type"
 import { getUserAction } from "../../redux/actions/userActions"
 import { useAppDispatch } from "../../redux/store"
-import logger from "../../utils/logger"
+import { logger } from "../../utils/logger"
 import { error } from "loglevel"
 
 interface PostParams {

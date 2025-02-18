@@ -3,7 +3,7 @@ import { memo } from "react"
 import Search from "./Search"
 import ProfileButton from "./ProfileButton"
 import { UserData } from "../../App"
-import logger from "../../utils/logger"
+import { logger } from "../../utils/logger"
 
 interface NavBarProps {
   userData: UserData

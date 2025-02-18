@@ -6,7 +6,7 @@ import validateSignUpForm, {
   FormulaireData,
 } from "../Components/SignUp/SignUpValidation"
 import { useAppDispatch, useAppSelector } from "../redux/store"
-import logger from "../utils/logger"
+import { logger } from "../utils/logger"
 
 const SignUp: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false)

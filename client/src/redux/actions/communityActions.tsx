@@ -2,7 +2,7 @@ import * as api from "../api/communityAPI"
 import * as types from "../constants/communityConstants"
 import { CommunityData, UserData } from "../api/type"
 import { createAsyncThunkAction } from "../utils/reduxUtils"
-import logger from "../../utils/logger"
+import { logger } from "../../utils/logger"
 import { getUserAction } from "./userActions"
 
 export const getCommunitiesAction = createAsyncThunkAction<[], CommunityData[]>(

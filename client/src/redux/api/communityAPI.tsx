@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios"
 import { CommunityData, UserData } from "./type"
 import { apiRequest } from "../utils/reduxUtils"
-import logger from "../../utils/logger"
+import { logger } from "../../utils/logger"
 
 export const getCommunities = async (): Promise<{
   error?: string

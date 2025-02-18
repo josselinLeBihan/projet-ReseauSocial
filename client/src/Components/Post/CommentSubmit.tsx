@@ -4,7 +4,7 @@ import SendIcon from "@mui/icons-material/Send"
 import { CommentCreationData, UserData } from "../../redux/api/type"
 import { addCommentAction } from "../../redux/actions/commentAction"
 import { useAppDispatch, useAppSelector } from "../../redux/store"
-import logger from "../../utils/logger"
+import { logger } from "../../utils/logger"
 
 interface CommentSubmitData {
   parentID: string

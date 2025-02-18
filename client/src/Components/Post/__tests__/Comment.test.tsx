@@ -8,7 +8,7 @@ import "@testing-library/jest-dom"
 import rootReducer from "../../../redux/reducers/index"
 import Comment from "../Comment"
 import { CommentData, UserData } from "../../../redux/api/type"
-import logger from "../../../utils/logger"
+import { logger } from "../../../utils/logger"
 import { getCommentAction } from "../../../redux/actions/commentAction"
 
 vi.mock("../../../redux/actions/commentAction", () => ({

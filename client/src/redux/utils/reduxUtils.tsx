@@ -1,6 +1,6 @@
 import { Dispatch } from "redux"
 import { API } from "../api/utils"
-import logger from "../../utils/logger"
+import { logger } from "../../utils/logger"
 
 export interface ActionTypeProps {
   REQUEST: string

@@ -4,7 +4,7 @@ import CommunityMainSection from "../Components/Community/CommunityMainSection"
 import { CommunityData, UserData } from "../redux/api/type"
 import { useAppSelector } from "../redux/store"
 import CommunityPresentation from "../Components/Community/CommunityPresentation"
-import logger from "../utils/logger"
+import { logger } from "../utils/logger"
 
 function CommunityHome() {
   const { communityName } = useParams<{ communityName: string }>()

@@ -9,7 +9,7 @@ import rootReducer from "../../../redux/reducers/index"
 import Post from "../Post"
 import { PostData, UserData } from "../../../redux/api/type"
 import { getUserAction } from "../../../redux/actions/userActions"
-import logger from "../../../utils/logger"
+import { logger } from "../../../utils/logger"
 
 const mockUser: UserData = {
   _id: "user123",

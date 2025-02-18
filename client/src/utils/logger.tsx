@@ -33,7 +33,7 @@ export class ConsoleLogger implements Logger {
     if (level === "error") {
       this.warn = NO_OP
       this.info = NO_OP
-      this.debug = NO_OP // Manquant, on le rajoute ici !
+      this.debug = NO_OP
       return
     }
 
@@ -48,11 +48,11 @@ export class ConsoleLogger implements Logger {
     this.info = console.log.bind(console)
 
     if (level === "info") {
-      this.debug = NO_OP // Si log est défini, on empêche debug
+      this.debug = NO_OP
       return
     }
 
-    this.debug = console.debug.bind(console) // Ajout correct de debug
+    this.debug = console.debug.bind(console)
   }
 }
 

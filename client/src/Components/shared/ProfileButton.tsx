@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux"
 import { logoutAction } from "../../redux/actions/authActions"
 import { UserData } from "../../App"
 import { useAppDispatch } from "../../redux/store"
+import useClickOutside from "../../hook/useClickOutside"
 
 interface ProfileButtonProps {
   userData: UserData
@@ -19,7 +20,8 @@ const ProfileButton: React.FC<ProfileButtonProps> = ({ userData }) => {
   const email = userData?.email
 
   const dispatch = useAppDispatch()
-  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  const dropdownRef = useClickOutside(() => setShowDropdown(false))
 
   const handleLogout = async (e) => {
     e.preventDefault()
@@ -27,23 +29,6 @@ const ProfileButton: React.FC<ProfileButtonProps> = ({ userData }) => {
     dispatch(logoutAction())
     setLoggingOut(false)
   }
-
-  useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => {
-      if (
-        dropdownRef.current && //vérifier si la ref est definie
-        !dropdownRef.current.contains(event.target as Node) // Vérifier si le clic est à l'extérieur de l'élément
-      ) {
-        setShowDropdown(false)
-      }
-    }
-
-    document.addEventListener("mousedown", handleOutsideClick)
-
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick)
-    }
-  }, [])
 
   const handleProfileClick = () => {
     setShowDropdown(!showDropdown)

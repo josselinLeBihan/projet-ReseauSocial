@@ -2,7 +2,6 @@ import { describe, expect, it, vi, beforeEach } from "vitest"
 import { createAsyncThunkAction, createConst, apiRequest } from "../reduxUtils"
 
 import { API } from "../../api/utils"
-import logger from "../../../utils/logger"
 
 vi.mock("../../utils/logger", () => ({
   info: vi.fn(),

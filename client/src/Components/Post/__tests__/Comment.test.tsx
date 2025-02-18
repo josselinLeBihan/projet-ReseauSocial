@@ -43,12 +43,6 @@ describe("Comment Component", () => {
   beforeEach(() => {
     store = configureStore({
       reducer: rootReducer,
-      preloadedState: {
-        comment: {
-          error: null,
-          successMessage: null,
-        },
-      },
     })
   })
 

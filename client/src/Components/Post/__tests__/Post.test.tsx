@@ -42,14 +42,6 @@ describe("Post Component", () => {
   beforeEach(() => {
     store = configureStore({
       reducer: rootReducer,
-      preloadedState: {
-        post: {
-          posts: [],
-          error: null,
-          post: null,
-          successMessage: null,
-        },
-      },
     })
   })
 

@@ -52,21 +52,6 @@ describe("CommunityForum", () => {
   beforeEach(() => {
     store = configureStore({
       reducer: rootReducer,
-      preloadedState: {
-        community: {
-          communities: [],
-          error: null,
-          community: null,
-          joinedCommunities: [],
-          notJoinedCommunities: [],
-        },
-        post: {
-          posts: [],
-          error: null,
-          post: null,
-          successMessage: null,
-        },
-      },
     })
   })
 

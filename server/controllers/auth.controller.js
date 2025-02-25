@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const Token = require("../models/token.model")
 const User = require("../models/user.model")
-const logger = require("../utils/logger") // Import du logger Winston
+const logger = require("../utils/logger")
 
 exports.signup = async (req, res) => {
   try {

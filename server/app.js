@@ -12,13 +12,15 @@ const logger = require("./utils/logger")
 
 const PORT = process.env.PORT || 3000
 
-mongoose
-  .connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => logger.info("✅ Connexion à MongoDB réussie !"))
-  .catch(() => logger.error("❌ Connexion à MongoDB réussie !"))
+if (process.env.NODE_ENV !== "test") {
+  mongoose
+    .connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    })
+    .then(() => logger.info("✅ Connexion à MongoDB réussie !"))
+    .catch(() => logger.error("❌ Connexion à MongoDB réussie !"))
+}
 
 app.use(express.json())
 

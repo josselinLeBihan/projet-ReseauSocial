@@ -5,46 +5,25 @@ import CommentIcon from "@mui/icons-material/Comment"
 import Like from "./Like"
 import CommentSubmit from "./CommentSubmit"
 import Comment from "./Comment"
-import { PostData, UserData } from "../../redux/api/type"
+import { PostDataformated, UserData } from "../../redux/api/type"
 import { getUserAction } from "../../redux/actions/userActions"
 import { useAppDispatch } from "../../redux/store"
 import { logger } from "../../utils/logger"
 import { error } from "loglevel"
 
 interface PostParams {
-  post: PostData
+  post: PostDataformated
 }
 
 const MemoizedComment = memo(Comment)
 
 const Post: React.FC<PostParams> = ({ post }) => {
   const [showCommentSection, setShowCommentSection] = useState(false)
-  const [userData, setUser] = useState<UserData | null>(null)
   const { _id, content, fileUrl, fileType, user, createdAt, comments } = post
 
+  logger.debug(`Post ${_id} chargé avec succès.`)
+
   const dispatch = useAppDispatch()
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      logger.debug(`Chargement de l'utilisateur ${post.user}...`)
-      try {
-        const result = await dispatch(getUserAction(post.user))
-
-        if (result?.data) {
-          setUser(result.data)
-          logger.debug(`Utilisateur ${post.user} chargé avec succès.`)
-        } else {
-          throw error("Le resultat de la requête est vide")
-        }
-      } catch (error) {
-        logger.error(
-          `Erreur lors du chargement de l'utilisateur ${post.user}:`,
-          error,
-        )
-      }
-    }
-    fetchUser()
-  }, [dispatch, _id])
 
   const handleCommentOnClick = () => {
     setShowCommentSection(!showCommentSection)
@@ -72,10 +51,10 @@ const Post: React.FC<PostParams> = ({ post }) => {
           />
           <div className=" flex flex-col flex-1 truncate">
             <span className="truncate relative pr-8 font-medium text-gray-900">
-              {userData?.name}
+              {user?.userName}
             </span>
             <p className="font-normal text-sm leading-tight truncate text-zinc-500">
-              {`@${userData?.userName}`}
+              {`@${createdAt}`}
             </p>
           </div>
         </div>

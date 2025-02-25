@@ -1,19 +1,19 @@
-const express = require("express");
+const express = require("express")
 
 const {
   createPost,
   modifyPost,
   deletePost,
-  getPosts,
+  getCommunityPosts,
   getPost,
-} = require("../controllers/post.controller");
+} = require("../controllers/post.controller")
 
-const router = express.Router();
+const router = express.Router()
 
-router.post("/", createPost);
-router.post("/modify/:id", modifyPost);
-router.post("/delete/:id", deletePost);
-router.get("/community/:communityId", getPosts);
-router.get("/:id", getPost);
+router.post("/", createPost)
+router.post("/modify/:id", modifyPost)
+router.post("/delete/:id", deletePost)
+router.get("/community/:communityId", getCommunityPosts)
+router.get("/:id", getPost)
 
-module.exports = router;
+module.exports = router

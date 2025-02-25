@@ -1,4 +1,4 @@
-const LOG_LEVEL: LogLevel = "info"
+const LOG_LEVEL: LogLevel = "debug"
 
 /** Signature of a logging function */
 export interface LogFn {

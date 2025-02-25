@@ -15,6 +15,12 @@ export interface UserProfile {
   user: UserData
 }
 
+export interface UserFormatedData {
+  _id: string
+  name: string
+  userName: string
+}
+
 export interface UserData extends SignUpData {
   _id: string
   avatar?: string
@@ -34,6 +40,17 @@ export interface PostChangableData {
 export interface PostCreationData extends PostChangableData {
   user: string
   community: string
+}
+
+export interface PostDataformated {
+  _id: string
+  createdAt: string
+  comments: string[]
+  user: UserFormatedData
+  community: CommunityData
+  content: string
+  fileUrl: string
+  fileType: string
 }
 
 export interface PostData extends PostCreationData {

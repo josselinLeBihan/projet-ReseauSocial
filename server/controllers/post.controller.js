@@ -1,6 +1,10 @@
 const Post = require("../models/post.model")
 const mongoose = require("mongoose")
-const logger = require("../utils/logger") // Import du logger Winston
+const logger = require("../utils/logger")
+const dayjs = require("dayjs")
+const relativeTime = require("dayjs/plugin/relativeTime")
+
+dayjs.extend(relativeTime)
 
 /**
  * Crée un post
@@ -46,19 +50,38 @@ exports.createPost = async (req, res, next) => {
  *
  * @route GET /community/:communityId
  */
-exports.getPosts = async (req, res, next) => {
+exports.getCommunityPosts = async (req, res, next) => {
   try {
     const { communityId } = req.params
+    const { limit = 10, skip = 0 } = req.query
 
     logger.info(
       `🔍 Tentative de récupération des posts pour la communauté : ${communityId}`
     )
-    const posts = await Post.find({ community: communityId }).sort({
-      createAt: -1,
+    const posts = await Post.find({ community: communityId })
+      .sort({
+        createdAt: -1,
+      })
+      .populate("user", "name userName")
+      .populate("community", "name")
+      .skip(parseInt(skip))
+      .limit(parseInt(limit))
+      .lean()
+
+    const formattedPosts = posts.map((post) => ({
+      ...post,
+      createdAt: dayjs(post.createdAt).fromNow(),
+    }))
+
+    const totalCommunityPosts = await Post.countDocuments({
+      community: communityId,
     })
 
     logger.info(`✅ Posts récupérés pour la communauté : ${communityId}`)
-    res.status(200).json(posts)
+    logger.debug(`🔢 Nombre total de posts : ${totalCommunityPosts}`)
+    res
+      .status(200)
+      .json({ posts: formattedPosts, totalCommunityPosts: totalCommunityPosts })
   } catch (error) {
     logger.error(
       `❌ Erreur lors de la récupération des posts pour la communauté (${req.params.communityId}) : ${error.message}`
@@ -135,7 +158,7 @@ exports.getPost = async (req, res, next) => {
     const { id } = req.params
 
     logger.info(`🔍 Tentative de récupération du post : ID ${id}`)
-    const post = await Post.findOne({ _id: id })
+    const post = await Post.findOne({ _id: id }).populate("user")
 
     if (!post) {
       logger.warn(`⚠️ Post non trouvé : ID ${id}`)

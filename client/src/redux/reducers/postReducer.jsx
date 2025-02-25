@@ -1,10 +1,14 @@
+import { error } from "loglevel"
 import * as types from "../constants/postConstants"
+import { logger } from "../../utils/logger"
 
 const initialState = {
   posts: [],
+  communityPosts: [],
   error: null,
   post: null,
   successMessage: null,
+  totalCommunityPosts: 0,
 }
 
 const postReducer = (state = initialState, action) => {
@@ -16,6 +20,30 @@ const postReducer = (state = initialState, action) => {
         posts: Array.isArray(payload) ? payload : [],
       }
     case types.GET_POSTS.FAIL:
+      return {
+        ...state,
+        error: payload,
+      }
+    case types.GET_COM_POSTS.SUCCESS:
+      if (payload.page === 1) {
+        return {
+          ...state,
+          communityPosts: Array.isArray(payload.posts) ? payload.posts : [],
+          totalCommunityPosts: payload ? payload.totalCommunityPosts : 0,
+          error: null,
+        }
+      } else {
+        return {
+          ...state,
+          communityPosts: [
+            ...state.communityPosts,
+            ...(payload ? payload.posts : []),
+          ],
+          totalCommunityPosts: payload ? payload.totalCommunityPosts : 0,
+          error: null,
+        }
+      }
+    case types.GET_COM_POSTS.FAIL:
       return {
         ...state,
         error: payload,

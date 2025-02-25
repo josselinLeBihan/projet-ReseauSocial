@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const mongoose = require("mongoose")
+const Schema = mongoose.Schema
 
 const postSchema = new Schema({
   _id: {
@@ -30,7 +30,7 @@ const postSchema = new Schema({
   ],
   community: {
     type: Schema.Types.ObjectId,
-    ref: "User",
+    ref: "Community",
     trim: true,
   },
   createdAt: {
@@ -38,6 +38,6 @@ const postSchema = new Schema({
     default: Date.now,
     required: true,
   },
-});
+})
 
-module.exports = mongoose.model("Post", postSchema);
+module.exports = mongoose.model("Post", postSchema)

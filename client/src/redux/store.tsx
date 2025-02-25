@@ -9,6 +9,7 @@ import {
   UseDispatch,
   useSelector,
 } from "react-redux"
+import { logger } from "../utils/logger"
 
 export type RootState = ReturnType<typeof rootReducer>
 
@@ -24,6 +25,7 @@ const createAppStore = async () => {
 
     return store
   } catch (err) {
+    logger.error("Error creating store", err)
     throw new Error("Some error occurred")
   }
 }

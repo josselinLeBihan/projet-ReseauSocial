@@ -17,12 +17,27 @@ export const addPost = async (
 }
 
 export const getPosts = async (
-  communityId: CommunityData["_id"],
+  limit: number,
+  skip: number,
 ): Promise<{
   error?: string
   data?: PostData[]
 }> => {
-  return await apiRequest<PostData[]>("GET", `/post/community/${communityId}`)
+  return await apiRequest("GET", `/post`, [limit, skip])
+}
+
+export const getComPosts = async (
+  communityId: CommunityData["_id"],
+  limit: number,
+  skip: number,
+): Promise<{
+  error?: string
+  data?: [posts: PostData[], totalCommunityPosts: number]
+}> => {
+  return await apiRequest(
+    "GET",
+    `/post/community/${communityId}?limit=${limit}&skip=${skip}`,
+  )
 }
 
 export const getPost = async (

@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const mongoose = require("mongoose")
+const Schema = mongoose.Schema
 
-const uniqueValidator = require("mongoose-unique-validator");
+const uniqueValidator = require("mongoose-unique-validator")
 
 const userSchema = new Schema({
   name: {
@@ -71,8 +71,8 @@ const userSchema = new Schema({
       default: [],
     },
   ],
-});
+})
 
-userSchema.plugin(uniqueValidator);
-userSchema.index({ name: "text" });
-module.exports = mongoose.model("User", userSchema);
+userSchema.plugin(uniqueValidator)
+userSchema.index({ name: "text" })
+module.exports = mongoose.model("User", userSchema)

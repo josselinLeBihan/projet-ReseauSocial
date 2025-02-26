@@ -9,7 +9,7 @@ import { useAppDispatch } from "../../redux/store"
 import { logger } from "../../utils/logger"
 
 const MemoizedComment = memo(Comment)
-const LIMIT = 5 // Nombre maximum de sous-commentaires à afficher
+const LIMIT = 5
 
 interface CommentProps {
   id: string
@@ -18,6 +18,8 @@ interface CommentProps {
 function Comment({ id }: CommentProps) {
   const [showCommentSection, setShowCommentSection] = useState(false)
   const [comment, setComment] = useState<CommentData | null>(null)
+  const [commentsLenght, setCommentsLenght] = useState<number>(LIMIT)
+  const totalComments = comment?.comments?.length || 0
 
   const dispatch = useAppDispatch()
 
@@ -44,13 +46,19 @@ function Comment({ id }: CommentProps) {
     }
   }, [id, dispatch])
 
-  //TODO permetre de voir plus de commentaires
   const subComments = useMemo(() => {
-    return (comment?.comments ?? []).slice(0, LIMIT)
+    return (comment?.comments ?? []).slice(0, commentsLenght)
   }, [comment])
 
   const handleCommentOnClick = () => {
     setShowCommentSection(!showCommentSection)
+  }
+
+  const handleLoadMoreComments = async () => {
+    logger.info("Chargement des commentaires")
+    if (commentsLenght < totalComments) {
+      setCommentsLenght(commentsLenght + LIMIT)
+    }
   }
 
   return (
@@ -92,6 +100,14 @@ function Comment({ id }: CommentProps) {
                   <MemoizedComment key={childId} id={childId} />
                 ))}
               </div>
+              {commentsLenght < totalComments && (
+                <button
+                  className="bg-gray-700 hover:bg-blue-700 text-sm text-white font-semibold rounded-md w-full p-2 my-3"
+                  onClick={handleLoadMoreComments}
+                >
+                  Afficher plus de commentaires
+                </button>
+              )}
             </div>
           )}
         </div>

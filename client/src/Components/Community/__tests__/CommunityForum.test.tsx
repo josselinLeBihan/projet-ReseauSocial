@@ -8,11 +8,12 @@ import { MemoryRouter } from "react-router-dom"
 import rootReducer from "../../../redux/reducers/index" // Assure-toi du bon chemin
 import CommunityForum from "../CommunityForum"
 import { CommunityData, PostData } from "../../../redux/api/type"
-import * as types from "../../../redux/constants/communityConstants"
-import { getPostsAction } from "../../../redux/actions/postAction"
+import * as typesCommunity from "../../../redux/constants/communityConstants"
+import * as typesPost from "../../../redux/constants/postConstants"
+import { getComPostsAction } from "../../../redux/actions/postAction"
 
 vi.mock("../../../redux/actions/postAction", () => ({
-  getPostsAction: vi.fn(() => async () => ({
+  getComPostsAction: vi.fn(() => async () => ({
     data: [mockPost1, mockPost2],
   })),
 }))
@@ -55,10 +56,10 @@ describe("CommunityForum", () => {
     })
   })
 
-  it("Dispatch getPostsAction puis affiche les posts fournit", async () => {
+  it("Dispatch getComPostsAction puis affiche les posts fournit", async () => {
     await act(async () => {
       await store.dispatch({
-        type: types.GET_COMMUNITY.SUCCESS,
+        type: typesCommunity.GET_COMMUNITY.SUCCESS,
         payload: {
           ...mockCommunity,
         },
@@ -72,8 +73,19 @@ describe("CommunityForum", () => {
       </Provider>,
     )
 
-    expect(getPostsAction).toHaveBeenCalledTimes(1)
-    expect(getPostsAction).toHaveBeenCalledWith(mockCommunity._id)
+    expect(getComPostsAction).toHaveBeenCalledTimes(1)
+    expect(getComPostsAction).toHaveBeenCalledWith(mockCommunity._id, 5, 0)
+
+    await act(async () => {
+      await store.dispatch({
+        type: typesPost.GET_COM_POSTS.SUCCESS,
+        payload: {
+          page: 1,
+          posts: [mockPost1, mockPost2],
+          totalCommunityPosts: 2,
+        },
+      })
+    })
 
     expect(await screen.findByText(/post123/)).toBeInTheDocument()
     expect(await screen.findByText(/post456/)).toBeInTheDocument()

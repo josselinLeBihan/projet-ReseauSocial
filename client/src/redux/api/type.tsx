@@ -47,7 +47,7 @@ export interface PostDataformated {
   createdAt: string
   comments: string[]
   user: UserFormatedData
-  community: CommunityData
+  community: string
   content: string
   fileUrl: string
   fileType: string

@@ -11,8 +11,9 @@ const MemoizedPost = memo(Post)
 
 interface CommunityForumData {}
 const CommunityForum: React.FC<CommunityForumData> = () => {
-  const dispatch = useAppDispatch()
   const LIMIT = 5
+
+  const dispatch = useAppDispatch()
 
   const [isLoading, setIsLoading] = useState(false) //TODO gestion du chargement
   const [isLoadMorePostLoading, setIsLoadMorePostLoading] = useState(false)
@@ -89,7 +90,7 @@ const CommunityForum: React.FC<CommunityForumData> = () => {
           onClick={handleLoadMorePost}
           disabled={isLoadMorePostLoading}
         >
-          {isLoadMorePostLoading ? "Chargement..." : "Load More Posts"}
+          {isLoadMorePostLoading ? "Chargement..." : "Afficher plus de posts"}
         </button>
       )}
     </div>

@@ -15,30 +15,36 @@ interface PostParams {
   post: PostDataformated
 }
 
+const LIMIT: number = 5
+
 const MemoizedComment = memo(Comment)
 
 const Post: React.FC<PostParams> = ({ post }) => {
   const [showCommentSection, setShowCommentSection] = useState(false)
+  const [commentsLenght, setCommentsLenght] = useState<number>(LIMIT)
   const { _id, content, fileUrl, fileType, user, createdAt, comments } = post
+  const totalComments = comments?.length || 0
 
   logger.debug(`Post ${_id} chargé avec succès.`)
-
-  const dispatch = useAppDispatch()
 
   const handleCommentOnClick = () => {
     setShowCommentSection(!showCommentSection)
   }
 
-  //TODO gérer la limite d'affichage des commentaires
-  const LIMIT = 5
-
   const memoizedComments = useMemo(() => {
     return (comments || [])
-      .slice(0, LIMIT)
+      .slice(0, commentsLenght)
       .map((childComment) => (
         <MemoizedComment key={childComment} id={childComment} />
       ))
-  }, [comments])
+  }, [comments, commentsLenght])
+
+  const handleLoadMoreComments = async () => {
+    logger.info("Chargement des commentaires")
+    if (commentsLenght < totalComments) {
+      setCommentsLenght(commentsLenght + LIMIT)
+    }
+  }
 
   return (
     <div className="flex p-6 bg-gray-50 rounded-lg flex-col gap-8">
@@ -82,6 +88,14 @@ const Post: React.FC<PostParams> = ({ post }) => {
         <div className=" flex gap-6 flex-col">
           <CommentSubmit parentId={_id} parentType="post" />
           {memoizedComments}
+          {commentsLenght < totalComments && (
+            <button
+              className="bg-gray-700 hover:bg-blue-700 text-sm text-white font-semibold rounded-md w-full p-2 my-3"
+              onClick={handleLoadMoreComments}
+            >
+              Afficher plus de commentaires
+            </button>
+          )}
         </div>
       )}
     </div>

@@ -4,7 +4,10 @@ const logger = require("../utils/logger")
 const dayjs = require("dayjs")
 const relativeTime = require("dayjs/plugin/relativeTime")
 
+require("dayjs/locale/fr")
+
 dayjs.extend(relativeTime)
+dayjs.locale("fr")
 
 /**
  * Crée un post

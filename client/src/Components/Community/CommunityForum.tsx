@@ -1,22 +1,22 @@
 import React, { memo, useEffect, useMemo, useState } from "react"
-
 import PostSubmit from "../Post/PostSubmit"
 import { useAppDispatch, useAppSelector } from "../../redux/store"
-import { CommunityData, PostData, PostDataformated } from "../../redux/api/type"
+import { CommunityData, PostDataformated } from "../../redux/api/type"
 import { getComPostsAction } from "../../redux/actions/postAction"
 import Post from "../Post/Post"
 import { logger } from "../../utils/logger"
+import CommonLoading from "../Loader/CommonLoading"
 
 const MemoizedPost = memo(Post)
 
-interface CommunityForumData {}
-const CommunityForum: React.FC<CommunityForumData> = () => {
+const CommunityForum: React.FC = () => {
   const LIMIT = 5
-
   const dispatch = useAppDispatch()
 
-  const [isLoading, setIsLoading] = useState(false) //TODO gestion du chargement
+  const [isLoading, setIsLoading] = useState(false)
+  const [showLoader, setShowLoader] = useState(false) // Gérer l'affichage différé du loader
   const [isLoadMorePostLoading, setIsLoadMorePostLoading] = useState(false)
+
   const posts: PostDataformated[] = useAppSelector(
     (state) => state.post.communityPosts,
   )
@@ -29,24 +29,24 @@ const CommunityForum: React.FC<CommunityForumData> = () => {
   )
 
   useEffect(() => {
-    logger.info("Lancement de la réccupération des posts de la communauté")
     if (!communityData) return
 
     const fetchPosts = async () => {
       setIsLoading(true)
+      const timer = setTimeout(() => setShowLoader(true), 500) // Délai de 500ms
 
       try {
         await dispatch(getComPostsAction(communityData._id, LIMIT, 0))
       } catch (error) {
-        logger.error(
-          "Erreur lors de la réccupération des posts de la communauté",
-          error,
-        )
+        logger.error("Erreur lors de la récupération des posts", error)
       }
+
+      clearTimeout(timer) // Annuler le timer si la requête finit avant 500ms
       setIsLoading(false)
+      setShowLoader(false)
     }
+
     fetchPosts()
-    logger.info("Fin de la réccupération des posts de la communauté")
   }, [communityData, dispatch])
 
   const memoizedPosts = useMemo(() => {
@@ -54,30 +54,29 @@ const CommunityForum: React.FC<CommunityForumData> = () => {
   }, [posts])
 
   const handleLoadMorePost = async () => {
-    console.log("load more posts")
     if (
       !isLoadMorePostLoading &&
       posts.length > 0 &&
       posts.length < totalCommunityPosts
     ) {
-      logger.info(
-        "Lancement de la réccupération de plus de posts de la communauté",
-      )
-
       try {
         setIsLoadMorePostLoading(true)
         await dispatch(
           getComPostsAction(communityData._id, LIMIT, posts.length),
         )
-        setIsLoadMorePostLoading(false)
       } catch (error) {
-        logger.error(
-          "Erreur lors de la réccupération de plus de posts de la communauté",
-          error,
-        )
+        logger.error("Erreur lors du chargement des posts", error)
       }
-      logger.info("Fin de la réccupération de plus de posts de la communauté")
+      setIsLoadMorePostLoading(false)
     }
+  }
+
+  if (showLoader || !communityData || !posts) {
+    return (
+      <div className="main-section flex items-center justify-center p-44">
+        <CommonLoading />
+      </div>
+    )
   }
 
   return (

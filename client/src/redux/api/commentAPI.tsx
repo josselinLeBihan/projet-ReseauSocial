@@ -1,4 +1,4 @@
-import { CommentData, CommentCreationData } from "./type"
+import { CommentData, CommentCreationData, CommentDataFormated } from "./type"
 import { apiRequest } from "../utils/reduxUtils"
 
 export const addComment = async (
@@ -14,7 +14,7 @@ export const getComment = async (
   id: CommentData["_id"],
 ): Promise<{
   error?: string
-  data?: CommentData
+  data?: CommentDataFormated
 }> => {
-  return await apiRequest<CommentData>("GET", `/comment/${id}`)
+  return await apiRequest<CommentDataFormated>("GET", `/comment/${id}`)
 }

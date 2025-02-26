@@ -6,10 +6,7 @@ import Like from "./Like"
 import CommentSubmit from "./CommentSubmit"
 import Comment from "./Comment"
 import { PostDataformated, UserData } from "../../redux/api/type"
-import { getUserAction } from "../../redux/actions/userActions"
-import { useAppDispatch } from "../../redux/store"
 import { logger } from "../../utils/logger"
-import { error } from "loglevel"
 
 interface PostParams {
   post: PostDataformated
@@ -60,7 +57,7 @@ const Post: React.FC<PostParams> = ({ post }) => {
               {user?.userName}
             </span>
             <p className="font-normal text-sm leading-tight truncate text-zinc-500">
-              {`@${createdAt}`}
+              {createdAt}
             </p>
           </div>
         </div>

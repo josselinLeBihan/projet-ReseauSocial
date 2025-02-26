@@ -74,6 +74,14 @@ export interface CommentCreationData {
   user: string
 }
 
+export interface CommentDataFormated {
+  _id: string
+  createdAt: string
+  comments: string[]
+  user: UserFormatedData
+  content: string
+}
+
 export interface CommentData {
   _id: string
   createdAt: string

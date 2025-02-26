@@ -2,7 +2,12 @@ const Comment = require("../models/Comment.model")
 const Post = require("../models/post.model")
 const mongoose = require("mongoose")
 const User = require("../models/user.model")
-const logger = require("../utils/logger") // Import du logger Winston
+const logger = require("../utils/logger")
+const dayjs = require("dayjs")
+const relativeTime = require("dayjs/plugin/relativeTime")
+
+dayjs.extend(relativeTime)
+dayjs.locale("fr")
 
 /**
  * Récupère les données d'un commentaire
@@ -30,10 +35,14 @@ exports.getComment = async (req, res, next) => {
 
     const comment = {
       _id: commentData._id,
-      createdAt: commentData.createdAt,
+      createdAt: dayjs(commentData.createdAt).fromNow(),
       comments: commentData.comments,
       content: commentData.content,
-      user: user,
+      user: {
+        _id: user._id,
+        name: user.name,
+        userName: user.userName,
+      },
     }
 
     logger.info(`✅ Commentaire récupéré avec succès : ID ${id}`)

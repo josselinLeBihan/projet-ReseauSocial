@@ -2,7 +2,7 @@ import React, { memo, useEffect, useMemo, useState } from "react"
 import profilePlaceholder from "../../Assets/profile-placeholder.png"
 import Like from "./Like"
 import CommentIcon from "@mui/icons-material/Comment"
-import { CommentData, UserData } from "../../redux/api/type"
+import { CommentDataFormated } from "../../redux/api/type"
 import { getCommentAction } from "../../redux/actions/commentAction"
 import CommentSubmit from "./CommentSubmit"
 import { useAppDispatch } from "../../redux/store"
@@ -17,7 +17,7 @@ interface CommentProps {
 
 function Comment({ id }: CommentProps) {
   const [showCommentSection, setShowCommentSection] = useState(false)
-  const [comment, setComment] = useState<CommentData | null>(null)
+  const [comment, setComment] = useState<CommentDataFormated | null>(null)
   const [commentsLenght, setCommentsLenght] = useState<number>(LIMIT)
   const totalComments = comment?.comments?.length || 0
 
@@ -72,7 +72,7 @@ function Comment({ id }: CommentProps) {
         <div className="flex flex-col flex-1 truncate gap-4">
           <div className="flex flex-col flex-1 gap-0">
             <span className="truncate relative pr-8 font-medium text-gray-900">
-              {comment?.user?.name}
+              {comment?.user?.userName}
             </span>
             <p className="font-normal text-sm leading-tight truncate text-zinc-500">
               {comment?.createdAt}

@@ -14,7 +14,7 @@ const CommunityForum: React.FC = () => {
   const dispatch = useAppDispatch()
 
   const [isLoading, setIsLoading] = useState(false)
-  const [showLoader, setShowLoader] = useState(false) // Gérer l'affichage différé du loader
+  const [showLoader, setShowLoader] = useState(false)
   const [isLoadMorePostLoading, setIsLoadMorePostLoading] = useState(false)
 
   const posts: PostDataformated[] = useAppSelector(
@@ -33,7 +33,7 @@ const CommunityForum: React.FC = () => {
 
     const fetchPosts = async () => {
       setIsLoading(true)
-      const timer = setTimeout(() => setShowLoader(true), 500) // Délai de 500ms
+      const timer = setTimeout(() => setShowLoader(true), 500)
 
       try {
         await dispatch(getComPostsAction(communityData._id, LIMIT, 0))
@@ -41,7 +41,7 @@ const CommunityForum: React.FC = () => {
         logger.error("Erreur lors de la récupération des posts", error)
       }
 
-      clearTimeout(timer) // Annuler le timer si la requête finit avant 500ms
+      clearTimeout(timer)
       setIsLoading(false)
       setShowLoader(false)
     }

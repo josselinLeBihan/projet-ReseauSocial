@@ -16,7 +16,7 @@ const NavBar: React.FC<NavBarProps> = ({ userData }) => {
     logger.info("NavBar monté avec les données utilisateur :" + userData)
   }
   return (
-    <nav className="h-24 w-full p-6 justify-between items-center inline-flex bg-gray-50 fixed top-0 left-0 z-50">
+    <nav className="h-24 w-full p-6 justify-between items-center inline-flex bg-gray-50 fixed top-0 left-0 z-30">
       <div className="text-teal-800 text-xl font-bold leading-[30px]">
         Tailwind CSS
       </div>

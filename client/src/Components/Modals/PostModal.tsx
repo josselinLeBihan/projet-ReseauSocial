@@ -1,11 +1,7 @@
-import React, { useEffect, useState, useMemo } from "react"
+import React, { useState, useMemo } from "react"
 import profilePlaceholder from "../../Assets/profile-placeholder.png"
 import { PhotoProvider, PhotoView } from "react-photo-view"
-import {
-  CommunityData,
-  PostCreationData,
-  UserFormatedData,
-} from "../../redux/api/type"
+import { CommunityData } from "../../redux/api/type"
 import CloseIcon from "@mui/icons-material/Close"
 import { UserData } from "../../App"
 import useClickOutside from "../../hook/useClickOutside"

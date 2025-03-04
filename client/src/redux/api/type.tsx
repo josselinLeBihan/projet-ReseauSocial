@@ -34,8 +34,8 @@ export interface UserData extends SignUpData {
 
 export interface PostChangableData {
   content?: string
-  fileUrl?: string
-  fileType?: string
+  fileType?: string | null
+  fileUrl?: string | null
 }
 export interface PostCreationData extends PostChangableData {
   user: string

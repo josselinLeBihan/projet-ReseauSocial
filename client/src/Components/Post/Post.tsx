@@ -1,12 +1,14 @@
 import React, { memo, useEffect, useMemo, useState } from "react"
 import profilePlaceholder from "../../Assets/profile-placeholder.png"
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz"
+import MoreVertIcon from "@mui/icons-material/MoreVert"
 import CommentIcon from "@mui/icons-material/Comment"
 import Like from "./Like"
 import CommentSubmit from "./CommentSubmit"
 import Comment from "./Comment"
 import { PostDataformated, UserData } from "../../redux/api/type"
 import { logger } from "../../utils/logger"
+import { PhotoProvider, PhotoView } from "react-photo-view"
+import { useAppSelector } from "../../redux/store"
 
 interface PostParams {
   post: PostDataformated
@@ -20,6 +22,13 @@ const Post: React.FC<PostParams> = ({ post }) => {
   const [showCommentSection, setShowCommentSection] = useState(false)
   const [commentsLenght, setCommentsLenght] = useState<number>(LIMIT)
   const { _id, content, fileUrl, fileType, user, createdAt, comments } = post
+
+  const actualUserUser: UserData = useAppSelector(
+    (state) => state.auth?.userData,
+  )
+
+  const isUserPost: boolean = actualUserUser?.userName === user?.userName
+
   const totalComments = comments?.length || 0
 
   logger.debug(`Post ${_id} chargé avec succès.`)
@@ -44,7 +53,9 @@ const Post: React.FC<PostParams> = ({ post }) => {
   }
 
   return (
-    <div className="flex p-6 bg-gray-50 rounded-lg flex-col gap-8">
+    <div
+      className={`flex p-6 ${isUserPost ? `bg-gray-200` : `bg-gray-50`}  rounded-lg flex-col gap-8`}
+    >
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center gap-4">
           <img
@@ -61,12 +72,31 @@ const Post: React.FC<PostParams> = ({ post }) => {
             </p>
           </div>
         </div>
-        <button className="text-gray-500 hover:text-gray-900">
-          <MoreHorizIcon />
-        </button>
+        {isUserPost && (
+          <button className="text-gray-500 hover:text-gray-900">
+            <MoreVertIcon />
+          </button>
+        )}
       </div>
       <span>{content}</span>
-      {fileUrl && <img src={fileUrl} />}
+      {fileUrl && (
+        <PhotoProvider
+          className=""
+          overlayRender={() => (
+            <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-10 text-white px-3 py-2 z-50">
+              <p className="text-xs">{user.name}</p>
+            </div>
+          )}
+        >
+          <PhotoView src={fileUrl}>
+            <img
+              src={fileUrl}
+              alt="Selected file preview"
+              className=" bg-cover bg-center rounded-md cursor-pointer object-cover w-full max-h-96"
+            />
+          </PhotoView>
+        </PhotoProvider>
+      )}
       <hr className=" border-0 border-t-2 border-gray-300" />
       <div className="flex gap-4">
         <Like />

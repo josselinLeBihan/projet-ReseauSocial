@@ -23,8 +23,6 @@ exports.createPost = async (req, res, next) => {
       return res.status(400).json({ error: "Tous les champs sont requis." })
     }
 
-    // TODO : Vérifier si l'utilisateur existe (par exemple avec un User.findById)
-
     const _id = new mongoose.Types.ObjectId()
 
     const post = new Post({
@@ -40,6 +38,9 @@ exports.createPost = async (req, res, next) => {
     await post.save()
     logger.info(
       `✅ Post créé avec succès : ID ${_id} par l'utilisateur ${user}`
+    )
+    logger.info(
+      `📄 Contenu du post : ${content} Fichier: ${fileUrl} Type de fichier: ${fileUrl}`
     )
     res.status(201).json({ message: "Post créé !" })
   } catch (error) {

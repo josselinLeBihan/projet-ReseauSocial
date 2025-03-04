@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react"
 import profilePlaceholder from "../../Assets/profile-placeholder.png"
-import { CommunityData, UserFormatedData } from "../../redux/api/type"
+import { PhotoProvider, PhotoView } from "react-photo-view"
+
+import {
+  CommunityData,
+  PostCreationData,
+  UserFormatedData,
+} from "../../redux/api/type"
 import CloseIcon from "@mui/icons-material/Close"
 import { UserData } from "../../App"
 import useClickOutside from "../../hook/useClickOutside"
@@ -8,12 +14,17 @@ import ImageIcon from "@mui/icons-material/Image"
 import VideocamIcon from "@mui/icons-material/Videocam"
 import SendIcon from "@mui/icons-material/Send"
 import ConfirmationModal from "./ConfirmationModal"
+import { logger } from "../../utils/logger"
 
 interface PostSubmitModalProps {
   user: UserData
   community: CommunityData
   onClose: () => void
-  onPostSubmit: (body: string) => Promise<void>
+  onPostSubmit: (
+    body: PostCreationData["content"],
+    fileUrl: PostCreationData["fileUrl"],
+    fileType: PostCreationData["fileType"],
+  ) => Promise<void>
 }
 
 const PostSubmitModal: React.FC<PostSubmitModalProps> = ({
@@ -31,6 +42,8 @@ const PostSubmitModal: React.FC<PostSubmitModalProps> = ({
     checkBeforeClose()
   })
   const [body, setBody] = useState<string>("")
+  const [fileUrl, setFileUrl] = useState<PostCreationData["fileUrl"]>(null)
+  const [fileType, setFileType] = useState<PostCreationData["fileType"]>(null)
 
   const checkBeforeClose = () => {
     console.log(body)
@@ -44,7 +57,10 @@ const PostSubmitModal: React.FC<PostSubmitModalProps> = ({
 
   const handleSubmit = () => {
     if (body.trim() === "") return
-    onPostSubmit(body)
+    logger.debug(
+      `Envoi du post contenu ${body} image ${fileUrl} imageType ${fileType}`,
+    )
+    onPostSubmit(body, fileUrl, fileType)
     setIsShowModal(false)
     onClose()
   }
@@ -57,12 +73,25 @@ const PostSubmitModal: React.FC<PostSubmitModalProps> = ({
     }
   }, [body])
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    logger.info("Choix d'un fichier")
+    const selectedFile = event.target.files?.[0]
+    if (selectedFile && selectedFile.size <= 50 * 1024 * 1024) {
+      setFileUrl(URL.createObjectURL(selectedFile))
+      setFileType(selectedFile.type)
+    } else {
+      alert(
+        "Le fichier choisi est trop volumineux, choisissez un fichier de moins de 50Mo",
+      )
+    }
+  }
+
   return (
     <>
-      <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex" />
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-30 flex" />
 
       <div
-        className="fixed w-full max-w-4xl z-50 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+        className="fixed w-full max-w-4xl z-40 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
         ref={modalRef}
       >
         {isConfirmQuitModalShow && (
@@ -108,16 +137,59 @@ const PostSubmitModal: React.FC<PostSubmitModalProps> = ({
             placeholder="Ecrivez votre poste ici..."
             onChange={(e) => setBody(e.target.value)}
           />
-          <div className="flex w-full gap-4">
-            <button className="text-gray-800 text-base px-2 py-2 hover:bg-gray-200 rounded-md flex items-center gap-2">
-              <ImageIcon />
-              Image
-            </button>
-            <button className="text-gray-800 text-base px-2 py-2 hover:bg-gray-200 rounded-md flex items-center gap-2">
-              <VideocamIcon />
-              Vidéo
-            </button>
-          </div>
+          {fileUrl ? (
+            <div className="relative h-28 w-28">
+              <button
+                className="absolute top-2 right-2 bg-white/80 rounded-full  hover:bg-white"
+                onClick={() => setFileUrl(null)}
+              >
+                <CloseIcon style={{ fontSize: 24 }} />
+              </button>
+
+              <PhotoProvider
+                className=""
+                overlayRender={() => (
+                  <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-10 text-white px-3 py-2 z-50">
+                    <p className="text-xs">{user.name}</p>
+                    <p className="text-xs">{community.name}</p>
+                  </div>
+                )}
+              >
+                <PhotoView src={fileUrl}>
+                  <img
+                    src={fileUrl}
+                    alt="Selected file preview"
+                    className=" bg-cover bg-center rounded-md cursor-pointer object-cover h-full"
+                  />
+                </PhotoView>
+              </PhotoProvider>
+            </div>
+          ) : (
+            <div className="flex w-full gap-4">
+              <input
+                type="file"
+                accept="image/*,video/*"
+                onChange={handleFileChange}
+                style={{ display: "none" }}
+                id="file-input"
+              />
+              <label
+                htmlFor="file-input"
+                className="text-gray-800 text-base px-2 py-2 hover:bg-gray-200 rounded-md flex items-center gap-2 cursor-pointer"
+              >
+                <ImageIcon />
+                Image
+              </label>
+              <label
+                htmlFor="file-input"
+                className="text-gray-800 text-base px-2 py-2 hover:bg-gray-200 rounded-md flex items-center gap-2 cursor-pointer"
+              >
+                <VideocamIcon />
+                Vidéo
+              </label>
+            </div>
+          )}
+
           <div className="flex w-full justify-end border-t pt-6">
             <button
               className={

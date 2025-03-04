@@ -19,13 +19,17 @@ function PostSubmit() {
     (state) => state.community?.community,
   )
 
-  const handleSubmit = async (body: string) => {
+  const handleSubmit = async (
+    body: PostCreationData["content"],
+    fileUrl: PostCreationData["fileUrl"],
+    fileType: PostCreationData["fileType"],
+  ) => {
     if (!userData) {
       logger.error("Userdata n'est pas définit", userData)
       return
     }
 
-    if (!body.trim()) {
+    if (!body || !body.trim()) {
       logger.warn("Tentative d'envoi d'un post vide.")
       return
     }
@@ -35,6 +39,8 @@ function PostSubmit() {
         content: body,
         user: userData._id,
         community: commmunity._id,
+        fileUrl: fileUrl,
+        fileType: fileType,
       }
 
       await dispatch(addPostAction(postData))
@@ -70,11 +76,17 @@ function PostSubmit() {
           </div>
           <div className="flex gap-4 justify-between">
             <div className="flex ">
-              <button className="text-gray-800 text-base px-2 py-2 hover:bg-gray-200 rounded-md flex items-center gap-2">
+              <button
+                className="text-gray-800 text-base px-2 py-2 hover:bg-gray-200 rounded-md flex items-center gap-2"
+                onClick={() => setIsShowModal(true)}
+              >
                 <ImageIcon />
                 Image
               </button>
-              <button className="text-gray-800 text-base px-2 py-2 hover:bg-gray-200 rounded-md flex items-center gap-2">
+              <button
+                className="text-gray-800 text-base px-2 py-2 hover:bg-gray-200 rounded-md flex items-center gap-2"
+                onClick={() => setIsShowModal(true)}
+              >
                 <VideocamIcon />
                 <p>Vidéo</p>
               </button>

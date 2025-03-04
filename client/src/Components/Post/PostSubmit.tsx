@@ -8,7 +8,7 @@ import { CommunityData, PostCreationData, UserData } from "../../redux/api/type"
 import { addPostAction } from "../../redux/actions/postAction"
 import { useAppDispatch, useAppSelector } from "../../redux/store"
 import { logger } from "../../utils/logger"
-import PostSubmitModal from "../Modals/PostSubmitModal"
+import PostModal from "../Modals/PostModal"
 import useClickOutside from "../../hook/useClickOutside"
 
 function PostSubmit() {
@@ -54,7 +54,7 @@ function PostSubmit() {
   return (
     <>
       {isShowModal && (
-        <PostSubmitModal
+        <PostModal
           userName={userData.userName}
           community={commmunity}
           onClose={() => setIsShowModal(false)}

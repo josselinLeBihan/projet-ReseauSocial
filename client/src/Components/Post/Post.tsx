@@ -22,7 +22,7 @@ import {
   deletePostAction,
   updatePostAction,
 } from "../../redux/actions/postAction"
-import PostSubmitModal from "../Modals/PostSubmitModal"
+import PostModal from "../Modals/PostModal"
 
 interface PostParams {
   post: PostDataformated
@@ -122,7 +122,7 @@ const Post: React.FC<PostParams> = ({ post }) => {
         />
       )}
       {isSubmitModalShow && (
-        <PostSubmitModal
+        <PostModal
           prescendentBody={content}
           community={community}
           userName={user?.userName}

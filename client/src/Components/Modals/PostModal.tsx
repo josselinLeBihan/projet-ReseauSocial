@@ -28,7 +28,7 @@ interface PostSubmitModalProps {
   ) => Promise<void>
 }
 
-const PostSubmitModal: React.FC<PostSubmitModalProps> = ({
+const PostModal: React.FC<PostSubmitModalProps> = ({
   userName,
   community,
   onClose,
@@ -212,4 +212,4 @@ const PostSubmitModal: React.FC<PostSubmitModalProps> = ({
   )
 }
 
-export default PostSubmitModal
+export default PostModal

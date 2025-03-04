@@ -17,8 +17,9 @@ import ConfirmationModal from "./ConfirmationModal"
 import { logger } from "../../utils/logger"
 
 interface PostSubmitModalProps {
-  user: UserData
+  userName: UserData["userName"]
   community: CommunityData
+  prescendentBody?: string
   onClose: () => void
   onPostSubmit: (
     body: PostCreationData["content"],
@@ -28,10 +29,11 @@ interface PostSubmitModalProps {
 }
 
 const PostSubmitModal: React.FC<PostSubmitModalProps> = ({
-  user,
+  userName,
   community,
   onClose,
   onPostSubmit,
+  prescendentBody,
 }) => {
   const [isConfirmQuitModalShow, setIsConfirmQuitModalShow] =
     useState<boolean>(false)
@@ -41,13 +43,12 @@ const PostSubmitModal: React.FC<PostSubmitModalProps> = ({
   const modalRef = useClickOutside(() => {
     checkBeforeClose()
   })
-  const [body, setBody] = useState<string>("")
+  const [body, setBody] = useState<string>(prescendentBody || "")
   const [fileUrl, setFileUrl] = useState<PostCreationData["fileUrl"]>(null)
   const [fileType, setFileType] = useState<PostCreationData["fileType"]>(null)
 
   const checkBeforeClose = () => {
-    console.log(body)
-    if (body.trim() !== "") {
+    if (body.trim() !== "" && body !== prescendentBody) {
       setIsConfirmQuitModalShow(true)
       return
     }
@@ -118,7 +119,7 @@ const PostSubmitModal: React.FC<PostSubmitModalProps> = ({
               />
               <div className=" flex flex-col flex-1 truncate">
                 <span className="truncate relative pr-8 font-medium text-gray-900">
-                  {user?.userName}
+                  {userName}
                 </span>
                 <p className="font-normal text-sm leading-tight truncate text-zinc-500">
                   {`Communauté: ${community?.name}`}
@@ -136,6 +137,7 @@ const PostSubmitModal: React.FC<PostSubmitModalProps> = ({
             className="h-60 w-full appearance-none border-2 text-lg bg-gray-100 border-gray-100 hover:border-gray-400 transition-colors rounded-md p-4  text-gray-800 leading-tight focus:outline-none focus:ring-teal-600 focus:border-teal-600 focus:shadow-outline"
             placeholder="Ecrivez votre poste ici..."
             onChange={(e) => setBody(e.target.value)}
+            value={body}
           />
           {fileUrl ? (
             <div className="relative h-28 w-28">
@@ -150,7 +152,7 @@ const PostSubmitModal: React.FC<PostSubmitModalProps> = ({
                 className=""
                 overlayRender={() => (
                   <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-10 text-white px-3 py-2 z-50">
-                    <p className="text-xs">{user.name}</p>
+                    <p className="text-xs">{userName}</p>
                     <p className="text-xs">{community.name}</p>
                   </div>
                 )}

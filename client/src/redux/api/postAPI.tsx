@@ -56,7 +56,7 @@ export const updatePost = async (
   error?: string
   data?: PostData
 }> => {
-  return await apiRequest<PostData>("POST", `/post/:${postId}/update`, post)
+  return await apiRequest<PostData>("POST", `/post/modify/${postId}`, post)
 }
 
 export const deletePost = async (
@@ -65,5 +65,5 @@ export const deletePost = async (
   error?: string
   data?: string
 }> => {
-  return await apiRequest<string>("POST", `/post/:${postId}/delete`)
+  return await apiRequest<string>("POST", `/post/delete/${postId}`)
 }

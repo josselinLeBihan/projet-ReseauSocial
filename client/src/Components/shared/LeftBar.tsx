@@ -12,7 +12,13 @@ interface LeftBarProps {
   userData: UserData
 }
 
-const navLinks = [
+interface NavItemProps {
+  to: string
+  label: string
+  icon: React.ReactNode
+}
+
+const navLinks: NavItemProps[] = [
   { to: "/", label: "Accueil", icon: <HomeIcon /> },
   { to: "/community", label: "Communautés", icon: <GroupIcon /> },
   { to: "/profile", label: "Profile", icon: <AccountCircleIcon /> },

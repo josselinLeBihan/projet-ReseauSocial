@@ -55,7 +55,7 @@ function PostSubmit() {
     <>
       {isShowModal && (
         <PostSubmitModal
-          user={userData}
+          userName={userData.userName}
           community={commmunity}
           onClose={() => setIsShowModal(false)}
           onPostSubmit={handleSubmit}

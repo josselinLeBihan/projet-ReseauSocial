@@ -5,6 +5,7 @@ import {
   PostChangableData,
   CommunityData,
   PostData,
+  PostDataformated,
 } from "../api/type"
 import { createAsyncThunkAction } from "../utils/reduxUtils"
 import { logger } from "../../utils/logger"
@@ -80,7 +81,7 @@ export const getComPostsAction =
 
 export const getPostAction = createAsyncThunkAction<
   [PostData["_id"]],
-  PostData
+  PostDataformated
 >(types.GET_POST, api.getPost)
 
 export const deletePostAction = createAsyncThunkAction<

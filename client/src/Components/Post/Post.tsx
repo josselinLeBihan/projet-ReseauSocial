@@ -36,7 +36,16 @@ const Post: React.FC<PostParams> = ({ post }) => {
   const dispatch = useAppDispatch()
   const [showCommentSection, setShowCommentSection] = useState(false)
   const [commentsLenght, setCommentsLenght] = useState<number>(LIMIT)
-  const { _id, content, fileUrl, fileType, user, createdAt, comments } = post
+  const {
+    _id,
+    content,
+    fileUrl,
+    fileType,
+    user,
+    createdAt,
+    modifiedAt,
+    comments,
+  } = post
   const [isConfirmationModalShow, setIsConfirmationModalShow] =
     useState<boolean>(false)
   const [isSubmitModalShow, setIsSubmitModalShow] = useState<boolean>(false)
@@ -123,7 +132,7 @@ const Post: React.FC<PostParams> = ({ post }) => {
       )}
       {isSubmitModalShow && (
         <PostModal
-          prescendentBody={content}
+          previousBody={content}
           community={community}
           userName={user?.userName}
           onPostSubmit={handleModifications}
@@ -145,7 +154,7 @@ const Post: React.FC<PostParams> = ({ post }) => {
                 {user?.userName}
               </span>
               <p className="font-normal text-sm leading-tight truncate text-zinc-500">
-                {createdAt}
+                {modifiedAt ? `Modifié ${modifiedAt}` : `Créé ${createdAt}`}
               </p>
             </div>
           </div>

@@ -4,6 +4,7 @@ import {
   PostData,
   CommentData,
   CommunityData,
+  PostDataformated,
 } from "./type"
 import { apiRequest } from "../utils/reduxUtils"
 
@@ -32,7 +33,7 @@ export const getComPosts = async (
   skip: number,
 ): Promise<{
   error?: string
-  data?: [posts: PostData[], totalCommunityPosts: number]
+  data?: [posts: PostDataformated[], totalCommunityPosts: number]
 }> => {
   return await apiRequest(
     "GET",
@@ -44,9 +45,9 @@ export const getPost = async (
   postId: PostData["_id"],
 ): Promise<{
   error?: string
-  data?: PostData
+  data?: PostDataformated
 }> => {
-  return await apiRequest<PostData>("GET", `/post/${postId}`)
+  return await apiRequest<PostDataformated>("GET", `/post/${postId}`)
 }
 
 export const updatePost = async (

@@ -45,17 +45,19 @@ export interface PostCreationData extends PostChangableData {
 export interface PostDataformated {
   _id: string
   createdAt: string
+  modifiedAt?: string
   comments: string[]
   user: UserFormatedData
   community: string
   content: string
-  fileUrl: string
-  fileType: string
+  fileUrl?: string
+  fileType?: string
 }
 
 export interface PostData extends PostCreationData {
   _id: string
   createdAt: string
+  modifiedAt?: string
   comments?: string[]
 }
 

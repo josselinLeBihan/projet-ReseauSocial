@@ -75,6 +75,7 @@ exports.getCommunityPosts = async (req, res, next) => {
     const formattedPosts = posts.map((post) => ({
       ...post,
       createdAt: dayjs(post.createdAt).fromNow(),
+      modifiedAt: post.modifiedAt && dayjs(post.modifiedAt).fromNow(),
     }))
 
     const totalCommunityPosts = await Post.countDocuments({
@@ -105,9 +106,12 @@ exports.modifyPost = async (req, res, next) => {
     const { id } = req.params
 
     logger.info(`🔧 Tentative de modification du post : ID ${id}`)
+
+    const modifiedAt = new Date()
+
     const result = await Post.updateOne(
       { _id: id },
-      { content, fileUrl, fileType }
+      { content, fileUrl, fileType, modifiedAt }
     )
 
     if (result.nModified === 0) {

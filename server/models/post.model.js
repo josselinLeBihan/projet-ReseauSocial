@@ -38,6 +38,9 @@ const postSchema = new Schema({
     default: Date.now,
     required: true,
   },
+  modifiedAt: {
+    type: Date,
+  },
   fileUrl: {
     type: String,
     trim: true,

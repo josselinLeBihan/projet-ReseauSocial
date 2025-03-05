@@ -70,7 +70,11 @@ const CommunityForum: React.FC = () => {
       {isLoading
         ? "Chargement..."
         : communityPosts.map((post) => (
-            <MemoizedPost key={post._id} post={post} />
+            <MemoizedPost
+              key={post._id}
+              post={post}
+              onReload={fetchCommunityPosts}
+            />
           ))}
 
       {communityPosts.length < totalPostsCount && (

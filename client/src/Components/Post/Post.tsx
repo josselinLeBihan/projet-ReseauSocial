@@ -20,19 +20,21 @@ import DeleteIcon from "@mui/icons-material/Delete"
 import ConfirmationModal from "../Modals/ConfirmationModal"
 import {
   deletePostAction,
+  getComPostsAction,
   updatePostAction,
 } from "../../redux/actions/postAction"
 import PostModal from "../Modals/PostModal"
 
 interface PostParams {
   post: PostDataformated
+  onReload: () => {}
 }
 
 const LIMIT: number = 5
 
 const MemoizedComment = memo(Comment)
 
-const Post: React.FC<PostParams> = ({ post }) => {
+const Post: React.FC<PostParams> = ({ post, onReload }) => {
   const dispatch = useAppDispatch()
   const [showCommentSection, setShowCommentSection] = useState(false)
   const [commentsLenght, setCommentsLenght] = useState<number>(LIMIT)
@@ -197,7 +199,11 @@ const Post: React.FC<PostParams> = ({ post }) => {
         </div>
         {showCommentSection && (
           <div className=" flex gap-6 flex-col">
-            <CommentSubmit parentId={_id} parentType="post" />
+            <CommentSubmit
+              onCommentSubmit={() => onReload()}
+              parentId={_id}
+              parentType="post"
+            />
             {memoizedComments}
             {commentsLenght < totalComments && (
               <button

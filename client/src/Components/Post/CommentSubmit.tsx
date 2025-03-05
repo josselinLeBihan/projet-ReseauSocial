@@ -6,12 +6,17 @@ import { addCommentAction } from "../../redux/actions/commentAction"
 import { useAppDispatch, useAppSelector } from "../../redux/store"
 import { logger } from "../../utils/logger"
 
-interface CommentSubmitData {
-  parentID: string
+interface CommentSubmitProps {
+  parentId: string
   parentType: "post" | "comment"
+  onCommentSubmit: () => void
 }
 
-function CommentSubmit({ parentId, parentType }) {
+const CommentSubmit: React.FC<CommentSubmitProps> = ({
+  parentId,
+  parentType,
+  onCommentSubmit,
+}) => {
   const [content, setContent] = useState<string>("")
   const userData: UserData = useAppSelector((state) => state.auth?.userData)
 
@@ -38,6 +43,9 @@ function CommentSubmit({ parentId, parentType }) {
       }
 
       await dispatch(addCommentAction(commentData))
+
+      onCommentSubmit()
+
       setContent("")
       logger.info("Commentaire ajouté avec succès")
     } catch (error) {

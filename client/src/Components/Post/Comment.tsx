@@ -13,9 +13,10 @@ const LIMIT = 5
 
 interface CommentProps {
   id: string
+  onCommentSubmit: () => {}
 }
 
-function Comment({ id }: CommentProps) {
+function Comment({ id, onCommentSubmit }: CommentProps) {
   const [showCommentSection, setShowCommentSection] = useState(false)
   const [comment, setComment] = useState<CommentDataFormated | null>(null)
   const [commentsLenght, setCommentsLenght] = useState<number>(LIMIT)
@@ -94,10 +95,18 @@ function Comment({ id }: CommentProps) {
           </div>
           {showCommentSection && (
             <div className="gap-4 flex-col flex ">
-              <CommentSubmit parentId={comment?._id} parentType="comment" />
+              <CommentSubmit
+                parentId={comment?._id || ""}
+                parentType="comment"
+                onCommentSubmit={() => onCommentSubmit()}
+              />
               <div className="flex flex-col gap-2">
                 {subComments.map((childId) => (
-                  <MemoizedComment key={childId} id={childId} />
+                  <MemoizedComment
+                    key={childId}
+                    id={childId}
+                    onCommentSubmit={() => onCommentSubmit()}
+                  />
                 ))}
               </div>
               {commentsLenght < totalComments && (

@@ -11,7 +11,11 @@ import { logger } from "../../utils/logger"
 import PostModal from "../Modals/PostModal"
 import useClickOutside from "../../hook/useClickOutside"
 
-function PostSubmit() {
+interface PostSubmitProps {
+  onPostSubmit: () => void
+}
+
+const PostSubmit: React.FC<PostSubmitProps> = ({ onPostSubmit }) => {
   const dispatch = useAppDispatch()
   const [isShowModal, setIsShowModal] = useState<boolean>(false)
   const userData: UserData = useAppSelector((state) => state.auth?.userData)
@@ -45,6 +49,7 @@ function PostSubmit() {
 
       await dispatch(addPostAction(postData))
 
+      onPostSubmit()
       logger.info(`Post créé avec succés`)
     } catch (error) {
       logger.error("Erreur lors de la création du Post :", error)

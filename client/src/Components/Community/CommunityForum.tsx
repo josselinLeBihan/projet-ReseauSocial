@@ -45,7 +45,8 @@ const CommunityForum: React.FC = () => {
 
   useEffect(() => {
     fetchCommunityPosts()
-  }, [communityData, dispatch, communityPosts])
+    logger.info("CommunityForum monté avec les posts")
+  }, [communityData, dispatch])
 
   const handleLoadMorePost = async () => {
     if (!isLoadingMorePosts && communityPosts.length < totalPostsCount) {
@@ -65,7 +66,7 @@ const CommunityForum: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      <PostSubmit />
+      <PostSubmit onPostSubmit={fetchCommunityPosts} />
       {isLoading
         ? "Chargement..."
         : communityPosts.map((post) => (

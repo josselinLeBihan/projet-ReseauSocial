@@ -91,5 +91,5 @@ export const deletePostAction = createAsyncThunkAction<
 
 export const updatePostAction = createAsyncThunkAction<
   [PostData["_id"], PostChangableData],
-  PostData
+  PostDataformated
 >(types.UPDATE_POST, api.updatePost)

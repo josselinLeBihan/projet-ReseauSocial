@@ -84,10 +84,19 @@ export interface CommentDataFormated {
   content: string
 }
 
-export interface CommentData {
+export interface CommentData extends CommentChangableData {
   _id: string
   createdAt: string
   comments?: string[]
-  content: string
   user: UserData
+}
+
+export interface CommentChangableData {
+  content: string
+}
+
+export interface CommentDeleteData {
+  _id: string
+  parentId: string
+  parentType: "post" | "comment"
 }

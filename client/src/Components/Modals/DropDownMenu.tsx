@@ -17,7 +17,7 @@ export interface linkProps {
 const DropDownMenu: React.FC<DropDownMenuProps> = ({ name, icon, links }) => {
   return (
     <Menu>
-      <MenuButton>
+      <MenuButton className={"text-gray-600 hover:text-gray-900"}>
         {name} {icon}
       </MenuButton>
       <MenuItems

@@ -20,7 +20,6 @@ import DeleteIcon from "@mui/icons-material/Delete"
 import ConfirmationModal from "../Modals/ConfirmationModal"
 import {
   deletePostAction,
-  getComPostsAction,
   updatePostAction,
 } from "../../redux/actions/postAction"
 import PostModal from "../Modals/PostModal"
@@ -55,7 +54,7 @@ const Post: React.FC<PostParams> = ({ post, onReload }) => {
     (state) => state.community?.community,
   )
 
-  const postLinks: linkProps[] = [
+  const postActions: linkProps[] = [
     {
       name: "Modifier",
       function: () => setIsSubmitModalShow(true),
@@ -87,7 +86,13 @@ const Post: React.FC<PostParams> = ({ post, onReload }) => {
     return (comments || [])
       .slice(0, commentsLenght)
       .map((childComment) => (
-        <MemoizedComment key={childComment} id={childComment} />
+        <MemoizedComment
+          key={childComment}
+          id={childComment}
+          onCommentChange={onReload}
+          parentId={_id}
+          parentType="post"
+        />
       ))
   }, [comments, commentsLenght])
 
@@ -161,7 +166,7 @@ const Post: React.FC<PostParams> = ({ post, onReload }) => {
             </div>
           </div>
           {isUserPost && (
-            <DropDownMenu icon={<MoreVertIcon />} links={postLinks} />
+            <DropDownMenu icon={<MoreVertIcon />} links={postActions} />
           )}
         </div>
         <span>{content}</span>

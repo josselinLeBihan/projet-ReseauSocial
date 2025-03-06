@@ -55,9 +55,13 @@ export const updatePost = async (
   post: PostChangableData,
 ): Promise<{
   error?: string
-  data?: PostData
+  data?: PostDataformated
 }> => {
-  return await apiRequest<PostData>("POST", `/post/modify/${postId}`, post)
+  return await apiRequest<PostDataformated>(
+    "POST",
+    `/post/modify/${postId}`,
+    post,
+  )
 }
 
 export const deletePost = async (

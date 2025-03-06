@@ -116,10 +116,14 @@ exports.addComment = async (req, res, next) => {
  */
 exports.modifyComment = async (req, res, next) => {
   try {
-    const { content } = req.body
+    const { comment } = req.body
     const { id } = req.params
 
-    logger.info(`🔧 Tentative de modification du commentaire : ID ${id}`)
+    const content = comment.content
+
+    logger.info(
+      `🔧 Tentative de modification du commentaire : ID ${id} Modification ${content}`
+    )
 
     const modifiedAt = new Date()
 

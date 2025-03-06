@@ -1,7 +1,7 @@
-const { create } = require("domain");
-const mongoose = require("mongoose");
-const { type } = require("os");
-const Schema = mongoose.Schema;
+const { create } = require("domain")
+const mongoose = require("mongoose")
+const { type } = require("os")
+const Schema = mongoose.Schema
 
 const commentSchema = new Schema({
   _id: {
@@ -17,6 +17,9 @@ const commentSchema = new Schema({
     type: Date,
     require: true,
   },
+  modifiedAt: {
+    type: Date,
+  },
   user: {
     type: Schema.Types.ObjectId,
     ref: "User",
@@ -27,6 +30,6 @@ const commentSchema = new Schema({
       ref: "Comment",
     },
   ],
-});
+})
 
-module.exports = mongoose.model("Comment", commentSchema);
+module.exports = mongoose.model("Comment", commentSchema)

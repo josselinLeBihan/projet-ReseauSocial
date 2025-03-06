@@ -27,7 +27,7 @@ export const getComment = async (
 
 export const updateComment = async (
   commentId: CommentData["_id"],
-  post: CommentChangableData,
+  comment: CommentChangableData,
 ): Promise<{
   error?: string
   data?: CommentDataFormated
@@ -35,7 +35,7 @@ export const updateComment = async (
   return await apiRequest<CommentDataFormated>(
     "POST",
     `/comment/modify/${commentId}`,
-    { post },
+    { comment },
   )
 }
 

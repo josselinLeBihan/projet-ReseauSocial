@@ -79,6 +79,7 @@ export interface CommentCreationData {
 export interface CommentDataFormated {
   _id: string
   createdAt: string
+  modifyAt?: string
   comments: string[]
   user: UserFormatedData
   content: string
@@ -87,6 +88,7 @@ export interface CommentDataFormated {
 export interface CommentData extends CommentChangableData {
   _id: string
   createdAt: string
+  modifiedAt?: string
   comments?: string[]
   user: UserData
 }

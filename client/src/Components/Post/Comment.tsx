@@ -170,7 +170,9 @@ function Comment({ id, onCommentChange, parentId, parentType }: CommentProps) {
                 {comment?.user?.userName}
               </span>
               <p className="font-normal text-sm leading-tight truncate text-zinc-500">
-                {comment?.createdAt}
+                {comment?.modifiedAt
+                  ? `Modifié ${comment?.modifiedAt}`
+                  : `Créé ${comment?.createdAt}`}
               </p>
             </div>
             <span>{comment?.content}</span>

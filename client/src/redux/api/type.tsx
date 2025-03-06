@@ -79,7 +79,7 @@ export interface CommentCreationData {
 export interface CommentDataFormated {
   _id: string
   createdAt: string
-  modifyAt?: string
+  modifiedAt?: string
   comments: string[]
   user: UserFormatedData
   content: string

@@ -16,14 +16,11 @@ export interface linkProps {
 
 const DropDownMenu: React.FC<DropDownMenuProps> = ({ name, icon, links }) => {
   return (
-    <Menu>
+    <Menu as="div" className="relative inline-block text-left">
       <MenuButton className={"text-gray-600 hover:text-gray-900"}>
         {name} {icon}
       </MenuButton>
-      <MenuItems
-        anchor="bottom"
-        className="w-52 origin-top-left rounded-xl border bg-white p-1 text-sm transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
-      >
+      <MenuItems className="absolute -top-1 mb-2 w-52 rounded-xl border bg-white p-1 text-sm transition duration-100 ease-out z-30 ">
         {links.map((link) => (
           <MenuItem key={link.name}>
             <button

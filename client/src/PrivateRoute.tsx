@@ -37,7 +37,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ userData }) => {
       <div className="flex w-full justify-between pt-24 h-full">
         <LeftBar userData={userData} />
 
-        <div className="flex-1 bg-zinc-100 rounded-2xl p-8 mx-72 h-[85vh] overflow-auto">
+        <div className="flex-1 bg-zinc-100 rounded-t-2xl p-8 mx-72 h-full ">
           <Outlet />
         </div>
 

@@ -36,6 +36,8 @@ exports.getComment = async (req, res, next) => {
     const comment = {
       _id: commentData._id,
       createdAt: dayjs(commentData.createdAt).fromNow(),
+      modifiedAt:
+        commentData.modifiedAt && dayjs(commentData.modifiedAt).fromNow(),
       comments: commentData.comments,
       content: commentData.content,
       user: {
@@ -84,13 +86,15 @@ exports.addComment = async (req, res, next) => {
       `✅ Nouveau commentaire créé : ID ${_id}, par l'utilisateur : ${user}`
     )
 
+    const updateQuery = { $push: { comments: { $each: [_id], $position: 0 } } }
+
     if (parentType === "comment") {
-      await Comment.updateOne({ _id: parentId }, { $push: { comments: _id } })
+      await Comment.updateOne({ _id: parentId }, updateQuery)
       logger.info(
         `🔗 Commentaire enfant lié à un autre commentaire (Parent ID : ${parentId})`
       )
     } else if (parentType === "post") {
-      await Post.updateOne({ _id: parentId }, { $push: { comments: _id } })
+      await Post.updateOne({ _id: parentId }, updateQuery)
       logger.info(
         `🔗 Commentaire enfant lié à un post (Parent ID : ${parentId})`
       )

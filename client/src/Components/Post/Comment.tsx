@@ -23,6 +23,7 @@ import EditIcon from "@mui/icons-material/Edit"
 import DeleteIcon from "@mui/icons-material/Delete"
 import ConfirmationModal from "../Modals/ConfirmationModal"
 import PostModal from "../Modals/PostModal"
+import MessageInfo from "./MessageInfo"
 
 const MemoizedComment = memo(Comment)
 const LIMIT = 5
@@ -165,16 +166,11 @@ function Comment({ id, onCommentChange, parentId, parentType }: CommentProps) {
             className="w-11 h-11 shrink-0 rounded-full"
           />
           <div className="flex flex-col flex-1 truncate gap-4">
-            <div className="flex flex-col flex-1 gap-0">
-              <span className="truncate relative pr-8 font-medium text-gray-900">
-                {comment?.user?.userName}
-              </span>
-              <p className="font-normal text-sm leading-tight truncate text-zinc-500">
-                {comment?.modifiedAt
-                  ? `Modifié ${comment?.modifiedAt}`
-                  : `Créé ${comment?.createdAt}`}
-              </p>
-            </div>
+            <MessageInfo
+              userName={comment?.user.userName || ""}
+              createdAt={comment?.createdAt || ""}
+              modifiedAt={comment?.modifiedAt || undefined}
+            />
             <span>{comment?.content}</span>
             <div className="flex gap-4">
               <Like />

@@ -6,6 +6,7 @@ import {
   CommunityData,
   PostData,
   PostDataformated,
+  UserData,
 } from "../api/type"
 import { createAsyncThunkAction } from "../utils/reduxUtils"
 import { logger } from "../../utils/logger"
@@ -93,3 +94,13 @@ export const updatePostAction = createAsyncThunkAction<
   [PostData["_id"], PostChangableData],
   PostDataformated
 >(types.UPDATE_POST, api.updatePost)
+
+export const likePostAction = createAsyncThunkAction<
+  [PostData["_id"], UserData["_id"]],
+  String
+>(types.LIKE_POST, api.likePost)
+
+export const unlikePostAction = createAsyncThunkAction<
+  [PostData["_id"], UserData["_id"]],
+  String
+>(types.UNLIKE_POST, api.unlikePost)

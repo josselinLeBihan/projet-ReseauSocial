@@ -1,4 +1,5 @@
 const Post = require("../models/post.model")
+const User = require("../models/user.model")
 const mongoose = require("mongoose")
 const logger = require("../utils/logger")
 const dayjs = require("dayjs")
@@ -19,7 +20,10 @@ exports.createPost = async (req, res, next) => {
     const { content, user, fileUrl, fileType, community } = req.body
 
     if (!content || !user) {
-      logger.warn("⚠️ Champs manquants lors de la création du post.")
+      return res.status(400).json({
+        error: `Tous les champs sont requis. Content: ${content} User: ${user}`,
+      })
+
       return res.status(400).json({ error: "Tous les champs sont requis." })
     }
 
@@ -159,7 +163,7 @@ exports.deletePost = async (req, res, next) => {
 /**
  * Récupère un post
  *
- * @route GET /post/:id
+ * @route GET /:id
  */
 exports.getPost = async (req, res, next) => {
   try {
@@ -179,6 +183,94 @@ exports.getPost = async (req, res, next) => {
     logger.error(
       `❌ Erreur lors de la récupération du post (ID ${req.params.id}) : ${error.message}`
     )
+    res.status(500).json({ error: "Une erreur est survenue." })
+  }
+}
+
+/**
+ * Unlike un post
+ *
+ * @route POST /unlike/:id/:userId
+ */
+exports.likePost = async (req, res, next) => {
+  try {
+    const { postId, userId } = req.params
+
+    if (!postId || !userId) {
+      logger.warn("⚠️ Champs manquants lors du like.")
+      return res.status(400).json({
+        error: `Tous les champs sont requis. Id: ${postId} UserId: ${userId}`,
+      })
+    }
+
+    logger.info(
+      `🔍 Tentative de like du post par un utilisateur: ID ${postId} User ${userId}`
+    )
+    const post = await Post.findOne({ _id: postId }).populate("user")
+    if (!post) {
+      logger.error("❌ Erreur lors de la récupération du post")
+      return res.status(400).json({
+        error: `Erreur lors de la réccupération du post Post: ${postId} UserId: ${userId}`,
+      })
+    }
+    const user = await User.findById(userId)
+    if (!user) {
+      logger.error("❌ Erreur lors de la récupération de l'utilisateur")
+      return res.status(400).json({
+        error: `Erreur lors de la réccupération du post Post: ${postId} UserId: ${userId}`,
+      })
+    }
+
+    await Post.updateOne({ _id: postId }, { $push: { likes: userId } })
+    res.status(200).json({ message: "Post liké avec succès !" })
+
+    logger.info(`✅ Post liké avec succès : ID ${postId}`)
+  } catch (error) {
+    logger.error(`❌ Erreur lors du like du post : ${error.message}`)
+    res.status(500).json({ error: "Une erreur est survenue." })
+  }
+}
+
+/**
+ * Like un post
+ *
+ * @route POST /like/:id/:userId
+ */
+exports.unlikePost = async (req, res, next) => {
+  try {
+    const { postId, userId } = req.params
+
+    if (!postId || !userId) {
+      logger.warn("⚠️ Champs manquants lors du unlike.")
+      return res.status(400).json({
+        error: `Tous les champs sont requis. Id: ${postId} UserId: ${userId}`,
+      })
+    }
+
+    logger.info(
+      `🔍 Tentative de unlike du post par un utilisateur: ID ${postId} User ${userId}`
+    )
+    const post = await Post.findOne({ _id: postId }).populate("user")
+    if (!post) {
+      logger.error("❌ Erreur lors de la récupération du post")
+      return res.status(400).json({
+        error: `Erreur lors de la réccupération du post Post: ${postId} UserId: ${userId}`,
+      })
+    }
+    const user = await User.findById(userId)
+    if (!user) {
+      logger.error("❌ Erreur lors de la récupération de l'utilisateur")
+      return res.status(400).json({
+        error: `Erreur lors de la réccupération du post Post: ${postId} UserId: ${userId}`,
+      })
+    }
+
+    await Post.updateOne({ _id: postId }, { $pull: { likes: userId } })
+    res.status(200).json({ message: "Post liké avec succès !" })
+
+    logger.info(`✅ Post liké avec succès : ID ${postId}`)
+  } catch (error) {
+    logger.error(`❌ Erreur lors du unlike du post : ${error.message}`)
     res.status(500).json({ error: "Une erreur est survenue." })
   }
 }

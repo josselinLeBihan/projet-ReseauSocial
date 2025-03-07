@@ -190,7 +190,7 @@ const Post: React.FC<PostParams> = ({ post, onReload }) => {
         )}
         <hr className=" border-0 border-t-2 border-gray-300" />
         <div className="flex gap-4">
-          <Like />
+          <Like parent={post} parentType="Post" />
           <div className="flex gap-2">
             <button
               data-testid="comment-button"

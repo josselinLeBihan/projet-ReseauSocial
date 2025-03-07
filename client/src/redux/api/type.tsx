@@ -46,7 +46,8 @@ export interface PostDataformated {
   _id: string
   createdAt: string
   modifiedAt?: string
-  comments: string[]
+  comments: CommentData["_id"][]
+  likes: UserData["_id"][]
   user: UserFormatedData
   community: string
   content: string
@@ -81,6 +82,7 @@ export interface CommentDataFormated {
   createdAt: string
   modifiedAt?: string
   comments: string[]
+  likes: UserData["_id"][]
   user: UserFormatedData
   content: string
 }

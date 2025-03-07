@@ -29,6 +29,26 @@ const commentReducer = (state = initialState, action) => {
         ...state,
         error: payload,
       }
+    case types.LIKE_COMMENT.SUCCESS:
+      return {
+        ...state,
+        successMessage: payload ? payload : null,
+      }
+    case types.LIKE_COMMENT.FAIL:
+      return {
+        ...state,
+        error: payload,
+      }
+    case types.UNLIKE_COMMENT.SUCCESS:
+      return {
+        ...state,
+        successMessage: payload ? payload : null,
+      }
+    case types.UNLIKE_COMMENT.FAIL:
+      return {
+        ...state,
+        error: payload,
+      }
     default:
       return state
   }

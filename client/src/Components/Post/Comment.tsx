@@ -173,7 +173,8 @@ function Comment({ id, onCommentChange, parentId, parentType }: CommentProps) {
             />
             <span>{comment?.content}</span>
             <div className="flex gap-4">
-              <Like />
+              {comment && <Like parent={comment} parentType="Comment" />}
+
               <div className="flex gap-2">
                 <button
                   className="text-gray-500 hover:text-gray-900 text-sm"

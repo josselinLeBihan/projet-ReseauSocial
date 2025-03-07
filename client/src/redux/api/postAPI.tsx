@@ -5,6 +5,7 @@ import {
   CommentData,
   CommunityData,
   PostDataformated,
+  UserData,
 } from "./type"
 import { apiRequest } from "../utils/reduxUtils"
 
@@ -71,4 +72,23 @@ export const deletePost = async (
   data?: string
 }> => {
   return await apiRequest<string>("POST", `/post/delete/${postId}`)
+}
+
+export const likePost = async (
+  postId: PostData["_id"],
+  userId: UserData["_id"],
+): Promise<{
+  error?: string
+  data?: string
+}> => {
+  return await apiRequest<string>("POST", `/post/like/${postId}/${userId}`)
+}
+export const unlikePost = async (
+  postId: PostData["_id"],
+  userId: UserData["_id"],
+): Promise<{
+  error?: string
+  data?: string
+}> => {
+  return await apiRequest<string>("POST", `/post/unlike/${postId}/${userId}`)
 }

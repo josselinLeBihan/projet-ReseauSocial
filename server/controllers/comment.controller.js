@@ -195,3 +195,91 @@ exports.deleteComment = async (req, res, next) => {
     res.status(500).json({ error: "Une erreur est survenue." })
   }
 }
+
+/**
+ * Unlike un post
+ *
+ * @route POST /unlike/:id/:userId
+ */
+exports.unlikeComment = async (req, res, next) => {
+  try {
+    const { commentId, userId } = req.params
+
+    if (!commentId || !userId) {
+      logger.warn("⚠️ Champs manquants lors du unlike.")
+      return res.status(400).json({
+        error: `Tous les champs sont requis. Id: ${commentId} UserId: ${userId}`,
+      })
+    }
+
+    logger.info(
+      `🔍 Tentative de unlike du comment par un utilisateur: ID ${commentId} User ${userId}`
+    )
+    const comment = await Comment.findOne({ _id: commentId }).populate("user")
+    if (!comment) {
+      logger.error("❌ Erreur lors de la récupération du comment")
+      return res.status(400).json({
+        error: `Erreur lors de la réccupération du comment Comment: ${commentId} UserId: ${userId}`,
+      })
+    }
+    const user = await User.findById(userId)
+    if (!user) {
+      logger.error("❌ Erreur lors de la récupération de l'utilisateur")
+      return res.status(400).json({
+        error: `Erreur lors de la réccupération du comment Comment: ${commentId} UserId: ${userId}`,
+      })
+    }
+
+    await Comment.updateOne({ _id: commentId }, { $pull: { likes: userId } })
+    res.status(200).json({ message: "Comment unliké avec succès !" })
+
+    logger.info(`✅ Comment unliké avec succès : ID ${commentId}`)
+  } catch (error) {
+    logger.error(`❌ Erreur lors du unlike du comment : ${error.message}`)
+    res.status(500).json({ error: "Une erreur est survenue." })
+  }
+}
+
+/**
+ * Like un comment
+ *
+ * @route POST /like/:id/:userId
+ */
+exports.likeComment = async (req, res, next) => {
+  try {
+    const { commentId, userId } = req.params
+
+    if (!commentId || !userId) {
+      logger.warn("⚠️ Champs manquants lors de la création du comment.")
+      return res.status(400).json({
+        error: `Tous les champs sont requis. Id: ${commentId} UserId: ${userId}`,
+      })
+    }
+
+    logger.info(
+      `🔍 Tentative de like du comment par un utilisateur: ID ${commentId} User ${userId}`
+    )
+    const comment = await Comment.findOne({ _id: commentId }).populate("user")
+    if (!comment) {
+      logger.error("❌ Erreur lors de la récupération du comment")
+      return res.status(400).json({
+        error: `Erreur lors de la réccupération du comment Comment: ${commentId} UserId: ${userId}`,
+      })
+    }
+    const user = await User.findById(userId)
+    if (!user) {
+      logger.error("❌ Erreur lors de la récupération de l'utilisateur")
+      return res.status(400).json({
+        error: `Erreur lors de la réccupération du comment Comment: ${commentId} UserId: ${userId}`,
+      })
+    }
+
+    await Comment.updateOne({ _id: commentId }, { $push: { likes: userId } })
+    res.status(200).json({ message: "Comment liké avec succès !" })
+
+    logger.info(`✅ Comment liké avec succès : ID ${commentId}`)
+  } catch (error) {
+    logger.error(`❌ Erreur lors du like du comment : ${error.message}`)
+    res.status(500).json({ error: "Une erreur est survenue." })
+  }
+}

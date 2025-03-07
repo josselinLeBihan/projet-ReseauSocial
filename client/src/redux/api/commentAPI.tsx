@@ -60,7 +60,10 @@ export const likeComment = async (
   error?: string
   data?: string
 }> => {
-  return await apiRequest<string>("POST", `/post/like/${commentId}/${userId}`)
+  return await apiRequest<string>(
+    "POST",
+    `/comment/like/${commentId}/${userId}`,
+  )
 }
 export const unlikeComment = async (
   commentId: CommentData["_id"],
@@ -69,5 +72,8 @@ export const unlikeComment = async (
   error?: string
   data?: string
 }> => {
-  return await apiRequest<string>("POST", `/post/unlike/${commentId}/${userId}`)
+  return await apiRequest<string>(
+    "POST",
+    `/comment/unlike/${commentId}/${userId}`,
+  )
 }

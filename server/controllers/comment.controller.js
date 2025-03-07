@@ -39,6 +39,7 @@ exports.getComment = async (req, res, next) => {
       modifiedAt:
         commentData.modifiedAt && dayjs(commentData.modifiedAt).fromNow(),
       comments: commentData.comments,
+      likes: commentData.likes,
       content: commentData.content,
       user: {
         _id: user._id,
@@ -197,7 +198,7 @@ exports.deleteComment = async (req, res, next) => {
 }
 
 /**
- * Unlike un post
+ * Unlike un comment
  *
  * @route POST /unlike/:id/:userId
  */

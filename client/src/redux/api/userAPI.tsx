@@ -1,5 +1,5 @@
 import { apiRequest } from "../utils/reduxUtils"
-import { UserData } from "./type"
+import { UserData, UserInfo } from "./type"
 
 /*
 export const getUser = async (id: string) => {
@@ -12,10 +12,10 @@ export const getUser = async (id: string) => {
 }
 */
 export const getUser = async (
-  id: UserData["_id"],
+  id: UserInfo["_id"],
 ): Promise<{
   error?: string
-  data?: UserData
+  data?: UserInfo
 }> => {
-  return await apiRequest<UserData>("GET", `/user/${id}`)
+  return await apiRequest<UserInfo>("GET", `/user/${id}`)
 }

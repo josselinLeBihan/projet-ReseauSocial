@@ -1,9 +1,9 @@
 import * as api from "../api/userAPI"
 import * as types from "../constants/userConstants"
-import { UserData } from "../api/type"
+import { UserData, UserInfo } from "../api/type"
 import { createAsyncThunkAction } from "../utils/reduxUtils"
 
 export const getUserAction = createAsyncThunkAction<
   [UserData["_id"]],
-  UserData
+  UserInfo
 >(types.GET_USER, api.getUser)

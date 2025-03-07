@@ -7,6 +7,9 @@ import { Link, NavLink, useNavigate } from "react-router-dom"
 import { UserData } from "../../App"
 import GroupIcon from "@mui/icons-material/Group"
 import { logger } from "../../utils/logger"
+import { useAppDispatch, useAppSelector } from "../../redux/store"
+import { getUserAction } from "../../redux/actions/userActions"
+import { UserInfo } from "../../redux/api/type"
 
 interface LeftBarProps {
   userData: UserData
@@ -40,11 +43,20 @@ const NavItem = ({ to, label, icon }) => (
 )
 
 const LeftBar: React.FC<LeftBarProps> = ({ userData }) => {
-  if (!userData) {
-    logger.warn("Aucune donnée utilisateur reçu dans LeftBar")
+  const userInfo: UserInfo = useAppSelector((state) => state.auth.userInfo)
+
+  if (!userData || !userInfo) {
+    logger.warn(
+      `Aucune donnée utilisateur reçu dans LeftBar Userdata: ${userData} UserInfo: ${userInfo}`,
+    )
   } else {
-    logger.info("LeftBar monté avec les données utilisateur :" + userData)
+    logger.info(
+      "LeftBar monté avec les données utilisateur :" + userData,
+      userInfo,
+    )
   }
+
+  const dispatch = useAppDispatch()
 
   const userName = userData?.userName
   const name = userData?.name
@@ -70,7 +82,7 @@ const LeftBar: React.FC<LeftBarProps> = ({ userData }) => {
         <div className="justify-between items-center  flex w-full">
           <div className="self-stretch justify-start items-center inline-flex flex-col">
             <span className="self-stretch text-center text-zinc-900 text-lg font-medium">
-              5.5k
+              {userInfo?.following?.length || 0}
             </span>
             <div className="text-center text-zinc-500 text-sm font-normal ">
               Follower
@@ -78,7 +90,7 @@ const LeftBar: React.FC<LeftBarProps> = ({ userData }) => {
           </div>
           <div className="self-stretch justify-start items-center inline-flex flex-col">
             <span className="self-stretch text-center text-zinc-900 text-lg font-medium">
-              568
+              {userInfo?.followers?.length || 0}
             </span>
             <div className="text-center text-zinc-500 text-sm font-normal ">
               Following
@@ -86,7 +98,7 @@ const LeftBar: React.FC<LeftBarProps> = ({ userData }) => {
           </div>
           <div className="self-stretch justify-start items-center inline-flex flex-col">
             <span className="self-stretch text-center text-zinc-900 text-lg font-medium">
-              112
+              {userInfo?.totalPost || 0}
             </span>
             <div className="text-center text-zinc-500 text-sm font-normal ">
               Posts

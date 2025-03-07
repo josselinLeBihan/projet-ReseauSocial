@@ -21,11 +21,20 @@ export interface UserFormatedData {
   userName: string
 }
 
-export interface UserData extends SignUpData {
+export interface UserData {
   _id: string
   avatar?: string
-  followers?: UserData[]
-  following?: UserData[]
+  name: string
+  userName: string
+}
+
+export interface UserInfo extends UserData {
+  post: PostData["_id"][] | []
+  followers: UserData[] | []
+  following: UserData[] | []
+  totalCommunities: number
+  totalPostCommunities: number
+  totalPost: number
   location?: string
   bio?: string
   interest?: string

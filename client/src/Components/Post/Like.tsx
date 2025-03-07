@@ -23,7 +23,7 @@ const Like = ({ parent, parentType }: LikeProps) => {
   const [numberLikes, setNumberLikes] = useState(parent.likes.length)
   const actualUser: UserData = useAppSelector((state) => state.auth?.userData)
   const [isLiked, toggleLiked] = useToggle(
-    parent.likes.includes(actualUser._id),
+    parent.likes.includes(actualUser?._id),
   )
   const [isLoading, toggleLoading] = useToggle(false)
 

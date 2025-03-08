@@ -34,7 +34,7 @@ export interface UserInfo extends UserData {
   following: UserData[] | []
   totalCommunities: number
   totalPostCommunities: number
-  totalPost: number
+  totalPosts: number
   location?: string
   bio?: string
   interest?: string

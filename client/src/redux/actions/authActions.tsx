@@ -132,19 +132,6 @@ export const signInAction =
           accessTokenUpdatedAt,
         }
 
-        const userInfoResponse = await dispatch(getUserAction(user._id))
-        if (userInfoResponse && userInfoResponse.data) {
-          logger.info("USERINFO", userInfoResponse.data)
-          dispatch({
-            type: types.SET_USER_INFO,
-            payload: userInfoResponse.data,
-          })
-        } else {
-          throw new Error(
-            "Erreur lors de la récupération des informations utilisateur",
-          )
-        }
-
         localStorage.setItem("profile", JSON.stringify(profile))
         navigate("/")
         logger.info("Utilisateur connecté avec succès", user)

@@ -21,5 +21,3 @@ export const SET_ACCESS_TOKEN = "SET_ACCESS_TOKEN"
 export const SET_REFRESH_TOKEN = "SET_REFRESH_TOKEN"
 
 export const SET_USER_DATA = "SET_USER_DATA"
-
-export const SET_USER_INFO = "SET_USER_INFO"

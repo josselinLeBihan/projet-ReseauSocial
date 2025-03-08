@@ -2,7 +2,6 @@ import * as types from "../constants/authConstants"
 
 const initialState = {
   userData: null,
-  userInfo: null,
   refreshToken: null,
   accessToken: null,
   signInError: null,
@@ -28,11 +27,6 @@ const authReducer = (state = initialState, action) => {
       return {
         ...state,
         userData: payload ? payload : null,
-      }
-    case types.SET_USER_INFO:
-      return {
-        ...state,
-        userInfo: payload ? payload : null,
       }
 
     case types.SIGNUP.SUCCESS:

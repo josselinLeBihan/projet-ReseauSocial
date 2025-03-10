@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import { useAppDispatch, useAppSelector } from "../../redux/store"
 import { CommunityData } from "../../redux/api/type"
 import { getCommunitiesAction } from "../../redux/actions/communityActions"
 import { logger } from "../../utils/logger"
+import CommunityCard from "./CommunityCard"
 
-function CommunitiesPresentation() {
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-
+const CommunitiesPresentation: React.FC = () => {
   const dispatch = useAppDispatch()
 
   const communities: CommunityData[] = useAppSelector(
-    (state) => state.community?.joinedCommunities,
+    (state) => state.community?.communities || [],
   )
 
   useEffect(() => {
@@ -22,7 +21,24 @@ function CommunitiesPresentation() {
     }
   }, [dispatch])
 
-  return <div className="grid grid-cols-3 gap-3 w-full"></div>
+  return (
+    <div className="p-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+        {communities.map((community, index) => {
+          const isLarge = index % 3 === 0 // Modifier ce chiffre pour ajuster la fréquence des grandes cartes
+
+          return (
+            <div
+              key={community._id}
+              className={` ${isLarge ? "col-span-2 row-span-2" : ""} cursor-wait`}
+            >
+              <CommunityCard community={community} />
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
 }
 
 export default CommunitiesPresentation

@@ -7,20 +7,14 @@ interface CommunityCardProps {
 
 const CommunityCard: React.FC<CommunityCardProps> = ({ community }) => {
   return (
-    <div className="flex relative aspect-square ">
-      <a
-        className="abolute top-0 left-0 right-0 bottom-0"
-        href={`/community/${community.name}`}
-      >
-        <div className="flex flex-col flex-1 bg-gray-100 border border-gray-200 rounded-xl cursor-pointer overflow-hidden">
+    <div className="">
+      <a href={`/community/${community.name}`} className="block">
+        <div className="relative bg-gray-100 border border-gray-200 rounded-lg overflow-hidden aspect-square hover:bg-gray-200 group">
           <div
-            style={{
-              backgroundImage: `url(${community.image})`,
-              backgroundPosition: "50%",
-            }}
-            className="bg-cover flex h-full"
+            className="bg-cover bg-center w-full h-full"
+            style={{ backgroundImage: `url(${community.image})` }}
           ></div>
-          <div className="flex flex-col px-3 h-11 bg-slate-100 font-medium text-gray-900 ">
+          <div className="absolute bottom-0 w-full px-3 py-2 bg-gray-100 text-gray-900 font-medium group-hover:bg-gray-200">
             {community.name}
           </div>
         </div>

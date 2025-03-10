@@ -61,10 +61,10 @@ const CommunityMainSection: React.FC<CommunityMainSectionData> = ({
   ]
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex rounded-2xl flex-col gap-2 bg-gray-50">
+      <div className="flex rounded-2xl flex-col gap-2 bg-gray-50 border-gray-20 border">
         <img
           src={community?.image || "https://via.placeholder.com/150"}
-          className="h-52 object-cover rounded-t-2xl"
+          className="h-52 object-cover rounded-t-xl"
         />
         <div className="p-6 pb-0 flex flex-col">
           <div className="flex gap-2">
@@ -80,7 +80,7 @@ const CommunityMainSection: React.FC<CommunityMainSectionData> = ({
           </div>
           <p className="text-gray-500">{`${community?.members?.length} membres`}</p>
         </div>
-        <nav className="flex">
+        <nav className="flex rounded-xl overflow-hidden">
           {navLinks.map((link) => (
             <ComponentNavBar key={link.to} {...link} />
           ))}

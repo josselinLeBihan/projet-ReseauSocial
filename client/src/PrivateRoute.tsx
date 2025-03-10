@@ -34,10 +34,10 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ userData }) => {
   return isAuthenticated ? (
     <div className="scroll-smooth bg-gray-50 flex min-h-screen">
       <NavBar userData={userData} />
-      <div className="flex w-full justify-between pt-24 h-full">
+      <div className="flex w-full justify-between pt-24 min-h-screen ">
         <LeftBar userData={userData} />
 
-        <div className="flex-1 bg-zinc-100 rounded-t-2xl p-8 mx-72 h-full ">
+        <div className="flex-1 bg-gray-100 rounded-t-[40px] p-8 mx-72 h-full border-gray-200 border">
           <Outlet />
         </div>
 

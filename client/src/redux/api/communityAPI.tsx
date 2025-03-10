@@ -34,16 +34,23 @@ export const leaveCommunity = async (
   })
 }
 
-export const getJoinedCommunities = async (): Promise<{
+export const getJoinedCommunities = async (
+  userId: UserData["_id"],
+): Promise<{
   error?: string
   data?: CommunityData[]
 }> => {
-  return await apiRequest<CommunityData[]>("POST", `/community/member`)
+  return await apiRequest<CommunityData[]>("GET", `/community/member/${userId}`)
 }
 
-export const getNotJoinedCommunities = async (): Promise<{
+export const getNotJoinedCommunities = async (
+  userId: UserData["_id"],
+): Promise<{
   error?: string
   data?: CommunityData[]
 }> => {
-  return await apiRequest<CommunityData[]>("POST", `/community/notMember`)
+  return await apiRequest<CommunityData[]>(
+    "GET",
+    `/community/notMember/${userId}`,
+  )
 }

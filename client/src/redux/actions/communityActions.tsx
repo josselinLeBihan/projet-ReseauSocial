@@ -75,11 +75,11 @@ export const leaveCommunityAction = createAsyncThunkAction<
 >(types.LEAVE_COMMUNITY, api.leaveCommunity)
 
 export const getJoinedCommunitiesAction = createAsyncThunkAction<
-  [],
+  [UserData["_id"]],
   CommunityData[]
 >(types.GET_JOINED_COMMUNITIES, api.getJoinedCommunities)
 
 export const getNotJoinedCommunitiesAction = createAsyncThunkAction<
-  [],
+  [UserData["_id"]],
   CommunityData[]
 >(types.GET_NOT_JOINED_COMMUNITIES, api.getNotJoinedCommunities)

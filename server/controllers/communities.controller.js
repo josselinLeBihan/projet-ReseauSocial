@@ -10,7 +10,7 @@ const logger = require("../utils/logger") // Import du logger Winston
  */
 exports.getNotMemberCommunities = async (req, res, next) => {
   try {
-    const userId = req.user._id
+    const userId = req.params.userId
 
     const communities = await Community.find({ members: { $ne: userId } })
       .sort({ members: -1 }) // Tri décroissant par nombre de membres
@@ -24,7 +24,7 @@ exports.getNotMemberCommunities = async (req, res, next) => {
     res.status(200).json(
       communities.map((community) => ({
         name: community.name,
-        banner: community.banner,
+        image: community.image,
         membersCount: community.members.length,
       }))
     )
@@ -44,21 +44,21 @@ exports.getNotMemberCommunities = async (req, res, next) => {
  */
 exports.getMemberCommunities = async (req, res, next) => {
   try {
-    const userId = req.user._id
-
-    const communities = await Community.find({ members: userId }).select(
-      "_id name banner description members"
-    )
+    const userId = req.params.userId
 
     logger.info(
       `✅ Récupération des communautés membre pour l'utilisateur ${userId}.`
+    )
+
+    const communities = await Community.find({ members: userId }).select(
+      "_id name image description members"
     )
 
     res.status(200).json(
       communities.map((community) => ({
         id: community._id,
         name: community.name,
-        banner: community.banner,
+        image: community.image,
         description: community.description,
         membersCount: community.members.length,
       }))

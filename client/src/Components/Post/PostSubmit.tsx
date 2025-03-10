@@ -66,7 +66,7 @@ const PostSubmit: React.FC<PostSubmitProps> = ({ onPostSubmit }) => {
           onPostSubmit={handleSubmit}
         />
       )}
-      <div className="flex-1 gap-4 flex p-6 bg-gray-50 rounded-2xl">
+      <div className="flex-1 gap-4 flex p-6 bg-gray-50 rounded-xl border-gray-200 border">
         <img
           src={profilePlaceholder}
           alt="profileImage"

@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom"
 import CommunityMainSection from "../Components/Community/CommunityMainSection"
 import { CommunityData, UserData } from "../redux/api/type"
 import { useAppDispatch, useAppSelector } from "../redux/store"
-import CommunityPresentation from "../Components/Community/CommunityPresentation"
+import CommunitiesPresentation from "../Components/Community/CommunitiesPresentation"
 import { logger } from "../utils/logger"
 import { getCommunityAction } from "../redux/actions/communityActions"
 
@@ -38,7 +38,7 @@ const CommunityHome: React.FC = () => {
       {community && communityName ? (
         <CommunityMainSection community={community} userData={userData} />
       ) : (
-        <CommunityPresentation />
+        <CommunitiesPresentation />
       )}
     </div>
   )

@@ -6,6 +6,7 @@ import { Link, useLocation } from "react-router-dom"
 import {
   getCommunitiesAction,
   getCommunityAction,
+  getJoinedCommunitiesAction,
 } from "../../redux/actions/communityActions"
 import { useAppDispatch, useAppSelector } from "../../redux/store"
 import { logger } from "../../utils/logger"
@@ -19,12 +20,13 @@ const RightBar: React.FC<RightBarProps> = () => {
   const dispatch = useAppDispatch()
 
   const communities: CommunityData[] = useAppSelector(
-    (state) => state.community?.communities,
+    (state) => state.community?.joinedCommunities,
   )
+  const userData: UserData = useAppSelector((state) => state.auth?.userData)
 
   useEffect(() => {
     try {
-      dispatch(getCommunitiesAction())
+      dispatch(getJoinedCommunitiesAction(userData._id))
       logger.debug("Communautés récupérées :", communities)
     } catch (e) {
       logger.error("Erreur lors de la récupération des communautés :", e)

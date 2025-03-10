@@ -34,7 +34,7 @@ const NavItem = ({ to, label, icon }) => (
     to={to}
     className={({ isActive }) =>
       `text-gray-800 text-base px-2 py-2 rounded-md flex items-center gap-3 transition ${
-        isActive ? "bg-gray-300" : "hover:bg-gray-200"
+        isActive ? "bg-gray-200" : "hover:bg-gray-200"
       }`
     }
   >
@@ -63,14 +63,14 @@ const LeftBar: React.FC<LeftBarProps> = ({ userData }) => {
       }
     }
     fetchUserInfo()
-  }, [dispatch, userData._id])
+  }, [dispatch, userData])
 
   const userName = userData?.userName
   const name = userData?.name
 
   return (
     <div className="flex flex-col w-72 gap-4 p-4 pt-0 bg-gray-50 fixed left-0 top-24 h-full">
-      <div className="flex flex-col px-4 py-2 bg-zinc-100 rounded-lg justify-start items-start gap-4">
+      <div className="flex flex-col px-4 py-2 bg-gray-100 rounded-xl justify-start items-start gap-4 border-gray-200 border">
         <div className="flex items-center gap-4">
           <img
             src={profilePlaceholder}
@@ -81,7 +81,7 @@ const LeftBar: React.FC<LeftBarProps> = ({ userData }) => {
             <span className="truncate relative pr-8 font-medium text-gray-900">
               {name}
             </span>
-            <p className="font-normal text-sm leading-tight truncate text-zinc-500">
+            <p className="font-normal text-sm leading-tight truncate text-gray-500">
               {`@${userName}`}
             </p>
           </div>
@@ -92,7 +92,7 @@ const LeftBar: React.FC<LeftBarProps> = ({ userData }) => {
               <span className="self-stretch text-center text-zinc-900 text-lg font-medium">
                 {userInfo.following?.length || 0}
               </span>
-              <div className="text-center text-zinc-500 text-sm font-normal">
+              <div className="text-center text-gray-500 text-sm font-normal">
                 Following
               </div>
             </div>
@@ -100,15 +100,15 @@ const LeftBar: React.FC<LeftBarProps> = ({ userData }) => {
               <span className="self-stretch text-center text-zinc-900 text-lg font-medium">
                 {userInfo.followers?.length || 0}
               </span>
-              <div className="text-center text-zinc-500 text-sm font-normal">
+              <div className="text-center text-gray-500 text-sm font-normal">
                 Follower
               </div>
             </div>
             <div className="self-stretch justify-start items-center inline-flex flex-col">
-              <span className="self-stretch text-center text-zinc-900 text-lg font-medium">
+              <span className="self-stretch text-center text-gray-900 text-lg font-medium">
                 {userInfo.totalPosts || 0}
               </span>
-              <div className="text-center text-zinc-500 text-sm font-normal">
+              <div className="text-center text-gray-500 text-sm font-normal">
                 Posts
               </div>
             </div>

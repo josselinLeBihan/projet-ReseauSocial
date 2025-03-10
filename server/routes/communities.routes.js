@@ -11,8 +11,8 @@ const {
   leaveCommunity,
 } = require("../controllers/communities.controller")
 
-router.get("/notmember", getNotMemberCommunities)
-router.get("/member", getMemberCommunities)
+router.get("/notmember/:userId", getNotMemberCommunities)
+router.get("/member/:userId", getMemberCommunities)
 router.get("/:name/members", getCommunityMembers)
 router.get("/communities", getCommunities)
 router.get("/:name", getCommunity)

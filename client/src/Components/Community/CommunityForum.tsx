@@ -79,7 +79,7 @@ const CommunityForum: React.FC = () => {
 
       {communityPosts.length < totalPostsCount && (
         <button
-          className="bg-gray-700 hover:bg-blue-700 text-sm text-white font-semibold rounded-md w-full p-2 my-3"
+          className="bg-gray-700 hover:bg-teal-700 text-sm text-white font-semibold rounded-md w-full p-2 my-3"
           onClick={handleLoadMorePost}
           disabled={isLoadingMorePosts}
         >

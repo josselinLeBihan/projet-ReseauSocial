@@ -147,7 +147,7 @@ const Post: React.FC<PostParams> = ({ post, onReload }) => {
         />
       )}
       <div
-        className={`flex p-6 ${isUserPost ? `bg-gray-200` : `bg-gray-50`}  rounded-lg flex-col gap-8`}
+        className={`flex p-6 border-gray-200 border ${isUserPost ? `bg-gray-200/50` : `bg-gray-50`}  rounded-lg flex-col gap-8`}
       >
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-4">
@@ -188,7 +188,7 @@ const Post: React.FC<PostParams> = ({ post, onReload }) => {
             </PhotoView>
           </PhotoProvider>
         )}
-        <hr className=" border-0 border-t-2 border-gray-300" />
+        <hr className=" border-0 border-t-2 border-gray-300 mx-8" />
         <div className="flex gap-4">
           <Like parent={post} parentType="Post" />
           <div className="flex gap-2">
@@ -212,7 +212,7 @@ const Post: React.FC<PostParams> = ({ post, onReload }) => {
             {memoizedComments}
             {commentsLenght < totalComments && (
               <button
-                className="bg-gray-700 hover:bg-blue-700 text-sm text-white font-semibold rounded-md w-full p-2 my-3"
+                className="bg-gray-700 hover:bg-teal-700 text-sm text-white font-semibold rounded-md w-full p-2 my-3"
                 onClick={handleLoadMoreComments}
               >
                 Afficher plus de commentaires

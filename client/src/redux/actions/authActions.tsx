@@ -58,9 +58,7 @@ export const setRefreshToken =
 export const setUserData =
   (userData: UserData) => async (dispatch: AppDispatch) => {
     logger.debug("Définition des données utilisateur :", userData)
-    const userInfo = dispatch(getUserAction(userData._id))
     dispatch({ type: types.SET_USER_DATA, payload: userData })
-    dispatch({ type: types.SET_USER_INFO, payload: userInfo })
   }
 
 export const setInitialAuthState =

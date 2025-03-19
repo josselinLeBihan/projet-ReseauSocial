@@ -42,6 +42,20 @@ export const getComPosts = async (
   )
 }
 
+export const getUserPosts = async (
+  userId: UserData["_id"],
+  limit: number,
+  skip: number,
+): Promise<{
+  error?: string
+  data?: [posts: PostDataformated[], totalCommunityPosts: number]
+}> => {
+  return await apiRequest(
+    "GET",
+    `/post/user/${userId}?limit=${limit}&skip=${skip}`,
+  )
+}
+
 export const getPost = async (
   postId: PostData["_id"],
 ): Promise<{

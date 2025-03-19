@@ -5,10 +5,12 @@ import { logger } from "../../utils/logger"
 const initialState = {
   posts: [],
   communityPosts: [],
+  userPosts: [],
   error: null,
   post: null,
   successMessage: null,
   totalCommunityPosts: 0,
+  totalUserPosts: 0,
 }
 
 const postReducer = (state = initialState, action) => {
@@ -44,6 +46,28 @@ const postReducer = (state = initialState, action) => {
         }
       }
     case types.GET_COM_POSTS.FAIL:
+      return {
+        ...state,
+        error: payload,
+      }
+
+    case types.GET_USER_POSTS.SUCCESS:
+      if (payload.page === 1) {
+        return {
+          ...state,
+          userPosts: Array.isArray(payload.posts) ? payload.posts : [],
+          totalUserPosts: payload ? payload.totalUserPosts : 0,
+          error: null,
+        }
+      } else {
+        return {
+          ...state,
+          userPosts: [...state.userPosts, ...(payload ? payload.posts : [])],
+          totalUserPosts: payload ? payload.totalUserPosts : 0,
+          error: null,
+        }
+      }
+    case types.GET_USER_POSTS.FAIL:
       return {
         ...state,
         error: payload,

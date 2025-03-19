@@ -5,6 +5,7 @@ const {
   modifyPost,
   deletePost,
   getCommunityPosts,
+  getUserPosts,
   getPost,
   likePost,
   unlikePost,
@@ -16,6 +17,7 @@ router.post("/", createPost)
 router.post("/modify/:id", modifyPost)
 router.post("/delete/:id", deletePost)
 router.get("/community/:communityId", getCommunityPosts)
+router.get("/user/:userId", getUserPosts)
 router.get("/:id", getPost)
 
 router.post("/like/:postId/:userId", likePost)

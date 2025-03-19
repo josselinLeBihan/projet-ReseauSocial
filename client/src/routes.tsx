@@ -25,7 +25,7 @@ export const privateRoutes = [
     element: <Home />,
   },
   {
-    path: "/profile",
+    path: "/profile/:userId",
     element: <Profile />,
   },
   {
@@ -33,30 +33,18 @@ export const privateRoutes = [
     element: <CommunityHome />,
     children: [
       {
-        path: "forum/:communityName",
+        path: ":communityName/forum",
         element: <CommunityForum />,
       },
       {
-        path: "about/:communityName",
+        path: ":communityName/about",
         element: <CommunityAbout />,
       },
       {
-        path: "members/:communityName",
+        path: ":communityName/members/",
         element: <CommunityMembers />,
       },
     ],
-  },
-  {
-    path: "/community/about/:communityName",
-    element: <CommunityHome />,
-  },
-  {
-    path: "/community/members/:communityName",
-    element: <CommunityHome />,
-  },
-  {
-    path: "/community/:communityName",
-    element: <CommunityHome />,
   },
 ]
 

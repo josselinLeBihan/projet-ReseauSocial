@@ -55,9 +55,9 @@ const CommunityMainSection: React.FC<CommunityMainSectionData> = ({
   }
 
   const navLinks = [
-    { to: `/community/forum/${community?.name}`, label: "Forum" },
-    { to: `/community/about/${community?.name}`, label: "A propos" },
-    { to: `/community/Members/${community?.name}`, label: "Membres" },
+    { to: `/community/${community?.name}/forum`, label: "Forum" },
+    { to: `/community/${community?.name}/about`, label: "A propos" },
+    { to: `/community/${community?.name}/members`, label: "Membres" },
   ]
   return (
     <div className="flex flex-col gap-6">

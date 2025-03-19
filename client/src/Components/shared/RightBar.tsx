@@ -51,7 +51,7 @@ const RightBar: React.FC<RightBarProps> = () => {
             {communities && communities.length > 0 ? (
               communities.map((community) => (
                 <Link
-                  to={`/community/forum/${community.name}`}
+                  to={`/community/${community.name}/forum`}
                   className="text-gray-800 text-base px-2 py-2 hover:bg-gray-200 rounded-md flex items-center gap-3"
                   key={community.name}
                   onClick={handleCommunityChange}

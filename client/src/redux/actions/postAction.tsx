@@ -80,6 +80,47 @@ export const getComPostsAction =
     }
   }
 
+export const getUserPostsAction =
+  (userId: UserData["_id"], limit: number, skip: number) =>
+  async (dispatch) => {
+    await logger.info(`Action ${types.GET_COM_POSTS.REQUEST} déclenchée avec`, {
+      userId,
+      limit,
+      skip,
+    })
+    try {
+      const { error, data } = await api.getUserPosts(userId, limit, skip)
+
+      if (error || !data) {
+        throw new Error(error || "Pas de données reçues")
+      }
+
+      const { posts, totalCommunityPosts } = data
+      await logger.debug(`Action ${types.GET_USER_POSTS.SUCCESS} réussie`, {
+        posts,
+        totalCommunityPosts,
+      })
+
+      dispatch({
+        type: types.GET_USER_POSTS.SUCCESS,
+        payload: {
+          page: skip / limit + 1,
+          posts: posts,
+          totalCommunityPosts: totalCommunityPosts,
+        },
+      })
+    } catch (error) {
+      await logger.error(
+        `Erreur dans l'action ${types.GET_USER_POSTS.REQUEST}`,
+        error.message,
+      )
+      dispatch({
+        type: types.GET_USER_POSTS.FAIL,
+        payload: error.message,
+      })
+    }
+  }
+
 export const getPostAction = createAsyncThunkAction<
   [PostData["_id"]],
   PostDataformated

@@ -22,13 +22,6 @@ interface NavItemProps {
   icon: React.ReactNode
 }
 
-const navLinks: NavItemProps[] = [
-  { to: "/", label: "Accueil", icon: <HomeIcon /> },
-  { to: "/community", label: "Communautés", icon: <GroupIcon /> },
-  { to: "/profile", label: "Profile", icon: <AccountCircleIcon /> },
-  { to: "/saved", label: "Sauvegardées", icon: <BookmarkIcon /> },
-]
-
 const NavItem = ({ to, label, icon }) => (
   <NavLink
     to={to}
@@ -47,6 +40,17 @@ const LeftBar: React.FC<LeftBarProps> = ({ userData }) => {
   const [userInfo, setUserInfo] = useState<UserInfo>()
 
   const dispatch = useAppDispatch()
+
+  const navLinks: NavItemProps[] = [
+    { to: "/", label: "Accueil", icon: <HomeIcon /> },
+    { to: "/community", label: "Communautés", icon: <GroupIcon /> },
+    {
+      to: `/profile/${userData?._id}`,
+      label: "Profile",
+      icon: <AccountCircleIcon />,
+    },
+    { to: "/saved", label: "Sauvegardées", icon: <BookmarkIcon /> },
+  ]
 
   useEffect(() => {
     const fetchUserInfo = async () => {

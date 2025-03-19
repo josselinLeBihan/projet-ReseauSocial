@@ -98,6 +98,51 @@ exports.getCommunityPosts = async (req, res, next) => {
     res.status(500).json({ error: "Une erreur est survenue." })
   }
 }
+/**
+ * Récupère les posts d'une communauté
+ *
+ * @route GET /post/:userId
+ */
+exports.getUserPosts = async (req, res, next) => {
+  try {
+    const { userId } = req.params
+    const { limit = 10, skip = 0 } = req.query
+
+    logger.info(
+      `🔍 Tentative de récupération des posts pour l'utilisateur : ${userId}`
+    )
+    const posts = await Post.find({ user: userId })
+      .sort({
+        createdAt: -1,
+      })
+      .populate("user", "name userName")
+      .populate("community", "name")
+      .skip(parseInt(skip))
+      .limit(parseInt(limit))
+      .lean()
+
+    const formattedPosts = posts.map((post) => ({
+      ...post,
+      createdAt: dayjs(post.createdAt).fromNow(),
+      modifiedAt: post.modifiedAt && dayjs(post.modifiedAt).fromNow(),
+    }))
+
+    const totalUserPosts = await Post.countDocuments({
+      user: userId,
+    })
+
+    logger.info(`✅ Posts récupérés pour l'utilisateur : ${userId}`)
+    logger.debug(`🔢 Nombre total de posts : ${totalUserPosts}`)
+    res
+      .status(200)
+      .json({ posts: formattedPosts, totalUserPosts: totalUserPosts })
+  } catch (error) {
+    logger.error(
+      `❌ Erreur lors de la récupération des posts pour l'utilisateur (${req.params.userId}) : ${error.message}`
+    )
+    res.status(500).json({ error: "Une erreur est survenue." })
+  }
+}
 
 /**
  * Modifie un post

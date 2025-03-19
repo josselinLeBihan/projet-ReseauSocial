@@ -23,6 +23,7 @@ import {
   updatePostAction,
 } from "../../redux/actions/postAction"
 import PostModal from "../Modals/PostModal"
+import { useNavigate } from "react-router-dom"
 
 interface PostParams {
   post: PostDataformated
@@ -157,9 +158,12 @@ const Post: React.FC<PostParams> = ({ post, onReload }) => {
               className="w-11 h-11 shrink-0 rounded-full"
             />
             <div className=" flex flex-col flex-1 truncate">
-              <span className="truncate relative pr-8 font-medium text-gray-900">
+              <a
+                href={`/profile/${user._id}`}
+                className="truncate relative pr-8 font-medium text-gray-900 hover:text-gray-700 cursor-pointer"
+              >
                 {user?.userName}
-              </span>
+              </a>
               <p className="font-normal text-sm leading-tight truncate text-zinc-500">
                 {modifiedAt ? `Modifié ${modifiedAt}` : `Créé ${createdAt}`}
               </p>

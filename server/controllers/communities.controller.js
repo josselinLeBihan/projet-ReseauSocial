@@ -40,7 +40,7 @@ exports.getNotMemberCommunities = async (req, res, next) => {
  * Récupère toutes les communautés auxquelles l'utilisateur appartient
  * Inclut les IDs des communautés, leur nom, bannière, nombre de membres et description
  *
- * @route GET /communities/member
+ * @route GET /member
  */
 exports.getMemberCommunities = async (req, res, next) => {
   try {
@@ -74,7 +74,7 @@ exports.getMemberCommunities = async (req, res, next) => {
 /**
  * Récupère les membres d'une communauté
  *
- * @route GET /communities/:name/members
+ * @route GET /:name/members
  */
 exports.getCommunityMembers = async (req, res, next) => {
   try {
@@ -100,7 +100,7 @@ exports.getCommunityMembers = async (req, res, next) => {
 /**
  * Récupère les informations d'une communauté
  *
- * @route GET /communities/:name
+ * @route GET /:name
  */
 exports.getCommunity = (req, res, next) => {
   Community.findOne({ name: req.params.name })
@@ -143,7 +143,7 @@ exports.getCommunities = (req, res, next) => {
 /**
  * Rejoindre une communauté
  *
- * @route POST /communities/:name/join
+ * @route POST /:name/join
  */
 exports.joinCommunity = async (req, res) => {
   try {
@@ -196,7 +196,7 @@ exports.joinCommunity = async (req, res) => {
 /**
  * Quitter une communauté
  *
- * @route POST /communities/:name/leave
+ * @route POST /:name/leave
  */
 exports.leaveCommunity = async (req, res) => {
   try {

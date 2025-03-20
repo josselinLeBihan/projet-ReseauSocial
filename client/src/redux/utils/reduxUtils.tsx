@@ -67,7 +67,7 @@ interface ApiResponse<T> {
   data?: T
 }
 
-type HttpMethod = "GET" | "POST" | "DELETE"
+type HttpMethod = "GET" | "POST" | "PATCH" | "DELETE"
 
 //Fonction généique qui gère les API
 export const apiRequest = async <T extends any>(
@@ -89,6 +89,9 @@ export const apiRequest = async <T extends any>(
         break
       case "POST":
         response = await API.post<T>(endpoint, body)
+        break
+      case "PATCH":
+        response = await API.patch<T>(endpoint, body)
         break
       case "DELETE":
         response = await API.delete<T>(endpoint)

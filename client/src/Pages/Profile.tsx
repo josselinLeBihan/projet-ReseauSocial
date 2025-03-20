@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { useAppDispatch, useAppSelector } from "../redux/store"
-import { UserInfo } from "../redux/api/type"
-import { getUserAction } from "../redux/actions/userActions"
+import { PublicUserInfo } from "../redux/api/type"
+
 import { UserData } from "../App"
 import ProfileView from "../Components/Profile/ProfileView"
 import ProfileEdit from "../Components/Profile/ProfileEdit"
 import { logger } from "../utils/logger"
 import CommonLoading from "../Components/Loader/CommonLoading"
-import { warn } from "loglevel"
+import { getProfileAction } from "../redux/actions/profileActions"
 
 function Profile() {
   const userId = useParams<{ userId: UserData["_id"] }>().userId
   const [loading, setLoading] = useState<boolean>(false)
   const userData = useAppSelector((state) => state.auth.userData)
-  const [userInfo, setUserInfo] = useState<UserInfo>()
+  const userInfo: PublicUserInfo = useAppSelector(
+    (state) => state.user.publicUserProfile,
+  )
 
   const dispatch = useAppDispatch()
 
@@ -24,9 +26,8 @@ function Profile() {
     if (!userId) return
     const fetchUser = async () => {
       setLoading(true)
-      const result = await dispatch(getUserAction(userId))
-      setUserInfo(result?.data || undefined)
-      logger.warn("User Info: ", result?.data)
+      const result = await dispatch(getProfileAction(userId, userData?._id))
+      logger.info("User Info: ", result?.data)
     }
     fetchUser()
     setLoading(false)

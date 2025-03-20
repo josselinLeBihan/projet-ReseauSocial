@@ -1,10 +1,10 @@
 import React from "react"
-import { UserInfo } from "../../redux/api/type"
+import { PublicUserInfo, UserInfo } from "../../redux/api/type"
 import CommonLoading from "../Loader/CommonLoading"
 import { logger } from "../../utils/logger"
 
 interface ProfileEditProps {
-  userInfo: UserInfo | undefined
+  userInfo: PublicUserInfo | undefined
 }
 
 const ProfileEdit: React.FC<ProfileEditProps> = ({ userInfo }) => {

@@ -1,5 +1,9 @@
 import React, { memo, useEffect, useState } from "react"
-import { PostDataformated, UserInfo } from "../../redux/api/type"
+import {
+  PostDataformated,
+  PublicUserInfo,
+  UserInfo,
+} from "../../redux/api/type"
 import CommonLoading from "../Loader/CommonLoading"
 import { logger } from "../../utils/logger"
 import profilePlaceholder from "../../Assets/profile-placeholder.png"
@@ -10,9 +14,14 @@ import {
 } from "../../redux/actions/postAction"
 import { useAppDispatch, useAppSelector } from "../../redux/store"
 import Post from "../Post/Post"
+import { UserData } from "../../App"
+import {
+  followUserAction,
+  unfollowUserAction,
+} from "../../redux/actions/profileActions"
 
 interface ProfileViewProps {
-  userInfo: UserInfo | undefined
+  userInfo: PublicUserInfo | undefined
 }
 
 const MemoizedPost = memo(Post)
@@ -20,21 +29,22 @@ const LIMIT = 5
 
 const ProfileView: React.FC<ProfileViewProps> = ({ userInfo }) => {
   const dispatch = useAppDispatch()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isLoadingMorePosts, setIsLoadingMorePosts] = useState<boolean>(false)
 
-  const [isLoading, setIsLoading] = useState(false)
-  const [isLoadingMorePosts, setIsLoadingMorePosts] = useState(false)
+  const isFollower = useAppSelector((state) => state.user.isFollowing)
   const userPosts: PostDataformated[] = useAppSelector(
     (state) => state.post.userPosts,
   )
   const totalPostsCount: number = useAppSelector(
     (state) => state.post?.totalUserPosts,
   )
+  const userData: UserData = useAppSelector((state) => state.auth.userData)
 
-  const [shouldShowLoader, setShouldShowLoader] = useState(false)
+  const [shouldShowLoader, setShouldShowLoader] = useState<boolean>(false)
 
-  const fetchCommunityPosts = async (offset = 0) => {
+  const fetchUserPosts = async (offset = 0) => {
     if (!userInfo) return
-
     setIsLoading(offset === 0)
     setShouldShowLoader(offset === 0)
 
@@ -49,14 +59,14 @@ const ProfileView: React.FC<ProfileViewProps> = ({ userInfo }) => {
   }
 
   useEffect(() => {
-    fetchCommunityPosts()
+    fetchUserPosts()
     logger.info("CommunityForum monté avec les posts")
   }, [userInfo, dispatch])
 
   const handleLoadMorePost = async () => {
     if (!isLoadingMorePosts && userPosts.length < totalPostsCount) {
       setIsLoadingMorePosts(true)
-      await fetchCommunityPosts(userPosts.length)
+      await fetchUserPosts(userPosts.length)
       setIsLoadingMorePosts(false)
     }
   }
@@ -71,6 +81,19 @@ const ProfileView: React.FC<ProfileViewProps> = ({ userInfo }) => {
 
   logger.debug("ProfileView: ", userInfo)
 
+  const handleFollowingChange = async () => {
+    if (!userInfo || !userData) return
+    try {
+      if (isFollower) {
+        dispatch(unfollowUserAction(userData._id, userInfo._id))
+      } else {
+        dispatch(followUserAction(userData._id, userInfo._id))
+      }
+    } catch (error) {
+      logger.error("Erreur lors de l'ajout/suppression du suivi", error)
+    }
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex h-64 bg-gray-50">
@@ -84,9 +107,12 @@ const ProfileView: React.FC<ProfileViewProps> = ({ userInfo }) => {
           <div className="flex flex-col ">
             <div className="flex items-center gap-4">
               <h1 className="text-2xl font-bold">{userInfo?.name}</h1>
-              <button className="flex items-center gap-2 px-2 py-1 text-gray-800 rounded-full">
+              <button
+                className="flex items-center gap-2 px-2 py-1 text-gray-800 rounded-full"
+                onClick={handleFollowingChange}
+              >
                 <AddIcon />
-                Suivre
+                {isFollower ? "Abonné" : "Suivre"}
               </button>
             </div>
             <p className="text-gray-500">{`@${userInfo?.userName}`}</p>
@@ -100,7 +126,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ userInfo }) => {
             <MemoizedPost
               key={post._id}
               post={post}
-              onReload={fetchCommunityPosts}
+              onReload={fetchUserPosts}
             />
           ))}
       {userPosts.length < totalPostsCount && (

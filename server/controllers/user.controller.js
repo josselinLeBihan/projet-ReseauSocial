@@ -1,7 +1,7 @@
 const User = require("../models/user.model")
 const Post = require("../models/post.model")
 const Community = require("../models/community.model")
-const logger = require("../utils/logger") // Assurez-vous d'avoir un logger configuré
+const logger = require("../utils/logger")
 const dayjs = require("dayjs")
 const relativeTime = require("dayjs/plugin/relativeTime")
 

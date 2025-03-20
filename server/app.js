@@ -1,5 +1,3 @@
-require("dotenv").config()
-
 const express = require("express")
 const app = express()
 const mongoose = require("mongoose")
@@ -8,7 +6,11 @@ const authRoutes = require("./routes/auth.routes")
 const communityRoutes = require("./routes/communities.routes")
 const postRoutes = require("./routes/post.routes")
 const commentRoutes = require("./routes/comment.routes")
+const profileRoutes = require("./routes/profile.routes")
 const logger = require("./utils/logger")
+const decodeToken = require("./middlewares/auth/decodeToken")
+
+const passport = require("passport")
 
 const PORT = process.env.PORT || 3000
 
@@ -19,10 +21,17 @@ if (process.env.NODE_ENV !== "test") {
       useUnifiedTopology: true,
     })
     .then(() => logger.info("✅ Connexion à MongoDB réussie !"))
-    .catch(() => logger.error("❌ Connexion à MongoDB réussie !"))
+    .catch(() => logger.error("❌ Connexion à MongoDB échouée !"))
 }
 
+// Middleware pour parser les données JSON
 app.use(express.json())
+
+// Middleware pour parser les données encodées en URL
+app.use(express.urlencoded({ extended: true }))
+
+app.use(passport.initialize())
+require("./config/passport.js")
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*")
@@ -42,6 +51,7 @@ app.use("/user", userRoutes)
 app.use("/community", communityRoutes)
 app.use("/post", postRoutes)
 app.use("/comment", commentRoutes)
+app.use("/profile", profileRoutes)
 
 logger.info("Routes chargées avec succès")
 

@@ -29,7 +29,6 @@ export interface UserData {
 }
 
 export interface UserInfo extends UserData {
-  post: PostData["_id"][] | []
   followers: UserData[] | []
   following: UserData[] | []
   totalCommunities: number
@@ -38,7 +37,18 @@ export interface UserInfo extends UserData {
   location?: string
   bio?: string
   interest?: string
+}
+
+export interface ActualUserInfo extends UserInfo {
+  post: PostData["_id"][] | []
   savedPosts?: PostData[]
+}
+
+export interface PublicUserInfo extends UserInfo {
+  isFollowing: boolean
+  totalFollowers: number
+  totalFollowing: number
+  followingSince: string
 }
 
 export interface PostChangableData {

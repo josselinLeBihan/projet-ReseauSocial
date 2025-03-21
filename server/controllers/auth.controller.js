@@ -122,3 +122,9 @@ exports.logout = async (req, res) => {
     })
   }
 }
+
+exports.addContextData = async (req, res) => {
+  res.status(200).json({
+    message: "Déconnexion réussie.",
+  })
+}

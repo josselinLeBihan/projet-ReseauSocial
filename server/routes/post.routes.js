@@ -12,8 +12,9 @@ const {
 } = require("../controllers/post.controller")
 
 const router = express.Router()
+const fileUpload = require("../middlewares/posts/fileUpload")
 
-router.post("/", createPost)
+router.post("/", fileUpload, createPost)
 router.post("/modify/:id", modifyPost)
 router.post("/delete/:id", deletePost)
 router.get("/community/:communityId", getCommunityPosts)

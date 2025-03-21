@@ -8,42 +8,50 @@ const postRoutes = require("./routes/post.routes")
 const commentRoutes = require("./routes/comment.routes")
 const profileRoutes = require("./routes/profile.routes")
 const logger = require("./utils/logger")
-const decodeToken = require("./middlewares/auth/decodeToken")
+const Database = require("./config/database")
 
 const passport = require("passport")
 
 const PORT = process.env.PORT || 3000
 
-if (process.env.NODE_ENV !== "test") {
-  mongoose
-    .connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    })
-    .then(() => logger.info("✅ Connexion à MongoDB réussie !"))
-    .catch(() => logger.error("❌ Connexion à MongoDB échouée !"))
-}
+const db = new Database(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
 
-// Middleware pour parser les données JSON
-app.use(express.json())
+db.connect().catch((err) =>
+  logger.error("❌ Connexion à MongoDB échouée !", err)
+)
 
-// Middleware pour parser les données encodées en URL
-app.use(express.urlencoded({ extended: true }))
+const cors = require("cors")
+const morgan = require("morgan")
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: "GET,POST,PUT,DELETE,PATCH,OPTIONS",
+    allowedHeaders:
+      "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization",
+  })
+)
+app.use(morgan("dev"))
+app.use("/assets/userFiles", express.static(__dirname + "/assets/userFiles"))
+app.use(
+  "/assets/userAvatars",
+  express.static(__dirname + "/assets/userAvatars")
+)
+
+// Middleware pour parser les données JSON avec une limite de taille augmentée
+app.use(express.json({ limit: "50mb" }))
+
+// Middleware pour parser les données encodées en URL avec une limite de taille augmentée
+app.use(express.urlencoded({ limit: "50mb", extended: true }))
 
 app.use(passport.initialize())
 require("./config/passport.js")
 
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*")
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"
-  )
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
-  )
-  next()
+app.get("/server-status", (req, res) => {
+  res.status(200).json({ message: "Server is up and running!" })
 })
 
 app.use("/auth", authRoutes)

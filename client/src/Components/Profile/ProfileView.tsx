@@ -85,9 +85,9 @@ const ProfileView: React.FC<ProfileViewProps> = ({ userInfo }) => {
     if (!userInfo || !userData) return
     try {
       if (isFollower) {
-        dispatch(unfollowUserAction(userData._id, userInfo._id))
+        dispatch(unfollowUserAction(userData._id))
       } else {
-        dispatch(followUserAction(userData._id, userInfo._id))
+        dispatch(followUserAction(userData._id))
       }
     } catch (error) {
       logger.error("Erreur lors de l'ajout/suppression du suivi", error)

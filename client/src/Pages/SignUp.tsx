@@ -2,15 +2,24 @@ import React, { useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import VisibilityIcon from "@mui/icons-material/Visibility"
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff"
+
 import AddIcon from "@mui/icons-material/Add"
 import useToggle from "../hook/useToggle"
-import { useAppDispatch } from "../redux/store"
+import { useAppDispatch, useAppSelector } from "../redux/store"
 import { useNavigate } from "react-router-dom"
 import { SignUpData } from "../redux/api/type"
 import { signUpAction } from "../redux/actions/authActions"
 import { logger } from "../utils/logger"
+import Input from "../Components/shared/Input"
+
+interface SignUpFormData {
+  profileImage?: File[]
+  name: string
+  userName: string
+  email: string
+  password: string
+  confirmPassword: string
+}
 
 const schema = z
   .object({
@@ -48,6 +57,39 @@ const schema = z
     path: ["confirmPassword"],
   })
 
+const InputList = {
+  name: {
+    label: "Name",
+    type: "text",
+    placeholder: "John Doe",
+    showHideButton: false,
+  },
+  userName: {
+    label: "Nom d'utilisateur",
+    type: "text",
+    placeholder: "JohnDoe",
+    showHideButton: false,
+  },
+  email: {
+    label: "Email",
+    type: "email",
+    placeholder: "john@mail.fr",
+    showHideButton: false,
+  },
+  password: {
+    label: "Mot de passe",
+    type: "password",
+    placeholder: "**********",
+    showHideButton: true,
+  },
+  confirmPassword: {
+    label: "Confirmer le mot de passe",
+    type: "password",
+    placeholder: "*********",
+    showHideButton: true,
+  },
+}
+
 function SignUp() {
   const [loading, setLoading] = useState<boolean>(false)
   const [preview, setPreview] = useState<string | null>(null)
@@ -56,7 +98,7 @@ function SignUp() {
     size: string
   } | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const [showPassword, setShowPassword] = useToggle()
+  const signupError = useAppSelector((state) => state.auth.signUpError)
 
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
@@ -67,7 +109,7 @@ function SignUp() {
     setValue,
     watch,
     formState: { errors },
-  } = useForm({ resolver: zodResolver(schema) })
+  } = useForm<SignUpFormData>({ resolver: zodResolver(schema) })
 
   const imageFile = watch("profileImage")
   React.useEffect(() => {
@@ -107,13 +149,6 @@ function SignUp() {
       formData.append("avatar", data.profileImage[0])
     }
 
-    const signUpData: SignUpData = {
-      name: data.name,
-      avatar: data.profileImage ? data.profileImage[0] : null,
-      email: data.email,
-      userName: data.userName,
-      password: data.password,
-    }
     try {
       dispatch(signUpAction(formData, navigate)).finally(() =>
         setLoading(false),
@@ -133,7 +168,7 @@ function SignUp() {
         <h2 className="text-2xl font-semibold text-center text-gray-700 mb-4">
           S'inscrire
         </h2>
-
+        <p className="text-red-500 text-center">{signupError}</p>
         {/*Avatar - Sélection de l'image */}
         <div className="flex flex-col">
           <p className="font-medium text-gray-700">
@@ -174,119 +209,18 @@ function SignUp() {
           </div>
         </div>
 
-        {/* Champ Name */}
-        <div className="flex flex-col">
-          <label className="text-gray-700 font-medium">Name</label>
-          {errors.name && (
-            <p className="text-red-500 text-sm mb-1">{errors.name.message}</p>
-          )}
-          <input
-            type="text"
-            placeholder="Enter your name"
-            {...register("name")}
-            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
-              errors.name
-                ? "border-red-500 focus:ring-red-500"
-                : "focus:ring-blue-400"
-            }`}
+        {Object.entries(InputList).map(([name, input], key) => (
+          <Input
+            key={key}
+            name={name}
+            label={input.label}
+            type={input.type}
+            register={register}
+            error={errors[name]}
+            placeholder={input.placeholder}
+            showHideButton={input.showHideButton}
           />
-        </div>
-
-        {/* Champ UserName */}
-        <div className="flex flex-col">
-          <label className="text-gray-700 font-medium">Nom d'utilisateur</label>
-          {errors.userName && (
-            <p className="text-red-500 text-sm mb-1">
-              {errors?.userName?.message}
-            </p>
-          )}
-          <input
-            type="text"
-            placeholder="JoeDoe"
-            {...register("userName")}
-            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
-              errors.userName
-                ? "border-red-500 focus:ring-red-500"
-                : "focus:ring-blue-400"
-            }`}
-          />
-        </div>
-
-        {/* Champ Email */}
-        <div className="flex flex-col">
-          <label className="text-gray-700 font-medium">Email</label>
-          {errors.email && (
-            <p className="text-red-500 text-sm mb-1">{errors.email.message}</p>
-          )}
-          <input
-            type="email"
-            placeholder="Enter your email"
-            {...register("email")}
-            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
-              errors.email
-                ? "border-red-500 focus:ring-red-500"
-                : "focus:ring-blue-400"
-            }`}
-          />
-        </div>
-
-        {/* Champ Password */}
-        <div className="flex flex-col">
-          <label className="text-gray-700 font-medium">Mot de passe</label>
-          {errors.userName && (
-            <p className="text-red-500 text-sm mb-1">
-              {errors?.password?.message}
-            </p>
-          )}
-          <div className="flex items-center gap-2">
-            <input
-              type={showPassword ? "text" : "password"}
-              {...register("password")}
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
-                errors.password
-                  ? "border-red-500 focus:ring-red-500"
-                  : "focus:ring-blue-400"
-              }`}
-            />
-            <button
-              type="button"
-              onClick={setShowPassword}
-              className="text-gray-700 cursor-pointer"
-            >
-              {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-            </button>
-          </div>
-        </div>
-
-        {/* Champ ConfirmPassword */}
-        <div className="flex flex-col">
-          <label className="text-gray-700 font-medium">
-            Confirmer le mot de passe
-          </label>
-          {errors.confirmPassword && (
-            <p className="text-red-500 text-sm mb-1">
-              {errors?.confirmPassword?.message}
-            </p>
-          )}
-          <div className="flex items-center gap-2">
-            <input
-              type={showPassword ? "text" : "password"}
-              {...register("confirmPassword")}
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
-                errors.confirmPassword
-                  ? "border-red-500 focus:ring-red-500"
-                  : "focus:ring-blue-400"
-              }`}
-            />
-            <button
-              type="button"
-              onClick={setShowPassword}
-              className="text-gray-700 cursor-pointer"
-            >
-              {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-            </button>
-          </div>
-        </div>
+        ))}
 
         <button
           type="submit"
@@ -294,6 +228,15 @@ function SignUp() {
         >
           Submit
         </button>
+        <div className="flex gap-4">
+          <p className="text-center text-gray-700 text-sm">Déjà un compte ?</p>
+          <a
+            href="/signin"
+            className="text-blue-900 text-sm hover:text-decoration-line:underline"
+          >
+            Se connecter
+          </a>
+        </div>
       </form>
     </div>
   )

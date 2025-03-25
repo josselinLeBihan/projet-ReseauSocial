@@ -102,6 +102,6 @@ export const apiRequest = async <T extends any>(
     await logger.debug(`Réponse de l'API pour ${method} ${endpoint}`, response)
     return { data: response.data }
   } catch (error: any) {
-    return { error: error.response.data.message || "Une erreur est survenue" }
+    return { error: error.response.data.error || "Une erreur est survenue" }
   }
 }

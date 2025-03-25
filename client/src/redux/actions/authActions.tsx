@@ -92,7 +92,7 @@ export const signUpAction =
   async (dispatch: AppDispatch) => {
     try {
       logger.info("Inscription avec les données du formulaire :", formData)
-      const response = await createAsyncThunkAction<[SignUpData], string>(
+      const response = await createAsyncThunkAction<[FormData], string>(
         types.SIGNUP,
         api.signUp,
       )(formData)(dispatch)

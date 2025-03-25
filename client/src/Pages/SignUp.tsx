@@ -86,7 +86,7 @@ function SignUp() {
   }, [imageFile])
 
   const handleFileChange = (event) => {
-    const files = event.target.files
+    const files: File[] = Array.from(event.target.files)
     if (files.length > 0) {
       setValue("profileImage", files)
     }
@@ -97,15 +97,25 @@ function SignUp() {
 
     setLoading(true)
 
+    const formData = new FormData()
+    formData.append("name", data.name)
+    formData.append("email", data.email)
+    formData.append("password", data.password)
+    formData.append("userName", data.userName)
+
+    if (data.profileImage && data.profileImage.length > 0) {
+      formData.append("avatar", data.profileImage[0])
+    }
+
     const signUpData: SignUpData = {
       name: data.name,
-      image: data.profileImage,
+      avatar: data.profileImage ? data.profileImage[0] : null,
       email: data.email,
-      userName: data.username,
+      userName: data.userName,
       password: data.password,
     }
     try {
-      dispatch(signUpAction(signUpData, navigate)).finally(() =>
+      dispatch(signUpAction(formData, navigate)).finally(() =>
         setLoading(false),
       )
       logger.info("Fin du processus de création de compte")
@@ -146,20 +156,21 @@ function SignUp() {
                 <AddIcon className="h-10 w-10 text-gray-500 bg-white rounded-full" />
               )}
             </div>
-
-            {fileInfo && <p>{`${fileInfo.name} (${fileInfo.size})`}</p>}
-            {errors.profileImage && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.profileImage.message}
-              </p>
-            )}
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-            />
+            <div className="flex flex-col">
+              {fileInfo && <p>{`${fileInfo.name} (${fileInfo.size})`}</p>}
+              {errors.profileImage && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.profileImage.message}
+                </p>
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+              />
+            </div>
           </div>
         </div>
 

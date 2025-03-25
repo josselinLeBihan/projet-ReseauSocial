@@ -16,6 +16,7 @@ export interface UserData {
   email: string
   name: string
   userName: string
+  avatar: string
 }
 
 const renderRoutes = (routes: RouteData[]) =>

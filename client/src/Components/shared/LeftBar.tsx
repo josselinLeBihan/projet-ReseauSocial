@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react"
-import profilePlaceholder from "../../Assets/profile-placeholder.png"
 import HomeIcon from "@mui/icons-material/Home"
 import AccountCircleIcon from "@mui/icons-material/AccountCircle"
 import BookmarkIcon from "@mui/icons-material/Bookmark"
@@ -37,7 +36,7 @@ const NavItem = ({ to, label, icon }) => (
 )
 
 const LeftBar: React.FC<LeftBarProps> = ({ userData }) => {
-  const [userInfo, setUserInfo] = useState<UserInfo>()
+  const userInfo = useAppSelector((state) => state.user.user)
 
   const dispatch = useAppDispatch()
 
@@ -58,7 +57,10 @@ const LeftBar: React.FC<LeftBarProps> = ({ userData }) => {
         logger.info("Réccupération des informations de l'utilisateur")
         const userInfoResponse = await dispatch(getUserAction(userData._id))
         if (userInfoResponse?.data) {
-          setUserInfo(userInfoResponse.data)
+          logger.debug(
+            "Informations de l'utilisateur réccupérées",
+            userInfoResponse.data,
+          )
         } else {
           throw error("Aucune information réccupérée", userInfoResponse?.data)
         }
@@ -69,17 +71,20 @@ const LeftBar: React.FC<LeftBarProps> = ({ userData }) => {
     fetchUserInfo()
   }, [dispatch, userData])
 
-  const userName = userData?.userName
-  const name = userData?.name
+  const userName = userInfo?.userName
+  const name = userInfo?.name
+  const avatar = userInfo?.avatar
+
+  logger.warn("Avatar")
 
   return (
     <div className="flex flex-col w-72 gap-4 p-4 pt-0 bg-gray-50 fixed left-0 top-24 h-full">
       <div className="flex flex-col px-4 py-2 bg-gray-100 rounded-xl justify-start items-start gap-4 border-gray-200 border">
         <div className="flex items-center gap-4">
           <img
-            src={profilePlaceholder}
+            src={avatar}
             alt="profileImage"
-            className="w-11 h-11 shrink-0 rounded-full"
+            className="w-11 h-11 shrink-0 rounded-full bg-cover object-cover"
           />
           <div className="flex flex-col flex-1 truncate">
             <span className="truncate relative pr-8 font-medium text-gray-900">

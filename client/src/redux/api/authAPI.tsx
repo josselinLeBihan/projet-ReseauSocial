@@ -23,7 +23,7 @@ export const signIn = async (
 }
 
 export const signUp = async (
-  data: SignUpData,
+  data: FormData,
 ): Promise<{
   error?: string
   data?: string

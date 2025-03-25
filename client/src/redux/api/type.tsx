@@ -1,7 +1,7 @@
 export interface SignUpData extends AuthData {
   name: string
   userName: string
-  image?: File[]
+  avatar?: File[]
 }
 
 export interface AuthData {

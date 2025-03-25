@@ -88,7 +88,7 @@ export const logoutAction = () => async (dispatch: AppDispatch) => {
 }
 
 export const signUpAction =
-  (formData: SignUpData, navigate: (path: string) => void) =>
+  (formData: FormData, navigate: (path: string) => void) =>
   async (dispatch: AppDispatch) => {
     try {
       logger.info("Inscription avec les données du formulaire :", formData)

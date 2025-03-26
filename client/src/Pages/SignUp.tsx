@@ -2,12 +2,9 @@ import React, { useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-
 import AddIcon from "@mui/icons-material/Add"
-import useToggle from "../hook/useToggle"
 import { useAppDispatch, useAppSelector } from "../redux/store"
 import { useNavigate } from "react-router-dom"
-import { SignUpData } from "../redux/api/type"
 import { signUpAction } from "../redux/actions/authActions"
 import { logger } from "../utils/logger"
 import Input from "../Components/shared/Input"
@@ -134,7 +131,7 @@ function SignUp() {
     }
   }
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     logger.info("Début de la création de compte.")
 
     setLoading(true)
@@ -168,7 +165,15 @@ function SignUp() {
         <h2 className="text-2xl font-semibold text-center text-gray-700 mb-4">
           S'inscrire
         </h2>
-        <p className="text-red-500 text-center">{signupError}</p>
+        {signupError && (
+          <p className="text-red-500 text-center">{signupError}</p>
+        )}
+        {loading && (
+          <p className="text-blue-500 text-center">
+            Création de compte en cours...
+          </p>
+        )}
+
         {/*Avatar - Sélection de l'image */}
         <div className="flex flex-col">
           <p className="font-medium text-gray-700">

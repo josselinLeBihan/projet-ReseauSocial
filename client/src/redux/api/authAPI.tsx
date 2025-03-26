@@ -2,6 +2,7 @@ import { API } from "./utils"
 import { SignUpData, UserProfile } from "./type"
 import { AuthData } from "./type"
 import { apiRequest } from "../utils/reduxUtils"
+import { logger } from "../../utils/logger"
 
 export const signIn = async (
   data: AuthData,
@@ -12,13 +13,18 @@ export const signIn = async (
         "Content-Type": "application/json",
       },
     })
+
+    logger.warn("Res", res)
+
     if (res && res.data) {
       return { error: "", data: res.data }
     } else {
       return { error: "No data received from server", data: undefined }
     }
   } catch (error) {
-    return error
+    logger.warn("Error", error)
+
+    return { error: error.response.data.error }
   }
 }
 

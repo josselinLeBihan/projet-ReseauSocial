@@ -7,7 +7,10 @@ import { useAppDispatch, useAppSelector } from "../../redux/store"
 import Post from "../Post/Post"
 import EditIcon from "@mui/icons-material/Edit"
 import EditProfileModal from "../Modals/EditProfileModal"
-import { updateUserAction } from "../../redux/actions/userActions"
+import {
+  getUserAction,
+  updateUserAction,
+} from "../../redux/actions/userActions"
 
 interface ProfileViewProps {
   userInfo: PublicUserInfo | undefined
@@ -46,11 +49,6 @@ const ProfileView: React.FC<ProfileViewProps> = ({ userInfo }) => {
     setShouldShowLoader(false)
   }
 
-  useEffect(() => {
-    fetchUserPosts()
-    logger.info("CommunityForum monté avec les posts")
-  }, [userInfo, dispatch])
-
   const handleLoadMorePost = async () => {
     if (!isLoadingMorePosts && userPosts.length < totalPostsCount) {
       setIsLoadingMorePosts(true)
@@ -72,6 +70,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ userInfo }) => {
   const handleUpdateProfile = async (formData: FormData) => {
     try {
       dispatch(updateUserAction(userInfo._id, formData))
+      dispatch(getUserAction(userInfo._id))
     } catch {}
   }
 

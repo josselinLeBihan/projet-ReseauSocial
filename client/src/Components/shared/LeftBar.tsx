@@ -75,8 +75,6 @@ const LeftBar: React.FC<LeftBarProps> = ({ userData }) => {
   const name = userInfo?.name
   const avatar = userInfo?.avatar
 
-  logger.warn("Avatar")
-
   return (
     <div className="flex flex-col w-72 gap-4 p-4 pt-0 bg-gray-50 fixed left-0 top-24 h-full">
       <div className="flex flex-col px-4 py-2 bg-gray-100 rounded-xl justify-start items-start gap-4 border-gray-200 border">

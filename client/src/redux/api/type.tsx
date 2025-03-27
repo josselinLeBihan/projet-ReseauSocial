@@ -41,7 +41,7 @@ export interface UserInfo extends UserData {
 }
 
 export interface ActualUserInfo extends UserInfo {
-  post: PostData["_id"][] | []
+  posts: PostData[] | []
   savedPosts?: PostData[]
 }
 

@@ -53,6 +53,8 @@ function SignIn() {
   const onSubmit = async (data) => {
     logger.info("Début de la connexion avec ", data.email)
 
+    setLoadingText("Connexion en cours...")
+
     const timeOut = setTimeout(() => {
       setLoadingText("Cela prend plus de temps que prévu...")
       logger.warn("Connexion plus longue que prévu")

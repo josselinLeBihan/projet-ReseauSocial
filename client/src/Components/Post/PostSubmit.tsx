@@ -1,15 +1,12 @@
 import React, { useState } from "react"
 import profilePlaceholder from "../../Assets/profile-placeholder.png"
-import { Button } from "@mui/material"
 import ImageIcon from "@mui/icons-material/Image"
 import VideocamIcon from "@mui/icons-material/Videocam"
-import SendIcon from "@mui/icons-material/Send"
 import { CommunityData, PostCreationData, UserData } from "../../redux/api/type"
 import { addPostAction } from "../../redux/actions/postAction"
 import { useAppDispatch, useAppSelector } from "../../redux/store"
 import { logger } from "../../utils/logger"
 import PostModal from "../Modals/PostModal"
-import useClickOutside from "../../hook/useClickOutside"
 
 interface PostSubmitProps {
   onPostSubmit: () => void

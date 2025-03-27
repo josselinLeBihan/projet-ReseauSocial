@@ -72,3 +72,60 @@ exports.getUser = async (req, res, next) => {
     res.status(500).json({ error: "Une erreur est survenue." });
   }
 };
+
+/**
+ * @route PUT /users/:id
+ */
+exports.updateInfo = async (req, res) => {
+  try {
+    logger.info(
+      `🔄 Tentative de mise à jour des informations de l'utilisateur : ${req.userId}`
+    );
+
+    const user = await User.findById(req.userId);
+    if (!user) {
+      logger.warn(`⚠️ Utilisateur introuvable : ${req.userId}`);
+      return res.status(404).json({
+        message: "User introuvable",
+      });
+    }
+
+    const { name, email, location, interests, bio } = req.body;
+    logger.info(
+      `📥 Données reçues : location=${location}, interests=${interests}, bio=${bio}`
+    );
+
+    const defaultAvatar =
+      "https://raw.githubusercontent.com/nz-m/public-files/main/dp.jpg";
+    const fileUrl = req.files?.[0]?.filename
+      ? `${req.protocol}://${req.get("host")}/assets/userAvatars/${
+          req.files[0].filename
+        }`
+      : defaultAvatar;
+
+    logger.info(`🖼️ Avatar mis à jour : ${fileUrl}`);
+
+    user.name = name;
+    user.email = email;
+    user.location = location;
+    user.interests = interests;
+    user.bio = bio;
+    user.avatar = fileUrl;
+
+    await user.save();
+    logger.info(
+      `✅ Informations de l'utilisateur mises à jour avec succès : ${req.userId}`
+    );
+
+    res.status(200).json({
+      message: "Mise a jour des info réussie",
+    });
+  } catch (err) {
+    logger.error(
+      `❌ Erreur lors de la mise à jour des informations de l'utilisateur : ${err.message}`
+    );
+    res.status(500).json({
+      message: "Erreur lors de la mise à jours des infos",
+    });
+  }
+};

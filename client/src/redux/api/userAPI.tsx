@@ -9,3 +9,12 @@ export const getUser = async (
 }> => {
   return await apiRequest<ActualUserInfo>("GET", `/user/${id}`)
 }
+
+export const updateUser = async (
+  id: UserInfo["_id"],
+  data: FormData,
+): Promise<{
+  error?: string
+}> => {
+  return await apiRequest("PUT", `/user/${id}`, data)
+}

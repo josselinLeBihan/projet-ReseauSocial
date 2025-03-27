@@ -21,6 +21,11 @@ const userReducer = (state = initialState, action) => {
         ...state,
         userError: payload,
       }
+    case types.UPDATE_USER.FAIL:
+      return {
+        ...state,
+        userError: payload,
+      }
     case types.GET_PROFILE.SUCCESS:
       return {
         ...state,

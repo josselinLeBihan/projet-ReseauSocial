@@ -1,9 +1,16 @@
-const express = require("express")
+const express = require("express");
 
-const { getUser } = require("../controllers/user.controller")
+const avatarUpload = require("../middlewares/user/avatarUpload");
 
-const router = express.Router()
+const decodeToken = require("../middlewares/auth/decodeToken");
+const passport = require("passport");
+const requireAuth = passport.authenticate("jwt", { session: false });
 
-router.get("/:id", getUser)
+const { getUser, updateInfo } = require("../controllers/user.controller");
 
-module.exports = router
+const router = express.Router();
+
+router.get("/:id", getUser);
+router.put("/:id", decodeToken, requireAuth, avatarUpload, updateInfo);
+
+module.exports = router;

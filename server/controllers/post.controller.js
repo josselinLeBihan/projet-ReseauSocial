@@ -54,6 +54,91 @@ exports.createPost = async (req, res, next) => {
 };
 
 /**
+ * Réccupère le feed d'un utilisateur
+ *
+ * @route POST /post/
+ */
+exports.getUserFeed = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+
+    if (!userId) {
+      logger.warn(`⚠️ UserId manquant lors de la récupération du feed.`);
+      return res.status(400).json({
+        error: `Tous les champs sont requis.`,
+      });
+    }
+
+    const { limit = 10, skip = 0 } = req.query;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      logger.warn(`⚠️ Utilisateur introuvable : ${userId}`);
+      return res.status(404).json({
+        message: "User introuvable",
+      });
+    }
+
+    //réccuperer les posts de l'utilisateur
+    const userPosts = await Post.find({ user: user._id })
+      .populate("user", "name userName")
+      .sort({ createdAt: -1 })
+      .skip(parseInt(skip))
+      .limit(parseInt(limit))
+      .lean();
+
+    logger.debug(
+      `🔢 Nombre total de posts de utilisateur réccupéré : ${userPosts.length}`
+    );
+
+    //réccupérer les posts des communautés suivie
+    const communityPosts = await Post.find({
+      community: { $in: user.community },
+    })
+      .sort({ createdAt: -1 })
+      .populate("user", "name userName")
+      .skip(parseInt(skip))
+      .limit(parseInt(limit))
+      .lean();
+
+    logger.debug(
+      `🔢 Nombre total de posts de communauté réccupéré : ${communityPosts.length}`
+    );
+
+    //réccupérer les posts des personnes suivie
+    const followingPosts = await Post.find({ user: { $in: user.following } })
+      .populate("user", "name userName")
+      .sort({ createdAt: -1 })
+      .skip(parseInt(skip))
+      .limit(parseInt(limit))
+      .lean();
+
+    logger.debug(
+      `🔢 Nombre total de posts de personnes suivie réccupéré : ${followingPosts.length}`
+    );
+
+    const allPosts = [...userPosts, ...communityPosts, ...followingPosts].sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
+
+    //formater les posts
+    const formattedPosts = allPosts.map((post) => ({
+      ...post,
+      createdAt: dayjs(post.createdAt).fromNow(),
+      modifiedAt: post.modifiedAt && dayjs(post.modifiedAt).fromNow(),
+    }));
+
+    logger.info(`📄 Récupération des 20 derniers posts du feed`);
+    res.status(200).json(formattedPosts);
+  } catch (error) {
+    logger.error(
+      `❌ Erreur lors de la récupération du feed de l'utilisateur Erreur: ${error.message}`
+    );
+    res.status(500).json({ error: "Une erreur est survenue." });
+  }
+};
+
+/**
  * Récupère les posts d'une communauté
  *
  * @route GET /community/:communityId
@@ -88,12 +173,10 @@ exports.getCommunityPosts = async (req, res, next) => {
 
     logger.info(`✅ Posts récupérés pour la communauté : ${communityId}`);
     logger.debug(`🔢 Nombre total de posts : ${totalCommunityPosts}`);
-    res
-      .status(200)
-      .json({
-        posts: formattedPosts,
-        totalCommunityPosts: totalCommunityPosts,
-      });
+    res.status(200).json({
+      posts: formattedPosts,
+      totalCommunityPosts: totalCommunityPosts,
+    });
   } catch (error) {
     logger.error(
       `❌ Erreur lors de la récupération des posts pour la communauté (${req.params.communityId}) : ${error.message}`

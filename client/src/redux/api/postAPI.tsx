@@ -56,6 +56,20 @@ export const getUserPosts = async (
   )
 }
 
+export const getUserFeed = async (
+  userId: UserData["_id"],
+  limit: number,
+  skip: number,
+): Promise<{
+  error?: string
+  data?: [posts: PostDataformated[]]
+}> => {
+  return await apiRequest(
+    "GET",
+    `/post/feed/${userId}?limit=${limit}&skip=${skip}`,
+  )
+}
+
 export const getPost = async (
   postId: PostData["_id"],
 ): Promise<{

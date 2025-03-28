@@ -6,6 +6,7 @@ const initialState = {
   posts: [],
   communityPosts: [],
   userPosts: [],
+  userFeedPosts: [],
   error: null,
   post: null,
   successMessage: null,
@@ -68,6 +69,28 @@ const postReducer = (state = initialState, action) => {
         }
       }
     case types.GET_USER_POSTS.FAIL:
+      return {
+        ...state,
+        error: payload,
+      }
+    case types.GET_USER_FEED.SUCCESS:
+      if (payload.page === 1) {
+        return {
+          ...state,
+          userFeedPosts: Array.isArray(payload.posts) ? payload.posts : [],
+          error: null,
+        }
+      } else {
+        return {
+          ...state,
+          userFeedPosts: [
+            ...state.userFeedPosts,
+            ...(payload ? payload.posts : []),
+          ],
+          error: null,
+        }
+      }
+    case types.GET_USER_FEED.FAIL:
       return {
         ...state,
         error: payload,

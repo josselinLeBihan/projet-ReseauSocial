@@ -1,4 +1,4 @@
-const express = require("express")
+const express = require("express");
 
 const {
   createPost,
@@ -9,19 +9,25 @@ const {
   getPost,
   likePost,
   unlikePost,
-} = require("../controllers/post.controller")
+  getUserFeed,
+} = require("../controllers/post.controller");
 
-const router = express.Router()
-const fileUpload = require("../middlewares/posts/fileUpload")
+const decodeToken = require("../middlewares/auth/decodeToken");
+const passport = require("passport");
+const requireAuth = passport.authenticate("jwt", { session: false });
 
-router.post("/", fileUpload, createPost)
-router.post("/modify/:id", modifyPost)
-router.post("/delete/:id", deletePost)
-router.get("/community/:communityId", getCommunityPosts)
-router.get("/user/:userId", getUserPosts)
-router.get("/:id", getPost)
+const router = express.Router();
+const fileUpload = require("../middlewares/posts/fileUpload");
 
-router.post("/like/:postId/:userId", likePost)
-router.post("/unlike/:postId/:userId", unlikePost)
+router.post("/", fileUpload, createPost);
+router.post("/modify/:id", modifyPost);
+router.post("/delete/:id", deletePost);
+router.get("/community/:communityId", getCommunityPosts);
+router.get("/user/:userId", getUserPosts);
+router.get("/feed/:userId", decodeToken, requireAuth, getUserFeed);
+router.get("/:id", getPost);
 
-module.exports = router
+router.post("/like/:postId/:userId", likePost);
+router.post("/unlike/:postId/:userId", unlikePost);
+
+module.exports = router;

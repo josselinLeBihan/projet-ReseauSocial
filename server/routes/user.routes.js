@@ -11,6 +11,6 @@ const { getUser, updateInfo } = require("../controllers/user.controller");
 const router = express.Router();
 
 router.get("/:id", getUser);
-router.put("/:id", decodeToken, requireAuth, avatarUpload, updateInfo);
+router.put("/:userId", decodeToken, requireAuth, avatarUpload, updateInfo);
 
 module.exports = router;

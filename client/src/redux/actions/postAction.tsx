@@ -138,16 +138,15 @@ export const getUserFeedAction =
         throw new Error(error || "Pas de données reçues")
       }
 
-      const { posts } = data
       await logger.debug(`Action ${types.GET_USER_FEED.SUCCESS} réussie`, {
-        posts,
+        data,
       })
 
       dispatch({
         type: types.GET_USER_FEED.SUCCESS,
         payload: {
           page: skip / limit + 1,
-          posts: posts,
+          posts: data,
         },
       })
     } catch (error) {

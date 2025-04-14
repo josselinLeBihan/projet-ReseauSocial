@@ -62,7 +62,7 @@ export const getUserFeed = async (
   skip: number,
 ): Promise<{
   error?: string
-  data?: [posts: PostDataformated[]]
+  data?: PostDataformated[]
 }> => {
   return await apiRequest(
     "GET",

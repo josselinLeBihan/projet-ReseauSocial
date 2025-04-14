@@ -150,6 +150,26 @@ const postReducer = (state = initialState, action) => {
         ...state,
         error: payload,
       }
+    case types.SAVE_POST.SUCCESS:
+      return {
+        ...state,
+        successMessage: payload ? payload : null,
+      }
+    case types.SAVE_POST.FAIL:
+      return {
+        ...state,
+        error: payload,
+      }
+    case types.UNSAVE_POST.SUCCESS:
+      return {
+        ...state,
+        successMessage: payload ? payload : null,
+      }
+    case types.UNSAVE_POST.FAIL:
+      return {
+        ...state,
+        error: payload,
+      }
     default:
       return state
   }

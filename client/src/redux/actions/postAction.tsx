@@ -185,3 +185,13 @@ export const unlikePostAction = createAsyncThunkAction<
   [PostData["_id"], UserData["_id"]],
   String
 >(types.UNLIKE_POST, api.unlikePost)
+
+export const savePostAction = createAsyncThunkAction<
+  [PostData["_id"], UserData["_id"]],
+  String
+>(types.SAVE_POST, api.savePost)
+
+export const unsavePostAction = createAsyncThunkAction<
+  [PostData["_id"], UserData["_id"]],
+  String
+>(types.UNSAVE_POST, api.savePost)

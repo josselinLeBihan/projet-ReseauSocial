@@ -24,6 +24,7 @@ import {
 } from "../../redux/actions/postAction"
 import PostModal from "../Modals/PostModal"
 import { useNavigate } from "react-router-dom"
+import Save from "./Save"
 
 interface PostParams {
   post: PostDataformated
@@ -169,8 +170,10 @@ const Post: React.FC<PostParams> = ({ post, onReload }) => {
               </p>
             </div>
           </div>
-          {isUserPost && (
+          {isUserPost ? (
             <DropDownMenu icon={<MoreVertIcon />} links={postActions} />
+          ) : (
+            <Save parent={post} />
           )}
         </div>
         <span>{content}</span>

@@ -68,6 +68,7 @@ export interface PostDataformated {
   modifiedAt?: string
   comments: CommentData["_id"][]
   likes: UserData["_id"][]
+  saved: boolean
   user: UserFormatedData
   community: string
   content: string

@@ -5,6 +5,8 @@ const mongoose = require("mongoose")
 const logger = require("../utils/logger")
 const dayjs = require("dayjs")
 const relativeTime = require("dayjs/plugin/relativeTime")
+const { formatPost } = require("../utils/postFormatter")
+const { getPosts } = require("../utils/postService")
 
 require("dayjs/locale/fr")
 
@@ -81,30 +83,21 @@ exports.getUserFeed = async (req, res, next) => {
     }
 
     //réccuperer les posts de l'utilisateur
-    const userPosts = await Post.find({ user: user._id })
-      .populate("user", "name userName")
-      .sort({ createdAt: -1 })
-      .skip(parseInt(skip))
-      .limit(parseInt(limit))
-      .lean()
-
-    logger.debug(
-      `🔢 Nombre total de posts de utilisateur réccupéré : ${userPosts.length}`
+    const userPosts = await getPosts(
+      { user: user._id },
+      { limit, skip, populate: ["user"] }
     )
 
     //réccupérer les posts des communautés suivie
     const communities = await Community.find({ members: user._id })
-
     const communityPosts = (
       await Promise.all(
-        communities.map((community) => {
-          return Post.find({ community: community._id })
-            .populate("user", "name userName")
-            .sort({ createdAt: -1 })
-            .skip(parseInt(skip))
-            .limit(parseInt(limit))
-            .lean()
-        })
+        communities.map((community) =>
+          getPosts(
+            { community: community._id },
+            { limit, skip, populate: ["user"] }
+          )
+        )
       )
     ).flat()
 
@@ -113,12 +106,10 @@ exports.getUserFeed = async (req, res, next) => {
     )
 
     //réccupérer les posts des personnes suivie
-    const followingPosts = await Post.find({ user: { $in: user.following } })
-      .populate("user", "name userName")
-      .sort({ createdAt: -1 })
-      .skip(parseInt(skip))
-      .limit(parseInt(limit))
-      .lean()
+    const followingPosts = await getPosts(
+      { user: { $in: user.following } },
+      { limit, skip, populate: ["user"] }
+    )
 
     logger.debug(
       `🔢 Nombre total de posts de personnes suivie réccupéré : ${followingPosts.length}`
@@ -135,11 +126,7 @@ exports.getUserFeed = async (req, res, next) => {
       .slice(0, limit)
 
     //formater les posts
-    const formattedPosts = allPosts.map((post) => ({
-      ...post,
-      createdAt: dayjs(post.createdAt).fromNow(),
-      modifiedAt: post.modifiedAt && dayjs(post.modifiedAt).fromNow(),
-    }))
+    const formattedPosts = allPosts.map(formatPost)
 
     logger.info(`📄 Récupération des 20 derniers posts du feed`)
     res.status(200).json(formattedPosts)
@@ -164,21 +151,12 @@ exports.getCommunityPosts = async (req, res, next) => {
     logger.info(
       `🔍 Tentative de récupération des posts pour la communauté : ${communityId}`
     )
-    const posts = await Post.find({ community: communityId })
-      .sort({
-        createdAt: -1,
-      })
-      .populate("user", "name userName")
-      .populate("community", "name")
-      .skip(parseInt(skip))
-      .limit(parseInt(limit))
-      .lean()
+    const posts = await getPosts(
+      { community: communityId },
+      { limit, skip, populate: ["user", "community"] }
+    )
 
-    const formattedPosts = posts.map((post) => ({
-      ...post,
-      createdAt: dayjs(post.createdAt).fromNow(),
-      modifiedAt: post.modifiedAt && dayjs(post.modifiedAt).fromNow(),
-    }))
+    const formattedPosts = posts.map(formatPost)
 
     const totalCommunityPosts = await Post.countDocuments({
       community: communityId,
@@ -210,21 +188,12 @@ exports.getUserPosts = async (req, res, next) => {
     logger.info(
       `🔍 Tentative de récupération des posts pour l'utilisateur : ${userId}`
     )
-    const posts = await Post.find({ user: userId })
-      .sort({
-        createdAt: -1,
-      })
-      .populate("user", "name userName")
-      .populate("community", "name")
-      .skip(parseInt(skip))
-      .limit(parseInt(limit))
-      .lean()
+    const posts = await getPosts(
+      { user: userId },
+      { limit, skip, populate: ["user", "community"] }
+    )
 
-    const formattedPosts = posts.map((post) => ({
-      ...post,
-      createdAt: dayjs(post.createdAt).fromNow(),
-      modifiedAt: post.modifiedAt && dayjs(post.modifiedAt).fromNow(),
-    }))
+    const formattedPosts = posts.map(formatPost)
 
     const totalUserPosts = await Post.countDocuments({
       user: userId,
@@ -262,7 +231,7 @@ exports.modifyPost = async (req, res, next) => {
       { content, fileUrl, fileType, modifiedAt }
     )
 
-    if (result.nModified === 0) {
+    if (result.Modified === 0) {
       logger.warn(`⚠️ Aucun changement détecté pour le post : ID ${id}`)
       return res.status(400).json({ message: "Aucune modification appliquée." })
     }
@@ -321,8 +290,9 @@ exports.getPost = async (req, res, next) => {
       return res.status(404).json({ error: "Post non trouvé." })
     }
 
+    const formattedPost = formatPost(post.toObject())
     logger.info(`✅ Post récupéré avec succès : ID ${id}`)
-    res.status(200).json(post)
+    res.status(200).json(formattedPost)
   } catch (error) {
     logger.error(
       `❌ Erreur lors de la récupération du post (ID ${req.params.id}) : ${error.message}`
@@ -332,7 +302,7 @@ exports.getPost = async (req, res, next) => {
 }
 
 /**
- * Unlike un post
+ * Like un post
  *
  * @route POST /unlike/:id/:userId
  */
@@ -376,7 +346,7 @@ exports.likePost = async (req, res, next) => {
 }
 
 /**
- * Like un post
+ * Unike un post
  *
  * @route POST /like/:id/:userId
  */
@@ -415,6 +385,94 @@ exports.unlikePost = async (req, res, next) => {
     logger.info(`✅ Post liké avec succès : ID ${postId}`)
   } catch (error) {
     logger.error(`❌ Erreur lors du unlike du post : ${error.message}`)
+    res.status(500).json({ error: "Une erreur est survenue." })
+  }
+}
+
+/**
+ * Save un post
+ *
+ * @route POST /unlike/:id/:userId
+ */
+exports.savePost = async (req, res, next) => {
+  try {
+    const { postId, userId } = req.params
+
+    if (!postId || !userId) {
+      logger.warn("⚠️ Champs manquants lors du Save.")
+      return res.status(400).json({
+        error: `Tous les champs sont requis. Id: ${postId} UserId: ${userId}`,
+      })
+    }
+
+    logger.info(
+      `🔍 Tentative de save du post par un utilisateur: ID ${postId} User ${userId}`
+    )
+    const post = await Post.findOne({ _id: postId }).populate("user")
+    if (!post) {
+      logger.error("❌ Erreur lors de la récupération du post")
+      return res.status(400).json({
+        error: `Erreur lors de la réccupération du post Post: ${postId} UserId: ${userId}`,
+      })
+    }
+    const user = await User.findById(userId)
+    if (!user) {
+      logger.error("❌ Erreur lors de la récupération de l'utilisateur")
+      return res.status(400).json({
+        error: `Erreur lors de la réccupération du post Post: ${postId} UserId: ${userId}`,
+      })
+    }
+
+    await User.updateOne({ _id: userId }, { $push: { savedPosts: postId } })
+    res.status(200).json({ message: "Post sauvegardé avec succès !" })
+
+    logger.info(`✅ Post sauvegardé avec succès : ID ${postId}`)
+  } catch (error) {
+    logger.error(`❌ Erreur lors du save du post : ${error.message}`)
+    res.status(500).json({ error: "Une erreur est survenue." })
+  }
+}
+
+/**
+ * Unsave un post
+ *
+ * @route POST /unlike/:id/:userId
+ */
+exports.unsavePost = async (req, res, next) => {
+  try {
+    const { postId, userId } = req.params
+
+    if (!postId || !userId) {
+      logger.warn("⚠️ Champs manquants lors du Save.")
+      return res.status(400).json({
+        error: `Tous les champs sont requis. Id: ${postId} UserId: ${userId}`,
+      })
+    }
+
+    logger.info(
+      `🔍 Tentative de save du post par un utilisateur: ID ${postId} User ${userId}`
+    )
+    const post = await Post.findOne({ _id: postId }).populate("user")
+    if (!post) {
+      logger.error("❌ Erreur lors de la récupération du post")
+      return res.status(400).json({
+        error: `Erreur lors de la réccupération du post Post: ${postId} UserId: ${userId}`,
+      })
+    }
+    const user = await User.findById(userId)
+    if (!user) {
+      logger.error("❌ Erreur lors de la récupération de l'utilisateur")
+      return res.status(400).json({
+        error: `Erreur lors de la réccupération du post Post: ${postId} UserId: ${userId}`,
+      })
+    }
+
+    await User.updateOne({ _id: userId }, { $pull: { savedPosts: postId } })
+    res.status(200).json({ message: "Post sauvegardé avec succès !" })
+
+    logger.info(`✅ Post sauvegardé avec succès : ID ${postId}`)
+  } catch (error) {
+    logger.error(`❌ Erreur lors du save du post : ${error.message}`)
     res.status(500).json({ error: "Une erreur est survenue." })
   }
 }

@@ -111,6 +111,7 @@ export const likePost = async (
 }> => {
   return await apiRequest<string>("POST", `/post/like/${postId}/${userId}`)
 }
+
 export const unlikePost = async (
   postId: PostData["_id"],
   userId: UserData["_id"],
@@ -119,4 +120,24 @@ export const unlikePost = async (
   data?: string
 }> => {
   return await apiRequest<string>("POST", `/post/unlike/${postId}/${userId}`)
+}
+
+export const savePost = async (
+  postId: PostData["_id"],
+  userId: UserData["_id"],
+): Promise<{
+  error?: string
+  data?: string
+}> => {
+  return await apiRequest<string>("POST", `/post/save/${postId}/${userId}`)
+}
+
+export const unsavePost = async (
+  postId: PostData["_id"],
+  userId: UserData["_id"],
+): Promise<{
+  error?: string
+  data?: string
+}> => {
+  return await apiRequest<string>("POST", `/post/unsave/${postId}/${userId}`)
 }

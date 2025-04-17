@@ -6,6 +6,7 @@ import CommunityHome from "./Pages/CommunityHome"
 import CommunityForum from "./Components/Community/CommunityForum"
 import CommunityMembers from "./Components/Community/CommunityMembers"
 import CommunityAbout from "./Components/Community/CommunityAbout"
+import SavedPosts from "./Pages/SavedPosts"
 
 const NotFound = lazy(() => import("./pages/NotFound"))
 
@@ -27,6 +28,10 @@ export const privateRoutes = [
   {
     path: "/profile/:userId",
     element: <Profile />,
+  },
+  {
+    path: "/saved",
+    element: <SavedPosts />,
   },
   {
     path: "/community/",

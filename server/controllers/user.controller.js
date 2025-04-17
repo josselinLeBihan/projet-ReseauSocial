@@ -53,6 +53,7 @@ exports.getUser = async (req, res, next) => {
 
     // Récupérer les 20 derniers posts de l'utilisateur
     const posts = await getPosts(
+      id,
       { user: user._id },
       { limit: 20, sort: { createdAt: -1 }, populate: ["community"] }
     )

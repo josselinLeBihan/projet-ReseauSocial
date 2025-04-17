@@ -84,6 +84,7 @@ exports.getUserFeed = async (req, res, next) => {
 
     //réccuperer les posts de l'utilisateur
     const userPosts = await getPosts(
+      userId,
       { user: user._id },
       { limit, skip, populate: ["user"] }
     )
@@ -94,6 +95,7 @@ exports.getUserFeed = async (req, res, next) => {
       await Promise.all(
         communities.map((community) =>
           getPosts(
+            userId,
             { community: community._id },
             { limit, skip, populate: ["user"] }
           )
@@ -107,6 +109,7 @@ exports.getUserFeed = async (req, res, next) => {
 
     //réccupérer les posts des personnes suivie
     const followingPosts = await getPosts(
+      userId,
       { user: { $in: user.following } },
       { limit, skip, populate: ["user"] }
     )
@@ -146,12 +149,14 @@ exports.getUserFeed = async (req, res, next) => {
 exports.getCommunityPosts = async (req, res, next) => {
   try {
     const { communityId } = req.params
+    const userId = req.userId
     const { limit = 10, skip = 0 } = req.query
 
     logger.info(
       `🔍 Tentative de récupération des posts pour la communauté : ${communityId}`
     )
     const posts = await getPosts(
+      userId,
       { community: communityId },
       { limit, skip, populate: ["user", "community"] }
     )
@@ -175,6 +180,7 @@ exports.getCommunityPosts = async (req, res, next) => {
     res.status(500).json({ error: "Une erreur est survenue." })
   }
 }
+
 /**
  * Récupère les posts d'un utilisateur
  *
@@ -189,6 +195,7 @@ exports.getUserPosts = async (req, res, next) => {
       `🔍 Tentative de récupération des posts pour l'utilisateur : ${userId}`
     )
     const posts = await getPosts(
+      userId,
       { user: userId },
       { limit, skip, populate: ["user", "community"] }
     )
@@ -198,6 +205,45 @@ exports.getUserPosts = async (req, res, next) => {
     const totalUserPosts = await Post.countDocuments({
       user: userId,
     })
+
+    logger.info(`✅ Posts récupérés pour l'utilisateur : ${userId}`)
+    logger.debug(`🔢 Nombre total de posts : ${totalUserPosts}`)
+    res
+      .status(200)
+      .json({ posts: formattedPosts, totalUserPosts: totalUserPosts })
+  } catch (error) {
+    logger.error(
+      `❌ Erreur lors de la récupération des posts pour l'utilisateur (${req.params.userId}) : ${error.message}`
+    )
+    res.status(500).json({ error: "Une erreur est survenue." })
+  }
+}
+
+/**
+ * Récupère les posts sauvegardés d'un utilisateur
+ *
+ * @route GET /post/saved
+ */
+exports.getSavedPosts = async (req, res, next) => {
+  try {
+    const userId = req.userId
+    const { limit = 10, skip = 0 } = req.query
+
+    logger.info(
+      `🔍 Tentative de récupération des posts sauvegardés pour l'utilisateur : ${userId}`
+    )
+
+    const user = await User.findById(userId)
+
+    const posts = await getPosts(
+      userId,
+      { _id: { $in: user.savedPosts } },
+      { limit, skip, populate: ["user", "community"] }
+    )
+
+    const formattedPosts = posts.map(formatPost)
+
+    const totalUserPosts = user.savedPosts.length
 
     logger.info(`✅ Posts récupérés pour l'utilisateur : ${userId}`)
     logger.debug(`🔢 Nombre total de posts : ${totalUserPosts}`)
@@ -308,7 +354,8 @@ exports.getPost = async (req, res, next) => {
  */
 exports.likePost = async (req, res, next) => {
   try {
-    const { postId, userId } = req.params
+    const { postId } = req.params
+    userId = req.userId
 
     if (!postId || !userId) {
       logger.warn("⚠️ Champs manquants lors du like.")
@@ -352,7 +399,8 @@ exports.likePost = async (req, res, next) => {
  */
 exports.unlikePost = async (req, res, next) => {
   try {
-    const { postId, userId } = req.params
+    const { postId } = req.params
+    userId = req.userId
 
     if (!postId || !userId) {
       logger.warn("⚠️ Champs manquants lors du unlike.")
@@ -389,90 +437,88 @@ exports.unlikePost = async (req, res, next) => {
   }
 }
 
-/**
- * Save un post
- *
- * @route POST /unlike/:id/:userId
- */
-exports.savePost = async (req, res, next) => {
-  try {
-    const { postId, userId } = req.params
+exports.savePost = async (req, res) => {
+  logger.info(`🔍 Tentative de sauvegarde du post : ID ${req.params.id}`)
+  await saveOrUnsavePost(req, res, "$addToSet")
+}
 
-    if (!postId || !userId) {
-      logger.warn("⚠️ Champs manquants lors du Save.")
-      return res.status(400).json({
-        error: `Tous les champs sont requis. Id: ${postId} UserId: ${userId}`,
-      })
-    }
-
-    logger.info(
-      `🔍 Tentative de save du post par un utilisateur: ID ${postId} User ${userId}`
-    )
-    const post = await Post.findOne({ _id: postId }).populate("user")
-    if (!post) {
-      logger.error("❌ Erreur lors de la récupération du post")
-      return res.status(400).json({
-        error: `Erreur lors de la réccupération du post Post: ${postId} UserId: ${userId}`,
-      })
-    }
-    const user = await User.findById(userId)
-    if (!user) {
-      logger.error("❌ Erreur lors de la récupération de l'utilisateur")
-      return res.status(400).json({
-        error: `Erreur lors de la réccupération du post Post: ${postId} UserId: ${userId}`,
-      })
-    }
-
-    await User.updateOne({ _id: userId }, { $push: { savedPosts: postId } })
-    res.status(200).json({ message: "Post sauvegardé avec succès !" })
-
-    logger.info(`✅ Post sauvegardé avec succès : ID ${postId}`)
-  } catch (error) {
-    logger.error(`❌ Erreur lors du save du post : ${error.message}`)
-    res.status(500).json({ error: "Une erreur est survenue." })
-  }
+exports.unsavePost = async (req, res) => {
+  logger.info(
+    `🔍 Tentative de retrait de la sauvegarde du post : ID ${req.params.id}`
+  )
+  await saveOrUnsavePost(req, res, "$pull")
 }
 
 /**
- * Unsave un post
+ * Sauvegarde ou retire la sauvegarde d'un post pour un utilisateur donné en mettant à jour
+ * le tableau `savedPosts` de l'utilisateur dans la base de données. Utilise l'opération `$addToSet`
+ * ou `$pull` en fonction de la valeur du paramètre `operation`.
  *
- * @route POST /unlike/:id/:userId
+ * @param req - L'objet de la requête.
+ * @param res - L'objet de la réponse.
+ * @param {string} operation - L'opération à effectuer, soit "$addToSet" pour sauvegarder le post, soit "$pull" pour retirer la sauvegarde.
  */
-exports.unsavePost = async (req, res, next) => {
+const saveOrUnsavePost = async (req, res, operation) => {
   try {
-    const { postId, userId } = req.params
+    const id = req.params.id
+    userId = req.userId
 
-    if (!postId || !userId) {
-      logger.warn("⚠️ Champs manquants lors du Save.")
-      return res.status(400).json({
-        error: `Tous les champs sont requis. Id: ${postId} UserId: ${userId}`,
+    logger.info(
+      `🔍 Tentative de ${
+        operation === "$addToSet" ? "sauvegarde" : "retrait"
+      } du post : ID ${id} pour l'utilisateur : ID ${userId}`
+    )
+
+    const update = {}
+    update[operation === "$addToSet" ? "$addToSet" : "$pull"] = {
+      savedPosts: id,
+    }
+
+    const updatedUserPost = await User.findOneAndUpdate(
+      { _id: userId },
+      update,
+      { new: true }
+    )
+      .select("savedPosts")
+      .populate({
+        path: "savedPosts",
+        populate: {
+          path: "community",
+          select: "name",
+        },
+      })
+
+    if (!updatedUserPost) {
+      logger.warn(`⚠️ Utilisateur introuvable : ID ${userId}`)
+      return res.status(404).json({
+        message: "Utilisateur introuvable",
       })
     }
 
     logger.info(
-      `🔍 Tentative de save du post par un utilisateur: ID ${postId} User ${userId}`
+      `✅ ${
+        operation === "$addToSet" ? "Post sauvegardé" : "Post retiré"
+      } avec succès pour l'utilisateur : ID ${userId}`
     )
-    const post = await Post.findOne({ _id: postId }).populate("user")
-    if (!post) {
-      logger.error("❌ Erreur lors de la récupération du post")
-      return res.status(400).json({
-        error: `Erreur lors de la réccupération du post Post: ${postId} UserId: ${userId}`,
-      })
-    }
-    const user = await User.findById(userId)
-    if (!user) {
-      logger.error("❌ Erreur lors de la récupération de l'utilisateur")
-      return res.status(400).json({
-        error: `Erreur lors de la réccupération du post Post: ${postId} UserId: ${userId}`,
-      })
-    }
 
-    await User.updateOne({ _id: userId }, { $pull: { savedPosts: postId } })
-    res.status(200).json({ message: "Post sauvegardé avec succès !" })
+    const formattedPosts = updatedUserPost.savedPosts.map((post) => ({
+      ...post.toObject(),
+      createdAt: dayjs(post.createdAt).fromNow(),
+    }))
 
-    logger.info(`✅ Post sauvegardé avec succès : ID ${postId}`)
+    logger.debug(
+      `📄 Liste des posts sauvegardés mise à jour pour l'utilisateur : ID ${userId}`
+    )
+
+    res.status(200).json(formattedPosts)
   } catch (error) {
-    logger.error(`❌ Erreur lors du save du post : ${error.message}`)
-    res.status(500).json({ error: "Une erreur est survenue." })
+    logger.error(
+      `❌ Erreur lors de la ${
+        operation === "$addToSet" ? "sauvegarde" : "retrait"
+      } du post : ${error.message}`
+    )
+    res.status(500).json({
+      message: "Erreur serveur",
+    })
   }
 }

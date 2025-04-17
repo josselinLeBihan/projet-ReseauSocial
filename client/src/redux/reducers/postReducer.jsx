@@ -7,9 +7,11 @@ const initialState = {
   communityPosts: [],
   userPosts: [],
   userFeedPosts: [],
+  userSavedPosts: [],
   error: null,
   post: null,
   successMessage: null,
+  totalSavedPosts: 0,
   totalCommunityPosts: 0,
   totalUserPosts: 0,
 }
@@ -91,6 +93,30 @@ const postReducer = (state = initialState, action) => {
         }
       }
     case types.GET_USER_FEED.FAIL:
+      return {
+        ...state,
+        error: payload,
+      }
+    case types.GET_SAVED_POST.SUCCESS:
+      if (payload.page === 1) {
+        return {
+          ...state,
+          userSavedPosts: Array.isArray(payload.posts) ? payload.posts : [],
+          totalSavedPosts: payload ? payload.totalSavedPosts : 0,
+          error: null,
+        }
+      } else {
+        return {
+          ...state,
+          userSavedPosts: [
+            ...state.userSavedPosts,
+            ...(payload ? payload.posts : []),
+          ],
+          totalSavedPosts: payload ? payload.totalSavedPosts : 0,
+          error: null,
+        }
+      }
+    case types.GET_SAVED_POST.FAIL:
       return {
         ...state,
         error: payload,

@@ -8,6 +8,7 @@ import {
   UserData,
 } from "./type"
 import { apiRequest } from "../utils/reduxUtils"
+import { logger } from "../../utils/logger"
 
 export const addPost = async (
   post: PostCreationData,
@@ -40,6 +41,16 @@ export const getComPosts = async (
     "GET",
     `/post/community/${communityId}?limit=${limit}&skip=${skip}`,
   )
+}
+
+export const getSavedPost = async (
+  limit: number,
+  skip: number,
+): Promise<{
+  error?: string
+  data?: [posts: PostDataformated[], totalCommunityPosts: number]
+}> => {
+  return await apiRequest("GET", `/post/saved/?limit=${limit}&skip=${skip}`)
 }
 
 export const getUserPosts = async (
@@ -109,7 +120,7 @@ export const likePost = async (
   error?: string
   data?: string
 }> => {
-  return await apiRequest<string>("POST", `/post/like/${postId}/${userId}`)
+  return await apiRequest<string>("POST", `/post/like/${postId}`)
 }
 
 export const unlikePost = async (
@@ -119,7 +130,7 @@ export const unlikePost = async (
   error?: string
   data?: string
 }> => {
-  return await apiRequest<string>("POST", `/post/unlike/${postId}/${userId}`)
+  return await apiRequest<string>("POST", `/post/unlike/${postId}`)
 }
 
 export const savePost = async (
@@ -129,7 +140,7 @@ export const savePost = async (
   error?: string
   data?: string
 }> => {
-  return await apiRequest<string>("POST", `/post/save/${postId}/${userId}`)
+  return await apiRequest<string>("POST", `/post/${postId}/save`)
 }
 
 export const unsavePost = async (
@@ -139,5 +150,5 @@ export const unsavePost = async (
   error?: string
   data?: string
 }> => {
-  return await apiRequest<string>("POST", `/post/unsave/${postId}/${userId}`)
+  return await apiRequest<string>("POST", `/post/${postId}/unsave`)
 }

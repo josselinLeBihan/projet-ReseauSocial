@@ -12,6 +12,7 @@ const {
   savePost,
   unsavePost,
   getUserFeed,
+  getSavedPosts,
 } = require("../controllers/post.controller")
 
 const decodeToken = require("../middlewares/auth/decodeToken")
@@ -21,17 +22,20 @@ const requireAuth = passport.authenticate("jwt", { session: false })
 const router = express.Router()
 const fileUpload = require("../middlewares/posts/fileUpload")
 
+router.use(requireAuth, decodeToken)
+
 router.post("/", fileUpload, createPost)
 router.post("/modify/:id", modifyPost)
 router.post("/delete/:id", deletePost)
 router.get("/community/:communityId", getCommunityPosts)
 router.get("/user/:userId", getUserPosts)
-router.get("/feed/:userId", decodeToken, requireAuth, getUserFeed)
+router.get("/feed/:userId", getUserFeed)
+router.get("/saved", getSavedPosts)
 router.get("/:id", getPost)
 
-router.post("/like/:postId/:userId", likePost)
-router.post("/unlike/:postId/:userId", unlikePost)
-router.post("/save/:postId/:userId", savePost)
-router.post("/unsave/:postId/:userId", unsavePost)
+router.post("/like/:postId", likePost)
+router.post("/unlike/:postId", unlikePost)
+router.post("/:id/save", savePost)
+router.post("/:id/unsave", unsavePost)
 
 module.exports = router

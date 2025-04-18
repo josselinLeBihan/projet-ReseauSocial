@@ -25,6 +25,7 @@ const RightBar: React.FC<RightBarProps> = () => {
   const userData: UserData = useAppSelector((state) => state.auth?.userData)
 
   useEffect(() => {
+    if (!checkLocation("/community")) return
     try {
       dispatch(getJoinedCommunitiesAction(userData._id))
       logger.debug("Communautés récupérées :", communities)

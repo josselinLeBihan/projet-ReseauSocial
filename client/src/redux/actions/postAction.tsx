@@ -25,20 +25,46 @@ export const addPostAction = createAsyncThunkAction<[PostCreationData], string>(
   },
 )
 
-// export const getPostsAction = createAsyncThunkAction<
-//   [CommunityData["_id"], number],
-//   PostData[]
-// >(types.GET_POSTS, async (communityId) => {
-//   try {
-//     const response = await api.getPosts(communityId)
-//     logger.info("Posts fetched successfully", response.data)
-//     return response
-//   } catch (error) {
-//     logger.error("Error fetching posts", error)
-//     throw error
-//   }
-// })
+export const getSavedPostAction =
+  (limit: number, skip: number) => async (dispatch) => {
+    await logger.info(
+      `Action ${types.GET_SAVED_POST.REQUEST} déclenchée avec`,
+      {
+        limit,
+        skip,
+      },
+    )
+    try {
+      const { error, data } = await api.getSavedPost(limit, skip)
 
+      if (error || !data) {
+        throw new Error(error || "Pas de données reçues")
+      }
+      await logger.debug(`Action ${types.GET_SAVED_POST.SUCCESS} réussie`, {
+        data,
+      })
+
+      const { posts, totalCommunityPosts } = data
+
+      dispatch({
+        type: types.GET_SAVED_POST.SUCCESS,
+        payload: {
+          page: skip / limit + 1,
+          posts: posts,
+          totalCommunityPosts: totalCommunityPosts,
+        },
+      })
+    } catch (error) {
+      await logger.error(
+        `Erreur dans l'action ${types.GET_SAVED_POST.REQUEST}`,
+        error.message,
+      )
+      dispatch({
+        type: types.GET_SAVED_POST.FAIL,
+        payload: error.message,
+      })
+    }
+  }
 export const getComPostsAction =
   (communityId: CommunityData["_id"], limit: number, skip: number) =>
   async (dispatch) => {
@@ -98,10 +124,10 @@ export const getUserPostsAction =
         throw new Error(error || "Pas de données reçues")
       }
 
-      const { posts, totalCommunityPosts } = data
+      const { posts, totalUserPosts } = data
       await logger.debug(`Action ${types.GET_USER_POSTS.SUCCESS} réussie`, {
         posts,
-        totalCommunityPosts,
+        totalUserPosts,
       })
 
       dispatch({
@@ -109,7 +135,7 @@ export const getUserPostsAction =
         payload: {
           page: skip / limit + 1,
           posts: posts,
-          totalCommunityPosts: totalCommunityPosts,
+          totalUserPosts: totalUserPosts,
         },
       })
     } catch (error) {
@@ -160,46 +186,6 @@ export const getUserFeedAction =
       })
     }
   }
-export const getSavedPostAction =
-  (limit: number, skip: number) => async (dispatch) => {
-    await logger.info(
-      `Action ${types.GET_SAVED_POST.REQUEST} déclenchée avec`,
-      {
-        limit,
-        skip,
-      },
-    )
-    try {
-      const { error, data } = await api.getSavedPost(limit, skip)
-
-      if (error || !data) {
-        throw new Error(error || "Pas de données reçues")
-      }
-      await logger.debug(`Action ${types.GET_SAVED_POST.SUCCESS} réussie`, {
-        data,
-      })
-
-      const { posts, totalCommunityPosts } = data
-
-      dispatch({
-        type: types.GET_SAVED_POST.SUCCESS,
-        payload: {
-          page: skip / limit + 1,
-          posts: posts,
-          totalCommunityPosts: totalCommunityPosts,
-        },
-      })
-    } catch (error) {
-      await logger.error(
-        `Erreur dans l'action ${types.GET_SAVED_POST.REQUEST}`,
-        error.message,
-      )
-      dispatch({
-        type: types.GET_SAVED_POST.FAIL,
-        payload: error.message,
-      })
-    }
-  }
 
 export const getPostAction = createAsyncThunkAction<
   [PostData["_id"]],
@@ -234,4 +220,4 @@ export const savePostAction = createAsyncThunkAction<
 export const unsavePostAction = createAsyncThunkAction<
   [PostData["_id"], UserData["_id"]],
   String
->(types.UNSAVE_POST, api.unsavePost)
+>(types.UNSAVE_POST, api.savePost)

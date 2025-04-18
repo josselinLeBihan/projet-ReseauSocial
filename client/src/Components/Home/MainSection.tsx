@@ -2,7 +2,7 @@ import React, { memo, useEffect, useMemo, useState } from "react"
 import CommonLoading from "../Loader/CommonLoading"
 
 import Post from "../Post/Post"
-import { PostData, PostDataformated, UserData } from "../../redux/api/type"
+import { PostDataformated, UserData } from "../../redux/api/type"
 import { useAppDispatch, useAppSelector } from "../../redux/store"
 import { getUserFeedAction } from "../../redux/actions/postAction"
 import { logger } from "../../utils/logger"

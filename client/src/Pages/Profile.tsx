@@ -20,18 +20,26 @@ function Profile() {
 
   const dispatch = useAppDispatch()
 
-  logger.debug("Profile: ", userId)
+  logger.info(
+    "Profile monté avec UserID : " + userId + " et UserData : ",
+    userData,
+  )
 
   useEffect(() => {
     if (!userId) return
     const fetchUser = async () => {
       setLoading(true)
-      const result = await dispatch(getProfileAction(userId, userData?._id))
-      logger.info("User Info: ", result?.data)
+      try {
+        const result = await dispatch(getProfileAction(userId, userData?._id))
+        logger.info("User Info: ", result?.data)
+      } catch (error) {
+        logger.error("Erreur lors de la récupération du profil :", error)
+      } finally {
+        setLoading(false)
+      }
     }
     fetchUser()
-    setLoading(false)
-  }, [dispatch])
+  }, [dispatch, userId])
 
   if (loading)
     return (

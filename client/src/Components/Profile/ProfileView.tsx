@@ -1,17 +1,10 @@
 import React, { memo, useEffect, useState } from "react"
-import {
-  PostDataformated,
-  PublicUserInfo,
-  UserInfo,
-} from "../../redux/api/type"
+import { PostDataformated, PublicUserInfo } from "../../redux/api/type"
 import CommonLoading from "../Loader/CommonLoading"
 import { logger } from "../../utils/logger"
 import profilePlaceholder from "../../Assets/profile-placeholder.png"
 import AddIcon from "@mui/icons-material/Add"
-import {
-  getComPostsAction,
-  getUserPostsAction,
-} from "../../redux/actions/postAction"
+import { getUserPostsAction } from "../../redux/actions/postAction"
 import { useAppDispatch, useAppSelector } from "../../redux/store"
 import Post from "../Post/Post"
 import { UserData } from "../../App"
@@ -36,6 +29,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ userInfo }) => {
   const userPosts: PostDataformated[] = useAppSelector(
     (state) => state.post.userPosts,
   )
+
   const totalPostsCount: number = useAppSelector(
     (state) => state.post?.totalUserPosts,
   )
@@ -60,7 +54,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ userInfo }) => {
 
   useEffect(() => {
     fetchUserPosts()
-    logger.info("CommunityForum monté avec les posts")
+    logger.debug("ProfileView monté avec les posts", userPosts)
   }, [userInfo, dispatch])
 
   const handleLoadMorePost = async () => {

@@ -59,7 +59,7 @@ export const getUserPosts = async (
   skip: number,
 ): Promise<{
   error?: string
-  data?: [posts: PostDataformated[], totalCommunityPosts: number]
+  data?: [posts: PostDataformated[], totalUserPosts: number]
 }> => {
   return await apiRequest(
     "GET",

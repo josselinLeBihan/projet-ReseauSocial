@@ -249,7 +249,7 @@ exports.getSavedPosts = async (req, res, next) => {
     logger.debug(`🔢 Nombre total de posts : ${totalUserPosts}`)
     res
       .status(200)
-      .json({ posts: formattedPosts, totalUserPosts: totalUserPosts })
+      .json({ posts: formattedPosts, totalSavedPosts: totalUserPosts })
   } catch (error) {
     logger.error(
       `❌ Erreur lors de la récupération des posts pour l'utilisateur (${req.params.userId}) : ${error.message}`

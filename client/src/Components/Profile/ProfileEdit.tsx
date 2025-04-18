@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/store"
 import Post from "../Post/Post"
 import EditIcon from "@mui/icons-material/Edit"
 import EditProfileModal from "../Modals/EditProfileModal"
+import { useCallback } from "react"
 import {
   getUserAction,
   updateUserAction,
@@ -19,7 +20,7 @@ interface ProfileViewProps {
 const MemoizedPost = memo(Post)
 const LIMIT = 5
 
-const ProfileView: React.FC<ProfileViewProps> = ({ userInfo }) => {
+const ProfileEdit: React.FC<ProfileViewProps> = ({ userInfo }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isLoadingMorePosts, setIsLoadingMorePosts] = useState<boolean>(false)
   const [isShowModal, setIsShowModal] = useState<boolean>(false)
@@ -30,24 +31,35 @@ const ProfileView: React.FC<ProfileViewProps> = ({ userInfo }) => {
   const userPosts: PostDataformated[] = useAppSelector(
     (state) => state.post.userPosts,
   )
+
   const totalPostsCount: number = useAppSelector(
     (state) => state.post?.totalUserPosts,
   )
 
-  const fetchUserPosts = async (offset = 0) => {
-    if (!userInfo) return
-    setIsLoading(offset === 0)
-    setShouldShowLoader(offset === 0)
+  logger.debug("ProfileEdit monté avec les posts", userPosts)
 
-    try {
-      await dispatch(getUserPostsAction(userInfo._id, LIMIT, offset))
-    } catch (error) {
-      logger.error("Erreur lors de la récupération des posts", error)
-    }
+  const fetchUserPosts = useCallback(
+    async (offset = 0) => {
+      if (!userInfo) return
+      setIsLoading(offset === 0)
+      setShouldShowLoader(offset === 0)
 
-    setIsLoading(false)
-    setShouldShowLoader(false)
-  }
+      try {
+        await dispatch(getUserPostsAction(userInfo._id, LIMIT, offset))
+      } catch (error) {
+        logger.error("Erreur lors de la récupération des posts", error)
+      }
+
+      setIsLoading(false)
+      setShouldShowLoader(false)
+    },
+    [userInfo, dispatch],
+  )
+
+  useEffect(() => {
+    fetchUserPosts()
+    logger.debug("ProfileEdit monté avec les posts", userPosts)
+  }, [fetchUserPosts])
 
   const handleLoadMorePost = async () => {
     if (!isLoadingMorePosts && userPosts.length < totalPostsCount) {
@@ -133,4 +145,4 @@ const ProfileView: React.FC<ProfileViewProps> = ({ userInfo }) => {
   )
 }
 
-export default ProfileView
+export default ProfileEdit
